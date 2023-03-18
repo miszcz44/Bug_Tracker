@@ -1,4 +1,4 @@
-package User;
+package com.mcr.bugtracker.User;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,16 +6,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.awt.font.GraphicAttribute;
 import java.util.Collection;
-import java.util.Locale;
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
-public class User implements UserDetails {
+public class AppUser implements UserDetails {
 
     @Id
     @SequenceGenerator(
@@ -37,7 +35,7 @@ public class User implements UserDetails {
     private boolean locked;
     private boolean enabled;
 
-    public User(String name, String username, String password, String email, UserRole userRole, boolean locked, boolean enabled) {
+    public AppUser(String name, String username, String password, String email, UserRole userRole, boolean locked, boolean enabled) {
         this.name = name;
         this.username = username;
         this.password = password;

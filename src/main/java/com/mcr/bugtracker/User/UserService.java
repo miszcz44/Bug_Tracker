@@ -1,4 +1,4 @@
-package User;
+package com.mcr.bugtracker.User;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

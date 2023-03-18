@@ -1,4 +1,4 @@
-package Registration;
+package com.mcr.bugtracker.Registration;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
