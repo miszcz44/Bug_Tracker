@@ -1,4 +1,3 @@
-
 server:
   error:
     include-message: always
@@ -17,6 +16,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+    security:
+      user:
+        name: admin
+        password: 123
 
   mail:
     host: localhost
