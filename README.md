@@ -1,32 +1,33 @@
-# Spring Boot 3.0 Security with JWT Implementation
-This project demonstrates the implementation of security using Spring Boot 3.0 and JSON Web Tokens (JWT). It includes the following features:
+# Login Registration Backend 
 
-## Features
-* User registration and login with JWT authentication
-* Password encryption using BCrypt
-* Role-based authorization with Spring Security
-* Customized access denied handling
-* Logout mechanism
+Complete login registration backend system using Spring Boot.
 
-## Technologies
-* Spring Boot 3.0
-* Spring Security
-* JSON Web Tokens (JWT)
-* BCrypt
-* Maven
- 
-## Getting Started
-To get started with this project, you will need to have the following installed on your local machine:
+[![YouTube Video](https://user-images.githubusercontent.com/40702606/104790682-d62ac880-578f-11eb-8353-aa68739ffe42.png)](https://www.youtube.com/watch?v=QwQuro7ekvc)
 
-* JDK 17+
-* Maven 3+
+- [x] Spring Boot
+- [x] Spring Security
+- [x] Java Mail
+- [x] Email verification with expiry
+- [x] Spring Boot
 
+## Diagram
+![Screenshot 2021-01-13 at 23 38 08](https://user-images.githubusercontent.com/40702606/104789980-15581a00-578e-11eb-998d-30f2e6a9f461.png)
 
-To build and run the project, follow these steps:
+## Email verification link with expiry
+![Screenshot 2021-01-13 at 23 37 33](https://user-images.githubusercontent.com/40702606/104789893-0c674880-578e-11eb-939a-2a1cd3a8dfd2.png)
 
-* Clone the repository: `git clone https://github.com/ali-bouali/spring-boot-3-jwt-security.git`
-* Navigate to the project directory: cd spring-boot-security-jwt
-* Build the project: mvn clean install
-* Run the project: mvn spring-boot:run 
+## Example requests
+### Postman
+![Screenshot 2021-01-13 at 23 37 57](https://user-images.githubusercontent.com/40702606/104790087-7a137480-578e-11eb-8141-307a8850c39e.png)
 
--> The application will be available at http://localhost:8080.
+### CURL
+```
+curl --location --request POST 'localhost:8080/api/v1/registration' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "firstName": "Amigos",
+    "lastName": "Code",
+    "email": "hellow@amigoscode.com",
+    "password": "password"
+}'
+```

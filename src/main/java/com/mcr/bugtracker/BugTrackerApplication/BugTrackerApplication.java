@@ -1,4 +1,4 @@
-package com.mcr.bugtracker;
+package com.mcr.bugtracker.BugTrackerApplication;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

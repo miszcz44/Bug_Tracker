@@ -1,10 +1,10 @@
-package com.mcr.bugtracker;
+package com.mcr.bugtracker.BugTrackerApplication;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SecurityApplicationTests {
+class DemoApplicationTests {
 
 	@Test
 	void contextLoads() {
