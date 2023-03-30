@@ -16,28 +16,18 @@ class AppUserRepositoryTest {
 
     @Autowired
     private AppUserRepository underTest;
+    // testing functions provided with jpa repository is useless, this will be deleted
     @Test
-    void findByEmail() {
-        // create test user
+    void checkIfUserFoundByEmail() {
         AppUser user = new AppUser("Mikołaj", "Bultrowicz", "bultron@gmail.com", "12345", AppUserRole.USER);
-
-        // insert test user into database
         underTest.save(user);
-
-        // retrieve user by email
         Optional<AppUser> expectedUser = underTest.findByEmail("bultron@gmail.com");
-
-        // assert that user is found
         assertTrue(expectedUser.isPresent());
-
-        // assert that user is correct
         assertEquals(user, expectedUser.get());
-
-        // retrieve non-existing user by email
+    }
+    @Test
+    void checkIfNonExistingUserNotFoundByEmail() {
         Optional<AppUser> nonExistingUser = underTest.findByEmail("nonexistinguser@gmail.com");
-
-        // assert that non-existing user is not found
         assertFalse(nonExistingUser.isPresent());
-
     }
 }
