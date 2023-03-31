@@ -1,5 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
+import com.mcr.bugtracker.BugTrackerApplication.email.EmailSender;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
@@ -36,15 +37,28 @@ public class AppUserService implements UserDetailsService {
     }
 
     public void checkIfEmailTakenOrNotConfirmed(AppUser appUser) {
-        Optional<AppUser> existingUser = appUserRepository
+        Optional<AppUser> potentialUser = appUserRepository
                 .findByEmail(appUser.getEmail());
 
-        if (!existingUser.equals(null)) {
-            if(Optional.of(appUser).equals(existingUser) && !appUser.getEnabled()) {
+        if (!potentialUser.equals(Optional.empty())) {
+            AppUser existingUser = potentialUser.get();
+            if(!existingUser.getEnabled()) {
                 throw new IllegalStateException("Confirm email");
             }
             throw new IllegalStateException("email already taken");
         }
+    }
+
+    public void generateAndSaveConfirmationToken(String token, AppUser appUser) {
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(15),
+                appUser
+        );
+
+        confirmationTokenService.saveConfirmationToken(
+                confirmationToken);
     }
     public String signUpUser(AppUser appUser) {
         checkIfEmailTakenOrNotConfirmed(appUser);
@@ -58,22 +72,19 @@ public class AppUserService implements UserDetailsService {
 
         String token = UUID.randomUUID().toString();
 
-        ConfirmationToken confirmationToken = new ConfirmationToken(
-                token,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15),
-                appUser
-        );
-
-        confirmationTokenService.saveConfirmationToken(
-                confirmationToken);
-
-//        TODO: SEND EMAIL
+        generateAndSaveConfirmationToken(token, appUser);
 
         return token;
     }
 
     public int enableAppUser(String email) {
         return appUserRepository.enableAppUser(email);
+    }
+
+    public void deleteUser(Long userId) {
+        if(!appUserRepository.existsById(userId)) {
+            throw new IllegalStateException("User of this id does not exist");
+        }
+        appUserRepository.deleteById(userId);
     }
 }

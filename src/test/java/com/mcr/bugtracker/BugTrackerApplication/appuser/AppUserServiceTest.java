@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -28,6 +29,7 @@ class AppUserServiceTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private ConfirmationTokenService confirmationTokenService;
     private AppUserService underTest;
+    private EntityManager entityManager;
     private final static String USER_NOT_FOUND_MSG =
             "user with email %s not found";
 
@@ -76,6 +78,16 @@ class AppUserServiceTest {
                 .hasMessageContaining("email already taken");
     }
 
+//    @Test
+//    public void testDeletingUserById() {
+//        AppUser user = new AppUser("Mikołaj", "Bultrowicz", "bultron@gmail.com", "12345", AppUserRole.USER);
+//        user.setId(1L);
+//        repository.saveAndFlush(user);
+//        entityManager.flush();
+//        entityManager.clear();
+//        underTest.deleteUser(user.getId());
+//        assertFalse(repository.existsById(user.getId()));
+//    }
     @Test
     void signUpUser() {
     }

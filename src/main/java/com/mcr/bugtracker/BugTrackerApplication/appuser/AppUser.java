@@ -1,5 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
+import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,7 @@ public class AppUser implements UserDetails {
     )
     @Id
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.IDENTITY,
             generator = "student_sequence"
     )
     private Long id;
@@ -95,5 +96,17 @@ public class AppUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @OneToMany(mappedBy = "appUser",
+                cascade = CascadeType.REMOVE)
+    private Collection<ConfirmationToken> confirmationToken;
+
+    public Collection<ConfirmationToken> getConfirmationToken() {
+        return confirmationToken;
+    }
+
+    public void setConfirmationToken(Collection<ConfirmationToken> confirmationToken) {
+        this.confirmationToken = confirmationToken;
     }
 }
