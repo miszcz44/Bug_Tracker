@@ -78,16 +78,6 @@ class AppUserServiceTest {
                 .hasMessageContaining("email already taken");
     }
 
-//    @Test
-//    public void testDeletingUserById() {
-//        AppUser user = new AppUser("Mikołaj", "Bultrowicz", "bultron@gmail.com", "12345", AppUserRole.USER);
-//        user.setId(1L);
-//        repository.saveAndFlush(user);
-//        entityManager.flush();
-//        entityManager.clear();
-//        underTest.deleteUser(user.getId());
-//        assertFalse(repository.existsById(user.getId()));
-//    }
     @Test
     void signUpUser() {
     }

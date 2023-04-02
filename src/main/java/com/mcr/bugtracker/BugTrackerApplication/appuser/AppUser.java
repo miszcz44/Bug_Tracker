@@ -28,7 +28,7 @@ public class AppUser implements UserDetails {
     )
     @Id
     @GeneratedValue(
-            strategy = GenerationType.IDENTITY,
+            strategy = GenerationType.SEQUENCE,
             generator = "student_sequence"
     )
     private Long id;

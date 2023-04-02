@@ -22,13 +22,8 @@ public class RegistrationService {
     private final EmailSender emailSender;
 
     public String register(RegistrationRequest request) {
-        boolean isValidEmail = emailValidator.
-                test(request.getEmail());
 
-        if (!isValidEmail) {
-            throw new IllegalStateException("email not valid");
-        }
-
+        validateEmail(request);
         String token = appUserService.signUpUser(
                 new AppUser(
                         request.getFirstName(),
@@ -36,7 +31,6 @@ public class RegistrationService {
                         request.getEmail(),
                         request.getPassword(),
                         AppUserRole.USER
-
                 )
         );
 
@@ -46,6 +40,14 @@ public class RegistrationService {
                 buildEmail(request.getFirstName(), link));
 
         return token;
+    }
+
+    public void validateEmail(RegistrationRequest request) {
+        boolean isValidEmail = emailValidator.
+                test(request.getEmail());
+        if (!isValidEmail) {
+            throw new IllegalStateException("email not valid");
+        }
     }
 
     @Transactional
