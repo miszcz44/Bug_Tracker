@@ -1,6 +1,10 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
+import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.attachment.Attachment;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.Commentary;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,14 +27,14 @@ public class AppUser implements UserDetails {
 
 
     @SequenceGenerator(
-            name = "student_sequence",
-            sequenceName = "student_sequence",
+            name = "user_sequence",
+            sequenceName = "user_sequence",
             allocationSize = 1
     )
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "student_sequence"
+            generator = "user_sequence"
     )
     private Long id;
     private String firstName;
@@ -52,6 +57,23 @@ public class AppUser implements UserDetails {
         this.password = password;
         this.appUserRole = appUserRole;
     }
+
+    @OneToMany(mappedBy = "appUser",
+            cascade = CascadeType.REMOVE) // REMOVE for test
+    private Collection<ConfirmationToken> confirmationToken;
+
+    @OneToMany
+    private List<Ticket> assignedTickets;
+    @OneToMany
+    private List<Ticket> submittedTickets;
+    @OneToMany
+    private List<Attachment> uploadedFiles;
+    @OneToMany
+    private List<Commentary> commentaries;
+    @ManyToOne
+    private Project managedProject;
+    @ManyToMany
+    private List<Project> assignedProjects;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -98,9 +120,7 @@ public class AppUser implements UserDetails {
         return enabled;
     }
 
-    @OneToMany(mappedBy = "appUser",
-                cascade = CascadeType.REMOVE)
-    private Collection<ConfirmationToken> confirmationToken;
+
 
     public Collection<ConfirmationToken> getConfirmationToken() {
         return confirmationToken;
