@@ -30,4 +30,8 @@ public class Commentary {
     private AppUser commenter;
     private String message;
     private LocalDateTime createdAt;
+
+    public Commentary(String message) {
+        this.message = message;
+    }
 }

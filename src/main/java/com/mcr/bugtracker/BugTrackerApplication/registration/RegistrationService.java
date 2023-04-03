@@ -24,15 +24,14 @@ public class RegistrationService {
     public String register(RegistrationRequest request) {
 
         validateEmail(request);
-        String token = appUserService.signUpUser(
-                new AppUser(
-                        request.getFirstName(),
-                        request.getLastName(),
-                        request.getEmail(),
-                        request.getPassword(),
-                        AppUserRole.USER
-                )
-        );
+        AppUser user = new AppUser(request.getFirstName(),
+                    request.getLastName(),
+                    request.getEmail(),
+                    request.getPassword(),
+                    AppUserRole.USER);
+
+        appUserService.signUpUser(user);
+        String token = appUserService.generateAndSaveConfirmationTokenForGivenUser(user);
 
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
         emailSender.send(

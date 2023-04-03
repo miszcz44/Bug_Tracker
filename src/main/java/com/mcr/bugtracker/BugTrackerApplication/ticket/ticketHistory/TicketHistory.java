@@ -31,4 +31,9 @@ public class TicketHistory {
     private String newValue;
     private LocalDateTime dateChanged;
 
+    public TicketHistory(String property, String oldValue, String newValue) {
+        this.property = property;
+        this.oldValue = oldValue;
+        this.newValue = newValue;
+    }
 }

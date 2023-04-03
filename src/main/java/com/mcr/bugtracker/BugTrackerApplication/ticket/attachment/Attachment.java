@@ -32,4 +32,9 @@ public class Attachment {
     private AppUser uploader;
     private String notes;
     private LocalDateTime createdAt;
+
+    public Attachment(File file, String notes) {
+        this.file = file;
+        this.notes = notes;
+    }
 }

@@ -49,18 +49,19 @@ public class AppUserService implements UserDetailsService {
         }
     }
 
-    public void generateAndSaveConfirmationToken(String token, AppUser appUser) {
+    public String generateAndSaveConfirmationTokenForGivenUser(AppUser appUser) {
+        String token = UUID.randomUUID().toString();
         ConfirmationToken confirmationToken = new ConfirmationToken(
                 token,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(15),
                 appUser
         );
-
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
+        return token;
     }
-    public String signUpUser(AppUser appUser) {
+    public void signUpUser(AppUser appUser) {
         checkIfEmailTakenOrNotConfirmed(appUser);
 
         String encodedPassword = bCryptPasswordEncoder
@@ -69,12 +70,6 @@ public class AppUserService implements UserDetailsService {
         appUser.setPassword(encodedPassword);
 
         appUserRepository.save(appUser);
-
-        String token = UUID.randomUUID().toString();
-
-        generateAndSaveConfirmationToken(token, appUser);
-
-        return token;
     }
 
     public int enableAppUser(String email) {

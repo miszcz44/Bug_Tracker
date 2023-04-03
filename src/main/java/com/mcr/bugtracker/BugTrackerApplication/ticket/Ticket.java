@@ -4,6 +4,9 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.attachment.Attachment;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.Commentary;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Priority;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.ProgressStatus;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistory.TicketHistory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -46,9 +49,19 @@ public class Ticket {
     private List<Attachment> attachments;
     @OneToOne
     private TicketHistory history;
+    @Enumerated(EnumType.STRING)
     private Priority priority;
+    @Enumerated(EnumType.STRING)
     private ProgressStatus status;
+    @Enumerated(EnumType.STRING)
     private Type type;
     private LocalDateTime createdAt;
 
+    public Ticket(String title, String description, Priority priority, ProgressStatus status, Type type) {
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.status = status;
+        this.type = type;
+    }
 }

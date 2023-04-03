@@ -1,4 +1,4 @@
-package com.mcr.bugtracker.BugTrackerApplication.ticket;
+package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums;
 
 public enum ProgressStatus {
     NEW,
