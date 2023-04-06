@@ -6,6 +6,7 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.email.EmailSender;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
+import com.mcr.bugtracker.BugTrackerApplication.security.config.WebSecurityConfig;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,16 +21,11 @@ public class RegistrationService {
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
+    private final WebSecurityConfig webSecurityConfig;
 
     public String register(RegistrationRequest request) {
-
         validateEmail(request);
-        AppUser user = new AppUser(request.getFirstName(),
-                    request.getLastName(),
-                    request.getEmail(),
-                    request.getPassword(),
-                    AppUserRole.USER);
-
+        AppUser user = createUserWithRequest(request);
         appUserService.signUpUser(user);
         String token = appUserService.generateAndSaveConfirmationTokenForGivenUser(user);
 
@@ -47,6 +43,15 @@ public class RegistrationService {
         if (!isValidEmail) {
             throw new IllegalStateException("email not valid");
         }
+    }
+
+    public AppUser createUserWithRequest(RegistrationRequest request) {
+        AppUser user = new AppUser(request.getFirstName(),
+                request.getLastName(),
+                request.getEmail(),
+                request.getPassword(),
+                AppUserRole.USER);
+        return user;
     }
 
     @Transactional

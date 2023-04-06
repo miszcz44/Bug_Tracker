@@ -15,4 +15,8 @@ public class AppUserController {
         userService.deleteUser(userId);
         return "Deleted";
     }
+    @GetMapping
+    public String foo() {
+        return "alalalabamba";
+    }
 }
