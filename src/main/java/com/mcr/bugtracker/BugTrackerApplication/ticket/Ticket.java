@@ -48,6 +48,7 @@ public class Ticket {
     @OneToMany
     private List<Attachment> attachments;
     @OneToOne
+    @JoinColumn(name = "ticket_history_id")
     private TicketHistory history;
     @Enumerated(EnumType.STRING)
     private Priority priority;
@@ -57,11 +58,12 @@ public class Ticket {
     private Type type;
     private LocalDateTime createdAt;
 
-    public Ticket(String title, String description, Priority priority, ProgressStatus status, Type type) {
+    public Ticket(String title, String description, Priority priority, ProgressStatus status, Type type, TicketHistory ticketHistory) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.status = status;
         this.type = type;
+        this.history = ticketHistory;
     }
 }

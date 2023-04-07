@@ -1,5 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistory;
 
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,8 @@ public class TicketHistory {
     private String oldValue;
     private String newValue;
     private LocalDateTime dateChanged;
+    @OneToOne(mappedBy = "history")
+    private Ticket ticket;
 
     public TicketHistory(String property, String oldValue, String newValue) {
         this.property = property;
