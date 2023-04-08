@@ -13,7 +13,7 @@ public class TicketHistoryController {
 
     private final TicketHistoryService ticketHistoryService;
     @PostMapping
-    public void saveTickerHistory(@RequestBody TickerHistoryRequest request) {
+    public void saveTicketHistory(@RequestBody TicketHistoryRequest request) {
         ticketHistoryService.saveTicketHistory(request);
     }
 }

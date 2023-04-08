@@ -1,6 +1,7 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.attachment;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,9 +30,13 @@ public class Attachment {
     private Long id;
     private File file;
     @ManyToOne
+    @JoinColumn(name = "uploader_id")
     private AppUser uploader;
     private String notes;
     private LocalDateTime createdAt;
+    @ManyToOne
+    @JoinColumn(name = "ticked_id")
+    private Ticket ticket;
 
     public Attachment(File file, String notes) {
         this.file = file;

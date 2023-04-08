@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class TicketHistoryService {
 
     private final TicketHistoryRepository ticketHistoryRepository;
-    public void saveTicketHistory(TickerHistoryRequest request) {
-        ticketHistoryRepository.save(new TicketHistory(request.getProperty(), request.getOldValue(), request.getNewValue()));
+    public void saveTicketHistory(TicketHistoryRequest request) {
+        ticketHistoryRepository.save(new TicketHistory());
     }
 }

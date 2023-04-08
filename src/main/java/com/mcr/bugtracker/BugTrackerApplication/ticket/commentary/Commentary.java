@@ -1,6 +1,7 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.commentary;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,9 +28,13 @@ public class Commentary {
     )
     private Long id;
     @ManyToOne
-    private AppUser commenter;
+    @JoinColumn(name = "commentator_id")
+    private AppUser commentator;
     private String message;
     private LocalDateTime createdAt;
+    @ManyToOne
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
 
     public Commentary(String message) {
         this.message = message;

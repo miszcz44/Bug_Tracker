@@ -9,8 +9,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class TickerHistoryRequest {
-    private final String property;
-    private final String oldValue;
-    private final String newValue;
+public class TicketHistoryRequest {
+
 }

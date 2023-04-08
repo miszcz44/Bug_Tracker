@@ -1,6 +1,7 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistory;
 
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistory.ticketHistoryField.TicketHistoryField;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,16 +29,9 @@ public class TicketHistory {
             generator = "ticket_history_sequence"
     )
     private Long id;
-    private String property;
-    private String oldValue;
-    private String newValue;
-    private LocalDateTime dateChanged;
+    @OneToMany(mappedBy = "ticketHistory")
+    private List<TicketHistoryField> ticketHistoryField;
     @OneToOne(mappedBy = "history")
     private Ticket ticket;
 
-    public TicketHistory(String property, String oldValue, String newValue) {
-        this.property = property;
-        this.oldValue = oldValue;
-        this.newValue = newValue;
-    }
 }

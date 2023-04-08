@@ -62,17 +62,17 @@ public class AppUser implements UserDetails {
             cascade = CascadeType.REMOVE) // REMOVE for test
     private Collection<ConfirmationToken> confirmationToken;
 
-    @OneToMany
-    private List<Ticket> assignedTickets;
-    @OneToMany
-    private List<Ticket> submittedTickets;
-    @OneToMany
+    @OneToMany(mappedBy = "assignedDeveloper")
+    private List<Ticket> assignedTicket;
+    @OneToMany(mappedBy = "submitter")
+    private List<Ticket> submittedTicket;
+    @OneToMany(mappedBy = "uploader")
     private List<Attachment> uploadedFiles;
-    @OneToMany
+    @OneToMany(mappedBy = "commentator")
     private List<Commentary> commentaries;
-    @ManyToOne
-    private Project managedProject;
-    @ManyToMany
+    @OneToMany(mappedBy = "projectManager")
+    private List<Project> managedProject;
+    @ManyToMany(mappedBy = "projectPersonnel")
     private List<Project> assignedProjects;
 
     @Override

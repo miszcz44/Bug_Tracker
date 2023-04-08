@@ -30,11 +30,15 @@ public class Project {
     private String name;
     private String description;
     @ManyToOne
+    @JoinColumn(name = "manager_id")
     private AppUser projectManager;
     @ManyToMany
+    @JoinTable(
+            name = "project_personnel",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<AppUser> projectPersonnel;
-    @OneToMany
+    @OneToMany(mappedBy = "project")
     private List<Ticket> tickets;
-
-
 }

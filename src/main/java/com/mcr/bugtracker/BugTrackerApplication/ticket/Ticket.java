@@ -38,14 +38,17 @@ public class Ticket {
     private String title;
     private String description;
     @ManyToOne
+    @JoinColumn(name = "submitter_id")
     private AppUser submitter;
     @ManyToOne
+    @JoinColumn(name = "developer_id")
     private AppUser assignedDeveloper;
     @ManyToOne
+    @JoinColumn(name = "project_id")
     private Project project;
-    @OneToMany
+    @OneToMany(mappedBy = "ticket")
     private List<Commentary> comments;
-    @OneToMany
+    @OneToMany(mappedBy = "ticket")
     private List<Attachment> attachments;
     @OneToOne
     @JoinColumn(name = "ticket_history_id")
