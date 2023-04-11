@@ -41,4 +41,10 @@ public class Project {
     private List<AppUser> projectPersonnel;
     @OneToMany(mappedBy = "project")
     private List<Ticket> tickets;
+
+    public Project(String name, String description, AppUser projectManager) {
+        this.name = name;
+        this.description = description;
+        this.projectManager = projectManager;
+    }
 }
