@@ -60,6 +60,7 @@ public class AppUser implements UserDetails {
 
     @OneToMany(mappedBy = "appUser",
             cascade = CascadeType.REMOVE) // REMOVE for test
+    @Transient
     private Collection<ConfirmationToken> confirmationToken;
 
     @OneToMany(mappedBy = "assignedDeveloper")
@@ -79,6 +80,7 @@ public class AppUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority =
                 new SimpleGrantedAuthority(appUserRole.name());
+        System.out.println(appUserRole.name());
         return Collections.singletonList(authority);
     }
 
