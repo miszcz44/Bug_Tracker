@@ -1,4 +1,4 @@
-# Login Registration Backend 
+# Index Registration Backend 
 
 Complete login registration backend system using Spring Boot.
 

@@ -27,9 +27,9 @@ import javax.crypto.spec.SecretKeySpec;
 public class JwtUtil implements Serializable {
 
 //    @Value("${application.security.jwt.token.secret-key}")
-    String secretKeyString = "123";
-    byte[] secretKeyBytes = secretKeyString.getBytes(StandardCharsets.UTF_8);
-    SecretKey secretKey = new SecretKeySpec(secretKeyBytes, "AES");
+    private String secretKeyString = "aaaaa";
+    private byte[] secretKeyBytes = secretKeyString.getBytes(StandardCharsets.UTF_8);
+    private SecretKey secretKey = new SecretKeySpec(secretKeyBytes, "AES");
 //    @Value("${application.security.jwt.token.expire-length}")
     private long jwtExpiration = 100000000;
 
@@ -75,7 +75,7 @@ public class JwtUtil implements Serializable {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS512, secretKeyString)
                 .compact();
     }
 
@@ -95,13 +95,14 @@ public class JwtUtil implements Serializable {
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
-                .setSigningKey(getSignInKey())
+                .setSigningKey(secretKeyString)
                 .parseClaimsJws(token)
                 .getBody();
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey.toString());
+        secretKey.toString().replace(".", "-");
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey.toString().replaceAll("[^a-zA-Z0-9]", "0"));
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

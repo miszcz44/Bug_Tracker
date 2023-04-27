@@ -32,6 +32,7 @@ public class TicketHistory {
     @OneToMany(mappedBy = "ticketHistory")
     private List<TicketHistoryField> ticketHistoryField;
     @OneToOne(mappedBy = "history")
+    @Transient
     private Ticket ticket;
 
 }

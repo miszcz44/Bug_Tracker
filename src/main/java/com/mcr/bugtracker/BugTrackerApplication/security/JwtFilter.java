@@ -2,6 +2,7 @@ package com.mcr.bugtracker.BugTrackerApplication.security;
 
 import antlr.StringUtils;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -20,13 +21,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static sun.util.locale.LocaleUtils.isEmpty;
+//import static sun.util.locale.LocaleUtils.isEmpty;
 
 //import static org.aspectj.util.LangUtil.isEmpty;
 
 //import static sun.util.locale.LocaleUtils.isEmpty;
 
 @Component
+@AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
     private AppUserRepository userRepository;
