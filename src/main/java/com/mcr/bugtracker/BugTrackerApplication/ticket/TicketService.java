@@ -36,10 +36,4 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    public List<Type> getTicketTypes() {
-        return List.of(Type.BUGS__ERRORS,
-                Type.OTHER_COMMENTS,
-                Type.FEATURE_REQUESTS,
-                Type.TRAINING__DOCUMENT_REQUESTS);
-    }
 }

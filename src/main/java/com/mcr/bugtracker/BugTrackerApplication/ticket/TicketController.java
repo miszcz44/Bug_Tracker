@@ -26,19 +26,16 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.getAllTickets());
     }
 
-    @GetMapping("/types")
-    public ResponseEntity<?> getTicketTypes() {
-        return ResponseEntity.ok(ticketService.getTicketTypes());
-    }
+
 
     @GetMapping("{ticketId}")
     public ResponseEntity<?> getTicketDataById(@PathVariable Long ticketId) {
         Optional<Ticket> ticketOpt = ticketService.findById(ticketId);
-        return ResponseEntity.ok(ticketOpt.orElse(new Ticket()));
+        return ResponseEntity.ok(new TicketResponseDto(ticketOpt.orElse(new Ticket())));
     }
 
     @PutMapping("{ticketId}")
-    public ResponseEntity<?> updateTicketData(@RequestBody Ticket ticket) {
+    public ResponseEntity<?> updateTicketData(@RequestBody Ticket ticket, @PathVariable Long ticketId) {
         Ticket updatedTicket = ticketService.saveTicket(ticket);
         return ResponseEntity.ok(updatedTicket);
     }
