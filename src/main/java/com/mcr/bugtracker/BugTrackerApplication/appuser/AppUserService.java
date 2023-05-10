@@ -5,6 +5,7 @@ import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationT
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,7 +31,7 @@ public class AppUserService implements UserDetailsService {
     private final ConfirmationTokenService confirmationTokenService;
 
     @Override
-    public UserDetails loadUserByUsername(String email)
+    public AppUser loadUserByUsername(String email)
             throws UsernameNotFoundException {
         return appUserRepository.findByEmail(email)
                 .orElseThrow(() ->
@@ -81,5 +84,31 @@ public class AppUserService implements UserDetailsService {
             throw new IllegalStateException("User of this id does not exist");
         }
         appUserRepository.deleteById(userId);
+    }
+
+    public Optional<AppUser> getUserFromContext() {
+        AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return appUserRepository.findById(user.getId());
+    }
+
+    public String getNameOfTheLoggedUser() {
+        AppUser user = getUserFromContext().orElseThrow();
+        return user.getFirstName() + " " + user.getLastName();
+    }
+
+    public List<AppUser> getAllUsersExceptTheLoggedOneAndProjectPersonnel(List<AppUser> projectPersonnel) {
+        List<Long> idList = projectPersonnel.stream()
+                .map(AppUser::getId)
+                .collect(Collectors.toList());
+        Long projectManagerId = getUserFromContext().orElseThrow().getId();
+        if(idList.isEmpty()) {
+            return appUserRepository.getAllUsersButProjectManager(projectManagerId);
+        }
+        return appUserRepository.getAllUsersButProjectManagerAndPersonnel(projectManagerId, idList);
+    }
+
+
+    public List<AppUser> findAllUsersAssignedToProject(Long id) {
+        return appUserRepository.getProjectPersonnel(id);
     }
 }

@@ -53,20 +53,21 @@ public class Ticket {
     @OneToOne
     @JoinColumn(name = "ticket_history_id")
     private TicketHistory history;
-    @Enumerated(EnumType.STRING)
-    private Priority priority;
-    @Enumerated(EnumType.STRING)
-    private ProgressStatus status;
-    @Enumerated(EnumType.STRING)
-    private Type type;
+    private String priority;
+    private String status;
+    private String type;
     private LocalDateTime createdAt;
 
-    public Ticket(String title, String description, Priority priority, ProgressStatus status, Type type, TicketHistory ticketHistory) {
+    public Ticket(String title, String description, String priority, String status, String type, TicketHistory ticketHistory) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.status = status;
         this.type = type;
         this.history = ticketHistory;
+    }
+
+    public Ticket(Project project) {
+        this.project = project;
     }
 }

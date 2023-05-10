@@ -1,16 +1,30 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket;
 
+import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Priority;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.ProgressStatus;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;
+
+import java.util.List;
 
 public class TicketResponseDto {
 
     private Ticket ticket;
     private Type[] types = Type.values();
     private Priority[] priorities = Priority.values();
+    private ProgressStatus[] progressStatuses = ProgressStatus.values();
+    private List<AppUser> projectPersonnel;
+
+    public TicketResponseDto(Ticket ticket, List<AppUser> projectPersonnel) {
+        this.ticket = ticket;
+        this.projectPersonnel = projectPersonnel;
+    }
+
+    public void setProgressStatuses(ProgressStatus[] progressStatuses) {
+        this.progressStatuses = progressStatuses;
+    }
 
     public TicketResponseDto(Ticket ticket) {
-        super();
         this.ticket = ticket;
     }
 
@@ -36,5 +50,17 @@ public class TicketResponseDto {
 
     public void setPriorities(Priority[] priorities) {
         this.priorities = priorities;
+    }
+
+    public ProgressStatus[] getProgressStatuses() {
+        return progressStatuses;
+    }
+
+    public List<AppUser> getProjectPersonnel() {
+        return projectPersonnel;
+    }
+
+    public void setProjectPersonnel(List<AppUser> projectPersonnel) {
+        this.projectPersonnel = projectPersonnel;
     }
 }

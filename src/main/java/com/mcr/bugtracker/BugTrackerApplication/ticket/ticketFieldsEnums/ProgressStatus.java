@@ -1,10 +1,22 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums;
 
-public enum ProgressStatus {
-    NEW,
-    OPEN,
-    IN_PROGRESS,
-    RESOLVED,
-    ADDITIONAL_INFO_REQUIRED
+import com.fasterxml.jackson.annotation.JsonFormat;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum ProgressStatus {
+    NEW("New"),
+    OPEN("Open"),
+    IN_PROGRESS("In progress"),
+    RESOLVED("Resolved"),
+    ADDITIONAL_INFO_REQUIRED("Additional info required");
+
+    private String name;
+
+    ProgressStatus(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

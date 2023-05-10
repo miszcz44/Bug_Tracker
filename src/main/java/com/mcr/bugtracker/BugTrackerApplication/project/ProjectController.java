@@ -1,25 +1,65 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
+import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketResponseDto;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/project")
 @AllArgsConstructor
 public class ProjectController {
     private final ProjectService projectService;
+    private final AppUserService appUserService;
 
     @PostMapping
-    public void saveProject(@RequestBody ProjectRequest request) {
-        projectService.saveProject(request);
+    public ResponseEntity<?> createEmptyProject() {
+        Project project = new Project(appUserService.getUserFromContext().orElseThrow());
+        projectService.saveProject(project);
+        return ResponseEntity.ok(project);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllProjectsConnectedToUser() {
+        return ResponseEntity.ok(projectService.findAllProjectsAssignedToUser());
+    }
+
+    @GetMapping("{projectId}")
+    public ResponseEntity<?> getProjectDataById(@PathVariable Long projectId) {
+        Optional<Project> projectOpt = projectService.findById(projectId);
+        String name = appUserService.getNameOfTheLoggedUser();
+        List<AppUser> projectPersonnel = projectService.getProjectPersonnel(projectOpt.orElseThrow().getId());
+        List<AppUser> allUsers = appUserService.getAllUsersExceptTheLoggedOneAndProjectPersonnel(projectPersonnel);
+        return ResponseEntity.ok(new ProjectResponseDto(projectOpt.orElse(new Project()), name, projectPersonnel, allUsers));
+    }
     @PostMapping("/add-users")
     public void addUsers(@RequestBody UsersToProjectRequest request) {
         projectService.addUsersToProject(request);
+    }
+
+    @PutMapping("{projectId}")
+    public ResponseEntity<?> updateTicketData(@RequestBody Project project, @PathVariable Long projectId) {
+        Project updatedProject = projectService.saveProject(project);
+        return ResponseEntity.ok(updatedProject);
+    }
+
+    @PutMapping("{projectId}/add-user-to-project")
+    public ResponseEntity<?> addUserToProject(@RequestBody String email, @PathVariable Long projectId) {
+        Project project = projectService.findById(projectId).orElseThrow();
+        projectService.addUserToProjectByEmail(project, email);
+        projectService.saveProject(project);
+        return ResponseEntity.ok(project);
     }
 }

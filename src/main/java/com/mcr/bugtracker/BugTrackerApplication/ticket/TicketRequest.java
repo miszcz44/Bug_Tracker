@@ -17,9 +17,9 @@ public class TicketRequest {
 
     private final String title;
     private final String description;
-    private final Priority priority;
-    private final ProgressStatus status;
-    private final Type type;
+    private final String priority;
+    private final String status;
+    private final String type;
     private final TicketHistory ticketHistory;
 
 }
