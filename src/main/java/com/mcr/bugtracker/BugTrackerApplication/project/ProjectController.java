@@ -6,6 +6,7 @@ import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +21,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "api/v1/project")
 @AllArgsConstructor
+@Slf4j
 public class ProjectController {
     private final ProjectService projectService;
     private final AppUserService appUserService;
@@ -56,9 +58,11 @@ public class ProjectController {
     }
 
     @PutMapping("{projectId}/add-user-to-project")
-    public ResponseEntity<?> addUserToProject(@RequestBody String email, @PathVariable Long projectId) {
+    public ResponseEntity<?> addUserToProject(@RequestBody List<String> emails, @PathVariable Long projectId) {
         Project project = projectService.findById(projectId).orElseThrow();
-        projectService.addUserToProjectByEmail(project, email);
+        for (String email: emails) {
+            projectService.addUserToProjectByEmail(project, email);
+        }
         projectService.saveProject(project);
         return ResponseEntity.ok(project);
     }

@@ -48,7 +48,6 @@ public class ProjectService {
 
 
     public void addUserToProjectByEmail(Project project, String email) {
-        String emailWithoutQuotationMarks = email.substring(1, email.length() - 1);
-        project.getProjectPersonnel().add(appUserRepository.findByEmail(emailWithoutQuotationMarks).orElseThrow());
+        project.getProjectPersonnel().add(appUserRepository.findByEmail(email).orElseThrow());
     }
 }
