@@ -17,4 +17,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query(value = "SELECT * FROM project WHERE id IN ?1",
             nativeQuery = true)
     List<Project> findByIds(List<Long> projectIds);
+
+    @Query(value = "DELETE FROM project_personnel WHERE user_id = ?1",
+            nativeQuery = true)
+    void deleteUserFromProject(Long userId);
 }

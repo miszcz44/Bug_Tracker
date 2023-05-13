@@ -66,4 +66,10 @@ public class ProjectController {
         projectService.saveProject(project);
         return ResponseEntity.ok(project);
     }
+
+    @DeleteMapping("{projectId}/delete-user-from-project")
+    public ResponseEntity<?> deleteUserFromProject(@RequestBody Long userId, @PathVariable Long projectId) {
+        projectService.deleteUserFromProject(userId);
+        return ResponseEntity.ok("deleted");
+    }
 }

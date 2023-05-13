@@ -50,4 +50,8 @@ public class ProjectService {
     public void addUserToProjectByEmail(Project project, String email) {
         project.getProjectPersonnel().add(appUserRepository.findByEmail(email).orElseThrow());
     }
+
+    public void deleteUserFromProject(Long userId) {
+        projectRepository.deleteUserFromProject(userId);
+    }
 }
