@@ -10,5 +10,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class CommentaryRequest {
+
+    private final Long id; // For post it will be null, but it is needed for put
     private final String message;
+    private final Long ticketId;
 }

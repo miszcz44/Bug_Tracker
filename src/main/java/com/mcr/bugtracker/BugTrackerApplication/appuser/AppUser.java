@@ -76,6 +76,7 @@ public class AppUser implements UserDetails {
     @OneToMany(mappedBy = "uploader")
     private List<Attachment> uploadedFiles;
     @OneToMany(mappedBy = "commentator")
+    @Transient
     private List<Commentary> commentaries;
     @OneToMany(mappedBy = "projectManager")
     @Transient

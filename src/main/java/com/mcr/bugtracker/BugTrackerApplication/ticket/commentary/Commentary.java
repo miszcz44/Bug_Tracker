@@ -39,4 +39,12 @@ public class Commentary {
     public Commentary(String message) {
         this.message = message;
     }
+
+    public Commentary(Long id, AppUser commentator, String message, LocalDateTime createdAt, Ticket ticket) {
+        this.id = id;
+        this.commentator = commentator;
+        this.message = message;
+        this.createdAt = createdAt;
+        this.ticket = ticket;
+    }
 }

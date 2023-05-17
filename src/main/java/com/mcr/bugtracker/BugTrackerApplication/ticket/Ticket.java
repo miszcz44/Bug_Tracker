@@ -1,5 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.attachment.Attachment;
@@ -47,6 +48,7 @@ public class Ticket {
     @JoinColumn(name = "project_id")
     private Project project;
     @OneToMany(mappedBy = "ticket")
+    @Transient
     private List<Commentary> comments;
     @OneToMany(mappedBy = "ticket")
     private List<Attachment> attachments;

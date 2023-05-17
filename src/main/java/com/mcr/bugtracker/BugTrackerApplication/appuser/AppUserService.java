@@ -1,5 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiRequestException;
 import com.mcr.bugtracker.BugTrackerApplication.email.EmailSender;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
@@ -46,9 +47,9 @@ public class AppUserService implements UserDetailsService {
         if (!potentialUser.equals(Optional.empty())) {
             AppUser existingUser = potentialUser.get();
             if(!existingUser.getEnabled()) {
-                throw new IllegalStateException("Confirm email");
+                throw new ApiRequestException("Confirm email");
             }
-            throw new IllegalStateException("email already taken");
+            throw new ApiRequestException("email already taken");
         }
     }
 

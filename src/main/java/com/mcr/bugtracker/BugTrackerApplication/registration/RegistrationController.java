@@ -1,5 +1,7 @@
 package com.mcr.bugtracker.BugTrackerApplication.registration;
 
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiRequestException;
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ErrorResponse;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.security.JwtUtil;
 import lombok.AllArgsConstructor;
@@ -24,8 +26,9 @@ public class RegistrationController {
     private final JwtUtil jwtUtil;
 
     @PostMapping
-    public String register(@RequestBody RegistrationRequest request) {
-        return registrationService.register(request);
+    public ResponseEntity<?> register(@RequestBody RegistrationRequest request) {
+        registrationService.register(request);
+        return ResponseEntity.ok(null);
     }
 
     @GetMapping(path = "confirm")

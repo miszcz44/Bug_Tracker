@@ -1,19 +1,34 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.commentary;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/v1/commentary")
+@RequestMapping(path = "api/v1/comments")
 @AllArgsConstructor
+@Slf4j
 public class CommentaryController {
 
     private final CommentaryService commentaryService;
     @PostMapping
-    public void saveCommentary(@RequestBody CommentaryRequest request) {
-        commentaryService.saveCommentary(request);
+    public ResponseEntity<?> createCommentary(@RequestBody CommentaryRequest request) {
+        Commentary commentary = commentaryService.saveCommentary(request);
+        return ResponseEntity.ok(commentary);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Commentary>> getCommentsByTicket(@RequestParam Long ticketId) {
+        List<Commentary> commentaries = commentaryService.findAllCommentsByTicketId(ticketId);
+        return ResponseEntity.ok(commentaries);
+    }
+
+    @PutMapping("{commentId}")
+    public ResponseEntity<Commentary> updateCommentMessage(@RequestBody String message, @PathVariable Long commentId) {
+        Commentary commentary = commentaryService.updateCommentMessageById(message, commentId);
+        return ResponseEntity.ok(commentary);
     }
 }
