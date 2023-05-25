@@ -49,4 +49,8 @@ public class CommentaryService {
         commentary.setMessage(messageWithoutQuotationMarks);
         return commentaryRepository.save(commentary);
     }
+
+    public void deleteCommentById(Long commentId) {
+        commentaryRepository.deleteById(commentId);
+    }
 }

@@ -31,4 +31,10 @@ public class CommentaryController {
         Commentary commentary = commentaryService.updateCommentMessageById(message, commentId);
         return ResponseEntity.ok(commentary);
     }
+
+    @DeleteMapping("{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
+        commentaryService.deleteCommentById(commentId);
+        return ResponseEntity.ok("");
+    }
 }

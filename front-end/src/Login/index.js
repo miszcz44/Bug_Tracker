@@ -9,9 +9,9 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    useEffect(() => {
-        if (user.jwt) navigate("/dashboard");
-    }, [user]);
+    // useEffect(() => {
+    //     if (user.jwt) navigate("/dashboard");
+    // }, [user]);
     function sendLoginRequest() {
 
        const reqBody = {
@@ -35,7 +35,7 @@ const Login = () => {
                console.log(headers);
                user.setJwt(headers.get("authorization"));
                console.log(user.jwt);
-               //window.location.href = "dashboard";
+               window.location.href = "dashboard";
            })
             .catch((message) => {
                 alert(message)

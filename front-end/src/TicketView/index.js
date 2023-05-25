@@ -63,7 +63,14 @@ const TicketView = () => {
     }
 
     function handleDeleteComment(commentId) {
-        console.log("rampampam")
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/comments/${commentId}`, "DELETE", user.jwt)
+            .then((msg) => {
+                const commentsCopy = [...comments];
+                const i = commentsCopy.findIndex((comment) => comment.id === commentId);
+                commentsCopy.splice(i, 1);
+                setComments(commentsCopy);
+                console.log(comments);
+            });
     }
 
     function handleEditComment(commentId) {
