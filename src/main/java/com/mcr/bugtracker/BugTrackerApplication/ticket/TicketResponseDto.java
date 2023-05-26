@@ -14,6 +14,16 @@ public class TicketResponseDto {
     private Priority[] priorities = Priority.values();
     private ProgressStatus[] progressStatuses = ProgressStatus.values();
     private List<AppUser> projectPersonnel;
+    private AppUser developer;
+
+
+    public AppUser getDeveloper() {
+        return developer;
+    }
+
+    public void setDeveloper(AppUser developer) {
+        this.developer = developer;
+    }
 
     public TicketResponseDto(Ticket ticket, List<AppUser> projectPersonnel) {
         this.ticket = ticket;

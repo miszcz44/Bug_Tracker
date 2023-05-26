@@ -1,6 +1,7 @@
-package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistory.ticketHistoryField;
+package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField;
 
-import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistory.TicketHistory;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,12 +33,13 @@ public class TicketHistoryField {
     private String newValue;
     private LocalDateTime dateChanged;
     @ManyToOne
-    @JoinColumn(name = "ticket_history_id")
-    private TicketHistory ticketHistory;
+    @JoinColumn(name = "ticket_id")
+    private Ticket ticket;
 
-    public TicketHistoryField(String property, String oldValue, String newValue) {
+    public TicketHistoryField(String property, String oldValue, String newValue, Ticket ticket) {
         this.property = property;
         this.oldValue = oldValue;
         this.newValue = newValue;
+        this.ticket = ticket;
     }
 }

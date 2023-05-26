@@ -8,7 +8,8 @@ import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.Commentary;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Priority;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.ProgressStatus;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistory.TicketHistory;
+
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,21 +53,24 @@ public class Ticket {
     private List<Commentary> comments;
     @OneToMany(mappedBy = "ticket")
     private List<Attachment> attachments;
-    @OneToOne
-    @JoinColumn(name = "ticket_history_id")
-    private TicketHistory history;
+    @OneToMany(mappedBy = "ticket")
+    @Transient
+    private List<TicketHistoryField> ticketHistoryFields;
     private String priority;
     private String status;
     private String type;
     private LocalDateTime createdAt;
 
-    public Ticket(String title, String description, String priority, String status, String type, TicketHistory ticketHistory) {
+    public Ticket(String title, String description, String priority, String status, String type) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.status = status;
         this.type = type;
-        this.history = ticketHistory;
+    }
+
+    public boolean isSubmitterNull() {
+        return submitter == null;
     }
 
     public Ticket(Project project) {

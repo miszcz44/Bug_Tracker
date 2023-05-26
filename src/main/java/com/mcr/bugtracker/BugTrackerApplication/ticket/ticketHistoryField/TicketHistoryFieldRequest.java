@@ -1,4 +1,4 @@
-package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistory.ticketHistoryField;
+package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

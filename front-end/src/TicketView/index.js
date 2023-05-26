@@ -33,28 +33,43 @@ const TicketView = () => {
     const [ticketPriorities, setTicketPriorities] = useState([]);
     const [ticketStatuses, setTicketStatuses] = useState([]);
     const [projectPersonnel, setProjectPersonnel] = useState([]);
-    const [developerEmail, setDeveloperEmail] = useState()
+    const [developer, setDeveloper] = useState({});
+    const [developerEmail, setDeveloperEmail] = useState();
+    const [devChangeFlag, setDevChangeFlag] = useState(0);
     const personnelEmails = projectPersonnel.map(user => ({value:user.email, label:user.email}));
 
     function updateTicket(prop, value) {
         const newTicket = { ...ticket }
         newTicket[prop] = value;
         setTicket(newTicket);
+        console.log(developerEmail);
     }
 
     function handleSelect(data) {
         setDeveloperEmail(data);
+        setDevChangeFlag(1);
     }
 
     function save() {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}`, "PUT", user.jwt, ticket)
-            .then((ticketData) => {
-                setTicket(ticketData);
-            })
-            .then(() => grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}/add-developer-to-ticket`, "PUT", user.jwt, developerEmail.value))
-            .then((ticketData) => {
-                setTicket(ticketData);
-            });
+        if(devChangeFlag === 1) {
+            console.log("asdgDGSAADGSADGSADGSGF")
+            grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}`, "PUT", user.jwt, ticket)
+                .then((ticketData) => {
+                    setTicket(ticketData);
+                })
+                .then(() =>
+                    grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}/add-developer-to-ticket`, "PUT", user.jwt, developerEmail.value))
+                .then((ticketData) => {
+                    setTicket(ticketData);
+                });
+        }
+        else {
+            console.log(devChangeFlag);
+            grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}`, "PUT", user.jwt, ticket)
+                .then((ticketData) => {
+                    setTicket(ticketData);
+                });
+        }
     }
 
     function deleteTicket() {
@@ -137,6 +152,7 @@ const TicketView = () => {
             setTicketPriorities(ticketResponse.priorities);
             setTicketStatuses(ticketResponse.progressStatuses);
             setProjectPersonnel(ticketResponse.projectPersonnel);
+            setDeveloper(ticketResponse.developer);
         });
     }, []);
 
@@ -281,7 +297,7 @@ const TicketView = () => {
                             <Select
                                 placeholder="Select user"
                                 options={personnelEmails}
-                                value={developerEmail}
+                                value={developerEmail ? developerEmail : developer ? {value: developer.email, label: developer.email} : ""}
                                 onChange={handleSelect}
                                 isSearchable={true}
                             />

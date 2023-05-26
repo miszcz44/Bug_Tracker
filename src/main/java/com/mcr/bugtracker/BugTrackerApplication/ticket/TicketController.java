@@ -5,6 +5,8 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.project.ProjectService;
 import com.mcr.bugtracker.BugTrackerApplication.registration.RegistrationRequest;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class TicketController {
     private final TicketService ticketService;
     private final ProjectService projectService;
     private final AppUserService appUserService;
+    private final TicketHistoryFieldService ticketHistoryFieldService;
 
 
     @PostMapping
@@ -53,12 +56,19 @@ public class TicketController {
     public ResponseEntity<?> getTicketDataById(@PathVariable Long ticketId) {
         Ticket ticketOpt = ticketService.findById(ticketId).orElseThrow();
         List<AppUser> usersAssignedToProject = appUserService.findAllUsersAssignedToProject(ticketOpt.getProject().getId());
-        return ResponseEntity.ok(new TicketResponseDto(ticketOpt, usersAssignedToProject));
+        TicketResponseDto response = new TicketResponseDto(ticketOpt, usersAssignedToProject);
+        if(ticketOpt.getAssignedDeveloper() != null) {
+            response.setDeveloper(ticketOpt.getAssignedDeveloper());
+        }
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("{ticketId}")
     public ResponseEntity<?> updateTicketData(@RequestBody Ticket ticket, @PathVariable Long ticketId) {
-        ticketService.setSubmitterToTicket(ticket);
+        if(ticket.getSubmitter() == null) {
+            ticket.setSubmitter(ticketService.getUserFromContext().orElseThrow());
+        }
+        ticketHistoryFieldService.retrieveDataForHistoryFields(ticket);
         Ticket updatedTicket = ticketService.saveTicket(ticket);
         return ResponseEntity.ok(updatedTicket);
     }
@@ -66,9 +76,13 @@ public class TicketController {
     @PutMapping("{ticketId}/add-developer-to-ticket")
     public ResponseEntity<?> addDeveloperToTicket(@RequestBody String developerEmail, @PathVariable Long ticketId) {
         Ticket ticket = ticketService.findById(ticketId).orElseThrow();
+        if(ticket.getAssignedDeveloper() != null) {
+            AppUser currentDeveloper = ticket.getAssignedDeveloper();
+            ticketService.assignDeveloperToTicketByEmail(ticket, developerEmail);
+            ticketHistoryFieldService.saveChangeOfDeveloper(ticket, currentDeveloper);
+        }
         ticketService.assignDeveloperToTicketByEmail(ticket, developerEmail);
-        ticketService.saveTicket(ticket);
-        return ResponseEntity.ok(ticket);
+        return ResponseEntity.ok(ticketService.saveTicket(ticket));
     }
 
     @DeleteMapping

@@ -3,7 +3,6 @@ package com.mcr.bugtracker.BugTrackerApplication.ticket;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Priority;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.ProgressStatus;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistory.TicketHistory;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,6 +19,6 @@ public class TicketRequest {
     private final String priority;
     private final String status;
     private final String type;
-    private final TicketHistory ticketHistory;
+
 
 }
