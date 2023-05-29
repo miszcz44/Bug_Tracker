@@ -52,6 +52,7 @@ public class Ticket {
     @Transient
     private List<Commentary> comments;
     @OneToMany(mappedBy = "ticket")
+    @Transient
     private List<Attachment> attachments;
     @OneToMany(mappedBy = "ticket")
     @Transient

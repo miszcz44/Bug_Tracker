@@ -35,7 +35,7 @@ public class Attachment {
     private String notes;
     private LocalDateTime createdAt;
     @ManyToOne
-    @JoinColumn(name = "ticked_id")
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
     public Attachment(File file, String notes) {

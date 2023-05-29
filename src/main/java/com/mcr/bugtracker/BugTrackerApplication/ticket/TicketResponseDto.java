@@ -1,9 +1,11 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.attachment.Attachment;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Priority;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.ProgressStatus;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
 
 import java.util.List;
 
@@ -15,7 +17,24 @@ public class TicketResponseDto {
     private ProgressStatus[] progressStatuses = ProgressStatus.values();
     private List<AppUser> projectPersonnel;
     private AppUser developer;
+    private List<TicketHistoryField> historyFields;
+    private List<Attachment> attachments;
 
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public List<TicketHistoryField> getHistoryFields() {
+        return historyFields;
+    }
+
+    public void setHistoryFields(List<TicketHistoryField> historyFields) {
+        this.historyFields = historyFields;
+    }
 
     public AppUser getDeveloper() {
         return developer;
@@ -25,9 +44,11 @@ public class TicketResponseDto {
         this.developer = developer;
     }
 
-    public TicketResponseDto(Ticket ticket, List<AppUser> projectPersonnel) {
+    public TicketResponseDto(Ticket ticket, List<AppUser> projectPersonnel, List<TicketHistoryField> historyFields, List<Attachment> attachments) {
         this.ticket = ticket;
         this.projectPersonnel = projectPersonnel;
+        this.historyFields = historyFields;
+        this.attachments = attachments;
     }
 
     public void setProgressStatuses(ProgressStatus[] progressStatuses) {

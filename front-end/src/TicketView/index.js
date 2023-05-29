@@ -27,12 +27,22 @@ const TicketView = () => {
         message: "",
         ticketId: ticketId
     }
+    const emptyAttachment = {
+        id: null,
+        file: null,
+        notes: "",
+        ticketId: ticketId
+
+    }
     const [comment, setComment] = useState(emptyComment);
     const [comments, setComments] = useState([]);
+    const [attachment, setAttachment] = useState(emptyAttachment);
+    const [attachments, setAttachments] = useState([]);
     const [ticketTypes, setTicketTypes] = useState([]);
     const [ticketPriorities, setTicketPriorities] = useState([]);
     const [ticketStatuses, setTicketStatuses] = useState([]);
     const [projectPersonnel, setProjectPersonnel] = useState([]);
+    const [historyFields, setHistoryFields] = useState([]);
     const [developer, setDeveloper] = useState({});
     const [developerEmail, setDeveloperEmail] = useState();
     const [devChangeFlag, setDevChangeFlag] = useState(0);
@@ -42,7 +52,14 @@ const TicketView = () => {
         const newTicket = { ...ticket }
         newTicket[prop] = value;
         setTicket(newTicket);
-        console.log(developerEmail);
+    }
+
+    function updateAttachment(prop, value) {
+        const newAttachment = { ...attachment }
+        newAttachment[prop] = value;
+        setAttachment(newAttachment);
+        console.log(attachment);
+        console.log(attachments);
     }
 
     function handleSelect(data) {
@@ -70,6 +87,7 @@ const TicketView = () => {
                     setTicket(ticketData);
                 });
         }
+        window.location.reload();
     }
 
     function deleteTicket() {
@@ -153,8 +171,20 @@ const TicketView = () => {
             setTicketStatuses(ticketResponse.progressStatuses);
             setProjectPersonnel(ticketResponse.projectPersonnel);
             setDeveloper(ticketResponse.developer);
+            setHistoryFields(ticketResponse.historyFields);
+            setAttachments(ticketResponse.attachments);
         });
     }, []);
+
+    function saveAttachment() {
+        grabAndAuthorizeRequestFromTheServer("/api/v1/attachment", "POST", user.jwt, attachment)
+            .then((data) => {
+                const attachmentsCopy = [...attachments];
+                attachmentsCopy.push(data);
+                setAttachments(attachmentsCopy);
+                setAttachment(emptyAttachment);
+            });
+    }
 
     return (
         <>
@@ -348,6 +378,39 @@ const TicketView = () => {
                             />
                         ))}
                     </div>
+                    <Form.Group as={Row} className="my-3" controlId="historyFields">
+                        <Form.Label column sm="3" md="2">
+                            history field:
+                        </Form.Label>
+                            {historyFields.map((field) => (
+                        <Col sm="9" md="8" lg="6">
+                                {field.property}, {field.newValue}, {field.oldValue}, {field.dateChanged}
+                        </Col>
+                            ))}
+                    </Form.Group>
+                    <Form.Group>
+                        <input type="file"  onChange={(e) =>
+                            updateAttachment("file", e.target.value)
+                        }/>
+                        <Col sm="9" md="8" lg="6">
+                            <Form.Control
+                                onChange={(e) =>
+                                    updateAttachment("notes", e.target.value)
+                                }
+                                type="text"
+                                value={attachment.notes}
+                                placeholder="description"
+                            />
+                        </Col>
+                        <button onClick={() => saveAttachment()}>add </button>
+                        <div className="mt-5">
+                            {attachments.map((singleAttachment) => (
+                                <Col>>
+                                    {singleAttachment.file}, {singleAttachment.notes}
+                                </Col>
+                            ))}
+                        </div>
+                    </Form.Group>
                 </>
 
             ) : (

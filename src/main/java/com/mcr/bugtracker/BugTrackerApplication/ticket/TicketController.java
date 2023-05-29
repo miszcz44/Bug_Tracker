@@ -5,6 +5,8 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.project.ProjectService;
 import com.mcr.bugtracker.BugTrackerApplication.registration.RegistrationRequest;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.attachment.Attachment;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.attachment.AttachmentService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldService;
 import lombok.AllArgsConstructor;
@@ -26,6 +28,7 @@ public class TicketController {
     private final ProjectService projectService;
     private final AppUserService appUserService;
     private final TicketHistoryFieldService ticketHistoryFieldService;
+    private final AttachmentService attachmentService;
 
 
     @PostMapping
@@ -56,7 +59,9 @@ public class TicketController {
     public ResponseEntity<?> getTicketDataById(@PathVariable Long ticketId) {
         Ticket ticketOpt = ticketService.findById(ticketId).orElseThrow();
         List<AppUser> usersAssignedToProject = appUserService.findAllUsersAssignedToProject(ticketOpt.getProject().getId());
-        TicketResponseDto response = new TicketResponseDto(ticketOpt, usersAssignedToProject);
+        List<TicketHistoryField> historyFields = ticketHistoryFieldService.getAllFieldsByTicketId(ticketId);
+        List<Attachment> attachments = attachmentService.getAllAttachmentsByTicketId(ticketId);
+        TicketResponseDto response = new TicketResponseDto(ticketOpt, usersAssignedToProject, historyFields, attachments);
         if(ticketOpt.getAssignedDeveloper() != null) {
             response.setDeveloper(ticketOpt.getAssignedDeveloper());
         }

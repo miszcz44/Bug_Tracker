@@ -15,4 +15,5 @@ public class AttachmentRequest {
 
     private final File file;
     private final String notes;
+    private final Long ticketId;
 }

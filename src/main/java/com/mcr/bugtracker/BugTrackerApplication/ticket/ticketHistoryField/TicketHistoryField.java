@@ -36,10 +36,11 @@ public class TicketHistoryField {
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
-    public TicketHistoryField(String property, String oldValue, String newValue, Ticket ticket) {
+    public TicketHistoryField(String property, String oldValue, String newValue, Ticket ticket, LocalDateTime dateChanged) {
         this.property = property;
         this.oldValue = oldValue;
         this.newValue = newValue;
         this.ticket = ticket;
+        this.dateChanged = dateChanged;
     }
 }
