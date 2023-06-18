@@ -18,6 +18,7 @@ public class AttachmentController {
 
     @PostMapping
     public ResponseEntity<?> saveAttachment(@RequestBody AttachmentRequest attachment) {
+        log.info(attachment.getFile().toString());
        return ResponseEntity.ok(attachmentService.saveAttachment(attachment));
     }
 }

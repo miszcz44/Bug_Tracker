@@ -50,7 +50,7 @@ class AppUserServiceTest {
     @Test
     public void testLoadUserByUsernameWhenUserExists() {
         String email = "existing-user@example.com";
-        AppUser user = new AppUser("1","2", email, "password", AppUserRole.USER);
+        AppUser user = new AppUser("1","2", email, "password", AppUserRole.ADMIN);
         when(repository.findByEmail(email)).thenReturn(Optional.of(user));
         UserDetails userDetails = underTest.loadUserByUsername(email);
         assertEquals(email, userDetails.getUsername());
@@ -59,7 +59,7 @@ class AppUserServiceTest {
     @Test
     public void testCheckIfEmailTakenOrNotConfirmedWhenNotConfirmed() {
         String email = "existing-user@example.com";
-        AppUser user = new AppUser("1","2", email, "password", AppUserRole.USER);
+        AppUser user = new AppUser("1","2", email, "password", AppUserRole.ADMIN);
         user.setEnabled(false); // it's also false by default
         when(repository.findByEmail(email)).thenReturn(Optional.of(user));
         assertThatThrownBy(() -> underTest.checkIfEmailTakenOrNotConfirmed(user))
@@ -70,7 +70,7 @@ class AppUserServiceTest {
     @Test
     public void testCheckIfEmailTakenOrNotConfirmedWhenEmailTaken() {
         String email = "existing-user@example.com";
-        AppUser user = new AppUser("1","2", email, "password", AppUserRole.USER);
+        AppUser user = new AppUser("1","2", email, "password", AppUserRole.ADMIN);
         user.setEnabled(true);
         when(repository.findByEmail(email)).thenReturn(Optional.of(user));
         assertThatThrownBy(() -> underTest.checkIfEmailTakenOrNotConfirmed(user))

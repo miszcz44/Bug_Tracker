@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ProjectView from "./ProjectView";
 import Registration from "./Registration";
 import {UserProvider, useUser} from "./UserProvider";
+import RoleManagement from "./RoleManagement";
 
 function App() {
     console.log("hello");
@@ -48,6 +49,14 @@ function App() {
                 element={
                     <PrivateRoute>
                         <TicketView/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="user-management"
+                element={
+                    <PrivateRoute>
+                        <RoleManagement/>
                     </PrivateRoute>
                 }
             />

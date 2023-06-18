@@ -30,7 +30,7 @@ class AppUserRepositoryTest {
     // testing functions provided with jpa repository is useless, this will be deleted
     @Test
     void checkIfUserFoundByEmail() {
-        AppUser user = new AppUser("Mikołaj", "Bultrowicz", "bultron@gmail.com", "12345", AppUserRole.USER);
+        AppUser user = new AppUser("Mikołaj", "Bultrowicz", "bultron@gmail.com", "12345", AppUserRole.ADMIN);
         underTest.save(user);
         Optional<AppUser> expectedUser = underTest.findByEmail("bultron@gmail.com");
         assertTrue(expectedUser.isPresent());

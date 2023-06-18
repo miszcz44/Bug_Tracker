@@ -37,6 +37,7 @@ const TicketView = () => {
     const [comment, setComment] = useState(emptyComment);
     const [comments, setComments] = useState([]);
     const [attachment, setAttachment] = useState(emptyAttachment);
+    const [file, setFile] = useState();
     const [attachments, setAttachments] = useState([]);
     const [ticketTypes, setTicketTypes] = useState([]);
     const [ticketPriorities, setTicketPriorities] = useState([]);
@@ -60,7 +61,9 @@ const TicketView = () => {
         setAttachment(newAttachment);
         console.log(attachment);
         console.log(attachments);
+        console.log(file);
     }
+
 
     function handleSelect(data) {
         setDeveloperEmail(data);
@@ -176,13 +179,24 @@ const TicketView = () => {
         });
     }, []);
 
+    // function saveAttachment() {
+    //     grabAndAuthorizeRequestFromTheServer("/api/v1/attachment", "POST", user.jwt, attachment)
+    //         .then((data) => {
+    //             const attachmentsCopy = [...attachments];
+    //             attachmentsCopy.push(data);
+    //             setAttachments(attachmentsCopy);
+    //             setAttachment(emptyAttachment);
+    //         });
+    // }
+
     function saveAttachment() {
-        grabAndAuthorizeRequestFromTheServer("/api/v1/attachment", "POST", user.jwt, attachment)
+        console.log(file);
+        grabAndAuthorizeRequestFromTheServer("/api/v1/file/upload", "POST", user.jwt, file)
             .then((data) => {
-                const attachmentsCopy = [...attachments];
-                attachmentsCopy.push(data);
-                setAttachments(attachmentsCopy);
-                setAttachment(emptyAttachment);
+                // const attachmentsCopy = [...attachments];
+                // attachmentsCopy.push(data);
+                // setAttachments(attachmentsCopy);
+                // setAttachment(emptyAttachment);
             });
     }
 
@@ -390,7 +404,7 @@ const TicketView = () => {
                     </Form.Group>
                     <Form.Group>
                         <input type="file"  onChange={(e) =>
-                            updateAttachment("file", e.target.value)
+                            setFile(e.target.files[0])
                         }/>
                         <Col sm="9" md="8" lg="6">
                             <Form.Control
@@ -406,7 +420,10 @@ const TicketView = () => {
                         <div className="mt-5">
                             {attachments.map((singleAttachment) => (
                                 <Col>>
-                                    {singleAttachment.file}, {singleAttachment.notes}
+                                    <a target='_blank'>
+                                        {/*{singleAttachment.file.name}*/}
+                                    </a>
+                                        , {singleAttachment.notes}
                                 </Col>
                             ))}
                         </div>

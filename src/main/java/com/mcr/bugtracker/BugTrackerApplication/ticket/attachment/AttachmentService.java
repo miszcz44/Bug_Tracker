@@ -14,9 +14,11 @@ public class AttachmentService {
 
     private final AttachmentRepository attachmentRepository;
     public Attachment saveAttachment(AttachmentRequest request) {
-        Attachment attachment = new Attachment(request.getFile(),
-                                                request.getNotes());
-        attachment.setTicket(ticketService.findById(request.getTicketId()).orElseThrow());
+        //Attachment attachment = new Attachment(request.getFile(),
+                                               // request.getNotes());
+        //attachment.setTicket(ticketService.findById(request.getTicketId()).orElseThrow());
+        Attachment attachment = new Attachment();
+
         return attachmentRepository.save(attachment);
     }
 

@@ -112,4 +112,12 @@ public class AppUserService implements UserDetailsService {
     public List<AppUser> findAllUsersAssignedToProject(Long id) {
         return appUserRepository.getProjectPersonnel(id);
     }
+
+    public List<AppUser> getAllUsersExceptAdmins() {
+        return appUserRepository.getAllUsersExceptAdmins();
+    }
+
+    public List<AppUser> getAllUsers() {
+        return appUserRepository.findAll();
+    }
 }

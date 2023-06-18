@@ -40,4 +40,7 @@ public interface AppUserRepository
     List<AppUser> getAllUsersButProjectManager(Long projectManagerId);
 
 
+    @Query(value = "SELECT * FROM app_user WHERE app_user_role != 'ADMIN'",
+            nativeQuery = true)
+    List<AppUser> getAllUsersExceptAdmins();
 }

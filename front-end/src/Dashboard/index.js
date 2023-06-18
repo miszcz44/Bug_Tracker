@@ -42,6 +42,8 @@ const Dashboard = () => {
             });
     }
 
+
+
     return (
         <div style={{ margin: "2em" }}>
             {tickets ? (
@@ -66,8 +68,10 @@ const Dashboard = () => {
             ) : (
                 <></>
             )}
+            <Link to={"/user-management"}>Manage user roles</Link>
             {<button onClick={() => createTicket()}>Create new ticket</button>}
             {<button onClick={() => createProject()}>Create new project</button>}
+
         </div>
     );
 };
