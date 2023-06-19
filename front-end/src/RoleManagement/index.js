@@ -8,14 +8,14 @@ const RoleManagement = () => {
     const user = useUser();
     const changeRoleResponse = {
         usersEmails: [],
-        role: null
+        role: " "
     }
 
     const [nonAdminUsers, setNonAdminUsers] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [userRoles, setUserRoles] = useState([]);
     const [selectedEmails, setSelectedEmails] = useState([]);
-    const [selectedRole, setSelectedRole] = useState();
+    const [selectedRole, setSelectedRole] = useState("");
     const nonAdminUsersEmails = nonAdminUsers.map(appUser => ({value:appUser.email, label:appUser.email}));
     function handleSelect(data) {
         setSelectedEmails(data);
@@ -42,8 +42,9 @@ const RoleManagement = () => {
     }, []);
 
     function assignRoleToUsers() {
-        changeRoleResponse.usersEmails = selectedEmails;
+        changeRoleResponse.usersEmails = selectedEmails.map(email => email.value);
         changeRoleResponse.role = selectedRole;
+        console.log(changeRoleResponse);
         grabAndAuthorizeRequestFromTheServer(`api/v1/user/change-role`, "PUT", user.jwt, changeRoleResponse)
     }
 
@@ -93,7 +94,7 @@ const RoleManagement = () => {
 
 
             </Form.Group>
-            <button onClick={assignRoleToUsers()}>assign role</button>
+            <button onClick={() => assignRoleToUsers()}>assign role</button>
         </>
     );
 };

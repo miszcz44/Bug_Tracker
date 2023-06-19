@@ -43,4 +43,5 @@ public interface AppUserRepository
     @Query(value = "SELECT * FROM app_user WHERE app_user_role != 'ADMIN'",
             nativeQuery = true)
     List<AppUser> getAllUsersExceptAdmins();
+
 }

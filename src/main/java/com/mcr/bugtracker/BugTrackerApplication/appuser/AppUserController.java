@@ -30,7 +30,14 @@ public class AppUserController {
     }
 
     @PutMapping("change-role")
-    public void changeUserRole(@RequestBody String smth) {
-        log.info(smth);
+    public void changeUsersRole(@RequestBody AppUserRoleAssignmentRequest request) {
+        AppUserRole assignedRole = null;
+        for (AppUserRole role : AppUserRole.values()) {
+            if(role.getName().equals(request.role)) {
+                assignedRole = role;
+                break;
+            }
+        }
+        userService.changeUsersRole(request.usersEmails, assignedRole);
     }
 }

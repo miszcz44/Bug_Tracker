@@ -120,4 +120,12 @@ public class AppUserService implements UserDetailsService {
     public List<AppUser> getAllUsers() {
         return appUserRepository.findAll();
     }
+
+    public void changeUsersRole(List<String> usersEmails, AppUserRole assignedRole) {
+        for(String email : usersEmails) {
+            AppUser user = appUserRepository.findByEmail(email).get();
+            user.setAppUserRole(assignedRole);
+            appUserRepository.save(user);
+        }
+    }
 }
