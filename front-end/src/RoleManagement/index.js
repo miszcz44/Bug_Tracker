@@ -16,7 +16,8 @@ const RoleManagement = () => {
     const [userRoles, setUserRoles] = useState([]);
     const [selectedEmails, setSelectedEmails] = useState([]);
     const [selectedRole, setSelectedRole] = useState("");
-    const nonAdminUsersEmails = nonAdminUsers.map(appUser => ({value:appUser.email, label:appUser.email}));
+    let nonAdminUsersEmails = nonAdminUsers.map(appUser => ({value:appUser.email, label:appUser.email}));
+
     function handleSelect(data) {
         setSelectedEmails(data);
     }
@@ -41,10 +42,25 @@ const RoleManagement = () => {
             });
     }, []);
 
+
+    function getDifference() {
+        nonAdminUsersEmails = nonAdminUsersEmails.filter(object1 => {
+            return !selectedEmails.some(object2 => {
+                return object1.value === object2.value;
+            });
+        });
+    }
+
     function assignRoleToUsers() {
+        setSelectedEmails([]);
         changeRoleResponse.usersEmails = selectedEmails.map(email => email.value);
         changeRoleResponse.role = selectedRole;
-        console.log(changeRoleResponse);
+        if(changeRoleResponse.role === 'Admin') {
+            const result = nonAdminUsers.filter(user => {
+                return !changeRoleResponse.usersEmails.includes(user.email);
+            })
+            setNonAdminUsers(result);
+        }
         grabAndAuthorizeRequestFromTheServer(`api/v1/user/change-role`, "PUT", user.jwt, changeRoleResponse)
     }
 
