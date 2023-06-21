@@ -128,4 +128,8 @@ public class AppUserService implements UserDetailsService {
             appUserRepository.save(user);
         }
     }
+
+    public String getRoleByEmail(String email) {
+        return appUserRepository.findRoleByEmail(email).getName();
+    }
 }

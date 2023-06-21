@@ -3,6 +3,7 @@ import {ButtonGroup, Col, Dropdown, DropdownButton, Form, Row} from "react-boots
 import Select from "react-select";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
+import jwt_decode from "jwt-decode";
 
 const RoleManagement = () => {
     const user = useUser();
@@ -20,6 +21,15 @@ const RoleManagement = () => {
 
     function handleSelect(data) {
         setSelectedEmails(data);
+    }
+
+    function getRolesFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.authorities;
+        }
+        return [];
     }
 
     function updateSelectedElement(element) {
@@ -55,11 +65,18 @@ const RoleManagement = () => {
         setSelectedEmails([]);
         changeRoleResponse.usersEmails = selectedEmails.map(email => email.value);
         changeRoleResponse.role = selectedRole;
+        const nonSelectedUsers = allUsers.filter(user => {
+            return !changeRoleResponse.usersEmails.includes(user.email);
+        })
+        const selectedUsers = allUsers.filter(user => {
+            return changeRoleResponse.usersEmails.includes(user.email);
+        })
+        for(let i=0; i<selectedUsers.length; i++) {
+            selectedUsers[i].appUserRole.name = selectedRole;
+        }
+        setAllUsers(selectedUsers.concat(nonSelectedUsers));
         if(changeRoleResponse.role === 'Admin') {
-            const result = nonAdminUsers.filter(user => {
-                return !changeRoleResponse.usersEmails.includes(user.email);
-            })
-            setNonAdminUsers(result);
+            setNonAdminUsers(nonSelectedUsers);
         }
         grabAndAuthorizeRequestFromTheServer(`api/v1/user/change-role`, "PUT", user.jwt, changeRoleResponse)
     }
@@ -111,6 +128,17 @@ const RoleManagement = () => {
 
             </Form.Group>
             <button onClick={() => assignRoleToUsers()}>assign role</button>
+            <Form.Group as={Row} className="my-3" controlId="allUsers">
+                <Form.Label column sm="3" md="2">
+                    Your personnel:
+                </Form.Label>
+                {allUsers.map((appUser) => (
+                    <div sm="9" md="8" lg="6">
+                        {appUser.firstName + " " + appUser.lastName } {appUser.email} {appUser.appUserRole.name}
+                    </div>
+                ))}
+            </Form.Group>
+
         </>
     );
 };

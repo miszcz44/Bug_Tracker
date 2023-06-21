@@ -44,4 +44,7 @@ public interface AppUserRepository
             nativeQuery = true)
     List<AppUser> getAllUsersExceptAdmins();
 
+    @Query(value = "SELECT app_user_role FROM app_user WHERE email = ?1",
+            nativeQuery = true)
+    AppUserRole findRoleByEmail(String email);
 }

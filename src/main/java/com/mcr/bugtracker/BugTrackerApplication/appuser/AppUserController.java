@@ -40,4 +40,5 @@ public class AppUserController {
         }
         userService.changeUsersRole(request.usersEmails, assignedRole);
     }
+
 }

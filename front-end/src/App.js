@@ -11,16 +11,23 @@ import ProjectView from "./ProjectView";
 import Registration from "./Registration";
 import {UserProvider, useUser} from "./UserProvider";
 import RoleManagement from "./RoleManagement";
+import jwt_decode from "jwt-decode";
+import grabAndAuthorizeRequestFromTheServer from "./Services/fetchService";
+import SubmitterTicketView from "./SubmitterTicketView";
 
 function App() {
-    console.log("hello");
 
     const user = useUser();
-    const [someValue, setSomeValue] = useState("")
+    const [role, setRole] = useState(getRoleFromJWT())
 
 
-
-
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role;
+        }
+    }
     return (
         <Routes>
             <Route path="dashboard" element={
@@ -31,9 +38,15 @@ function App() {
             <Route
                 path="/tickets/:id"
                 element={
+                role.authority === "SUBMITTER" ? (
+                <PrivateRoute>
+                    <SubmitterTicketView/>
+                </PrivateRoute>
+                ) : (
                 <PrivateRoute>
                     <TicketView/>
                 </PrivateRoute>
+                )
                 }
             />
             <Route
