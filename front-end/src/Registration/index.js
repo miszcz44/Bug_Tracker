@@ -1,21 +1,27 @@
-import { useState } from "react";
+import React, {useEffect, useState} from "react";
 import "./registration.css";
 import FormInput from "./components/FormInput";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useLocalState} from "../util/useLocalStorage";
 import axios from 'axios';
+import {ButtonGroup, Col, Dropdown, DropdownButton, Form, FormControl, Row} from "react-bootstrap";
+import {useUser} from "../UserProvider";
+
 
 
 
 const Registration = () => {
+    const user = useUser();
     const [values, setValues] = useState({
         firstName: "",
         lastName: "",
         email: "",
+        role: "",
         password: "",
         confirmPassword: "",
     });
-    const [jwt, setJwt] = useLocalState("", "jwt");
+    const [selectedRole, setSelectedRole] = useState("");
+    const [userRoles, setUserRoles] = useState([]);
 
     const inputs = [
         {
@@ -94,13 +100,25 @@ const Registration = () => {
         e.preventDefault();
     };
 
+    function updateSelectedElement(element) {
+        setSelectedRole(element);
+        setValues({...values, ["role"]: element})
+    }
+
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
         console.log(values);
     };
 
+    useEffect(() => {
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/user`, "GET", user.jwt)
+            .then((userResponse) => {
+                setUserRoles(userResponse.userRoles);
+                console.log(userRoles);
+            });
+    }, []);
+
     return (
-        <div className="app">
             <form onSubmit={handleSubmit}>
                 <h1>Register</h1>
                 {inputs.map((input) => (
@@ -111,9 +129,39 @@ const Registration = () => {
                         onChange={onChange}
                     />
                 ))}
+                <Form.Group as={Row} className="my-3" controlId="roles">
+                    <Form.Label column sm="3" md="2">
+                        role
+                    </Form.Label>
+                    <Col sm="9" md="8" lg="6">
+                            <DropdownButton
+                                as={ButtonGroup}
+                                variant={"info"}
+                                title={
+                                     selectedRole
+                                     ? selectedRole
+                                     : "None"
+                                }
+                                onSelect={(selectedElement) => {
+                                    updateSelectedElement(selectedElement);
+                                }}
+                                aria-required
+                            >
+                                {userRoles.map((role) => (
+                                    <Dropdown.Item
+                                        key={role.name}
+                                        eventKey={role.name}
+                                    >
+                                        {role.name}
+                                    </Dropdown.Item>
+                                ))}
+                            </DropdownButton>
+
+                    </Col>
+                </Form.Group>
+
                 <button onClick={() => registerUser(values)}>Submit</button>
             </form>
-        </div>
     );
 };
 

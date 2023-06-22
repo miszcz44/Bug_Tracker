@@ -13,7 +13,7 @@ import {UserProvider, useUser} from "./UserProvider";
 import RoleManagement from "./RoleManagement";
 import jwt_decode from "jwt-decode";
 import grabAndAuthorizeRequestFromTheServer from "./Services/fetchService";
-import SubmitterTicketView from "./SubmitterTicketView";
+import DeveloperTicketView from "./DeveloperTicketView";
 
 function App() {
 
@@ -38,9 +38,9 @@ function App() {
             <Route
                 path="/tickets/:id"
                 element={
-                role.authority === "SUBMITTER" ? (
+                role.authority === "DEVELOPER" ? (
                 <PrivateRoute>
-                    <SubmitterTicketView/>
+                    <DeveloperTicketView/>
                 </PrivateRoute>
                 ) : (
                 <PrivateRoute>

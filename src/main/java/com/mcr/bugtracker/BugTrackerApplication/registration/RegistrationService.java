@@ -46,11 +46,18 @@ public class RegistrationService {
     }
 
     public AppUser createUserWithRequest(RegistrationRequest request) {
+        AppUserRole assignedRole = null;
+        for (AppUserRole role : AppUserRole.values()) {
+            if(role.getName().equals(request.getRole())) {
+                assignedRole = role;
+                break;
+            }
+        }
         AppUser user = new AppUser(request.getFirstName(),
                 request.getLastName(),
                 request.getEmail(),
                 request.getPassword(),
-                AppUserRole.ADMIN);
+                assignedRole);
         return user;
     }
 

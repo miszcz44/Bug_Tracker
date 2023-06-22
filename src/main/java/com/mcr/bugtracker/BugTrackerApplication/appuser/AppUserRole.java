@@ -7,7 +7,8 @@ public enum AppUserRole {
     ADMIN("Admin"),
     PROJECT_MANAGER("Project manager"),
     DEVELOPER("Developer"),
-    SUBMITTER("Submitter");
+    SUBMITTER("Submitter"),
+    NONE("None");
 
     private String name;
 

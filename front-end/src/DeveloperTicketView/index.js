@@ -16,7 +16,7 @@ import {Link, useOutlet} from "react-router-dom";
 import Select from "react-select";
 import {useUser} from "../UserProvider";
 
-const SubmitterTicketView = () => {
+const DeveloperTicketView = () => {
     const user = useUser();
     const ticketId = window.location.href.split("/tickets/")[1];
     const [ticket, setTicket] = useState({
@@ -126,7 +126,7 @@ const SubmitterTicketView = () => {
     }
 
     function submitComment() {
-        if(comment.id) {
+        if(comment.id && comment.message !== "") {
             grabAndAuthorizeRequestFromTheServer(`/api/v1/comments/${comment.id}`, "PUT", user.jwt, comment.message)
                 .then((data) => {
                     const commentsCopy = [...comments];
@@ -137,7 +137,7 @@ const SubmitterTicketView = () => {
                     setComment(emptyComment);
                 });
         }
-        else {
+        else if(comment.message !== "") {
             grabAndAuthorizeRequestFromTheServer("/api/v1/comments", "POST", user.jwt, comment)
                 .then((data) => {
                     const commentsCopy = [...comments];
@@ -247,6 +247,7 @@ const SubmitterTicketView = () => {
                                     type="text"
                                     value={ticket.description}
                                     placeholder="description"
+                                    disabled
                                 />
                             </Col>
                         </Form.Group>
@@ -266,6 +267,7 @@ const SubmitterTicketView = () => {
                                     onSelect={(selectedElement) => {
                                         updateTicket("type", selectedElement);
                                     }}
+                                    disabled
                                 >
                                     {ticketTypes.map((type) => (
                                         <Dropdown.Item
@@ -294,6 +296,7 @@ const SubmitterTicketView = () => {
                                     onSelect={(selectedElement) => {
                                         updateTicket("priority", selectedElement);
                                     }}
+                                    disabled
                                 >
                                     {ticketPriorities.map((priority) => (
                                         <Dropdown.Item
@@ -345,6 +348,7 @@ const SubmitterTicketView = () => {
                                     value={developerEmail ? developerEmail : developer ? {value: developer.email, label: developer.email} : ""}
                                     onChange={handleSelect}
                                     isSearchable={true}
+                                    isDisabled={true}
                                 />
                                 {/*<DropdownButton*/}
                                 {/*    as={ButtonGroup}*/}
@@ -378,6 +382,7 @@ const SubmitterTicketView = () => {
                             style={{width: "100%", borderRadius: "0.25em"}}
                             onChange={(e) => updateComment(e.target.value)}
                             value={comment.message}
+                            nonempty
                         ></textarea>
                             <button onClick={() => submitComment()}>Post comment</button>
                         </div>
@@ -439,4 +444,4 @@ const SubmitterTicketView = () => {
     );
 };
 
-export default SubmitterTicketView;
+export default DeveloperTicketView;

@@ -87,7 +87,8 @@ const RoleManagement = () => {
                 <Form.Label column sm="3" md="2">
                     all users:
                 </Form.Label>
-                <Col sm="9" md="8" lg="6"><Select
+                <Col sm="9" md="8" lg="6">
+                    <Select
                     placeholder="Select user"
                     options={nonAdminUsersEmails}
                     value={selectedEmails}
@@ -112,6 +113,7 @@ const RoleManagement = () => {
                             onSelect={(selectedElement) => {
                                 updateSelectedElement(selectedElement);
                             }}
+
                         >
                             {userRoles.map((role) => (
                                 <Dropdown.Item

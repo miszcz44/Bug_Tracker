@@ -126,7 +126,7 @@ const TicketView = () => {
         }
 
     function submitComment() {
-        if(comment.id) {
+        if(comment.id && comment.message !== "") {
             grabAndAuthorizeRequestFromTheServer(`/api/v1/comments/${comment.id}`, "PUT", user.jwt, comment.message)
                 .then((data) => {
                     const commentsCopy = [...comments];
@@ -137,7 +137,7 @@ const TicketView = () => {
                     setComment(emptyComment);
                 });
         }
-        else {
+        else if(comment.message !== "") {
             grabAndAuthorizeRequestFromTheServer("/api/v1/comments", "POST", user.jwt, comment)
                 .then((data) => {
                     const commentsCopy = [...comments];
