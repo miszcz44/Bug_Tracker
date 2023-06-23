@@ -148,12 +148,13 @@ const Registration = () => {
                                 aria-required
                             >
                                 {userRoles.map((role) => (
+                                    role.name !== "Admin" ?
                                     <Dropdown.Item
                                         key={role.name}
                                         eventKey={role.name}
                                     >
                                         {role.name}
-                                    </Dropdown.Item>
+                                    </Dropdown.Item> : null
                                 ))}
                             </DropdownButton>
 

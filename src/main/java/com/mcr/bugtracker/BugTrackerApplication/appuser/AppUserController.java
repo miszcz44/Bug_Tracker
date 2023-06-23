@@ -29,6 +29,12 @@ public class AppUserController {
         return new AppUserResponseDto(allUsers);
     }
 
+    @GetMapping("/{email}")
+    public AppUser getAppUserByEmail(@PathVariable String email) {
+
+        return userService.getUserByEmail(email);
+    }
+
     @PutMapping("change-role")
     public void changeUsersRole(@RequestBody AppUserRoleAssignmentRequest request) {
         AppUserRole assignedRole = null;
@@ -39,6 +45,10 @@ public class AppUserController {
             }
         }
         userService.changeUsersRole(request.usersEmails, assignedRole);
+    }
+    @PutMapping
+    public void saveUser(@RequestBody AppUser user) {
+        userService.saveUser(user);
     }
 
 }

@@ -14,6 +14,7 @@ import RoleManagement from "./RoleManagement";
 import jwt_decode from "jwt-decode";
 import grabAndAuthorizeRequestFromTheServer from "./Services/fetchService";
 import DeveloperTicketView from "./DeveloperTicketView";
+import UserProfile from "./UserProfile";
 
 function App() {
 
@@ -62,6 +63,14 @@ function App() {
                 element={
                     <PrivateRoute>
                         <TicketView/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/user-profile"
+                element={
+                    <PrivateRoute>
+                        <UserProfile/>
                     </PrivateRoute>
                 }
             />

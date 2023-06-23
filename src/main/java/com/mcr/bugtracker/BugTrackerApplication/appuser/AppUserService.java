@@ -132,4 +132,12 @@ public class AppUserService implements UserDetailsService {
     public String getRoleByEmail(String email) {
         return appUserRepository.findRoleByEmail(email).getName();
     }
+
+    public AppUser getUserByEmail(String email) {
+        return appUserRepository.findByEmail(email).get();
+    }
+
+    public void saveUser(AppUser user) {
+        appUserRepository.save(user);
+    }
 }
