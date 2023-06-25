@@ -2,6 +2,8 @@ package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -24,15 +26,17 @@ public class AppUserController {
     }
 
     @GetMapping
-    public AppUserResponseDto getAllUsersAndAllRoles() {
+    public AppUsersResponseDto getAllUsersAndAllRoles() {
         List<AppUser> allUsers = userService.getAllUsers();
-        return new AppUserResponseDto(allUsers);
+        return new AppUsersResponseDto(allUsers);
     }
 
     @GetMapping("/{email}")
-    public AppUser getAppUserByEmail(@PathVariable String email) {
-
-        return userService.getUserByEmail(email);
+    public AppUserResponseDto getAppUserByEmail(@PathVariable String email) {
+        AppUser user = userService.getUserByEmail(email);
+        AppUserRole role = userService.getUserRoleByEmail(email);
+        AppUserResponseDto appUser = new AppUserResponseDto(user, role);
+        return appUser;
     }
 
     @PutMapping("change-role")
@@ -49,6 +53,14 @@ public class AppUserController {
     @PutMapping
     public void saveUser(@RequestBody AppUser user) {
         userService.saveUser(user);
+    }
+    @PutMapping("password-change")
+    public ResponseEntity<?> changePassword(@RequestBody PasswordChangeResponse response) {
+        Boolean validationResult = userService.validatePasswordAndSetNewPassword(response.getOldPassword(), response.getNewPassword());
+        if(!validationResult) {
+            return ResponseEntity.ok(0);
+        }
+        return ResponseEntity.ok(1);
     }
 
 }

@@ -15,6 +15,7 @@ import jwt_decode from "jwt-decode";
 import grabAndAuthorizeRequestFromTheServer from "./Services/fetchService";
 import DeveloperTicketView from "./DeveloperTicketView";
 import UserProfile from "./UserProfile";
+import PasswordChange from "./PasswordChange";
 
 function App() {
 
@@ -71,6 +72,14 @@ function App() {
                 element={
                     <PrivateRoute>
                         <UserProfile/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/change-password"
+                element={
+                    <PrivateRoute>
+                        <PasswordChange/>
                     </PrivateRoute>
                 }
             />

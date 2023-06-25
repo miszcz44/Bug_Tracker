@@ -4,11 +4,13 @@ import {useUser} from "../UserProvider";
 import jwt_decode from "jwt-decode";
 import FormInput from "../Registration/components/FormInput";
 import {Col, Form, Row} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 const UserProfile = () => {
 
     const user = useUser();
     const [appUser, setAppUser] = useState({});
+    const [role, setRole] = useState({});
     function getEmailFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
@@ -19,7 +21,8 @@ const UserProfile = () => {
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/user/${getEmailFromJWT()}`, "GET", user.jwt)
             .then((userResponse) => {
-                setAppUser(userResponse);
+                setAppUser(userResponse.user);
+                setRole(userResponse.role);
             });
     }, []);
 
@@ -91,12 +94,17 @@ const UserProfile = () => {
                             <Form.Control
                                 disabled
                                 type="text"
-                                value={appUser.appUserRole.name}
+                                value={role.name}
                                 placeholder="role"
                             />
                         </Col>
                     </Form.Group>
                     <button onClick={() => saveUser()}>save</button>
+                    <div>
+                        <Link to={`/change-password`}>
+                            change password
+                        </Link>
+                    </div>
 
                 </>
             ) : (<></>)

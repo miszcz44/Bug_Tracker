@@ -6,6 +6,7 @@ import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationT
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,9 +20,13 @@ import java.util.UUID;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 @Service
 @AllArgsConstructor
 @Getter
+@Slf4j
 public class AppUserService implements UserDetailsService {
 
     private final static String USER_NOT_FOUND_MSG =
@@ -139,5 +144,20 @@ public class AppUserService implements UserDetailsService {
 
     public void saveUser(AppUser user) {
         appUserRepository.save(user);
+    }
+
+    public AppUserRole getUserRoleByEmail(String email) {
+        return appUserRepository.findRoleByEmail(email);
+    }
+
+    public Boolean validatePasswordAndSetNewPassword(String oldPassword, String newPassword) {
+        AppUser user = getUserFromContext().get();
+        log.info(user.getPassword());
+        if(bCryptPasswordEncoder.matches(oldPassword.subSequence(0, oldPassword.length()), user.getPassword())) {
+            user.setPassword(newPassword);
+            appUserRepository.save(user);
+            return true;
+        }
+        return false;
     }
 }

@@ -1,31 +1,28 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.util.List;
-
 public class AppUserResponseDto {
 
-    private List<AppUser> users;
-    private AppUserRole[] userRoles = AppUserRole.values();
+    private AppUser user;
+    private AppUserRole role;
 
-    public AppUserResponseDto(List<AppUser> users) {
-        this.users = users;
+    public AppUserResponseDto(AppUser user, AppUserRole role) {
+        this.user = user;
+        this.role = role;
     }
 
-    public List<AppUser> getUsers() {
-        return users;
+    public AppUser getUser() {
+        return user;
     }
 
-    public void setUsers(List<AppUser> users) {
-        this.users = users;
+    public void setUser(AppUser user) {
+        this.user = user;
     }
 
-    public AppUserRole[] getUserRoles() {
-        return userRoles;
+    public AppUserRole getRole() {
+        return role;
     }
 
-    public void setUserRoles(AppUserRole[] userRoles) {
-        this.userRoles = userRoles;
+    public void setRole(AppUserRole role) {
+        this.role = role;
     }
 }
