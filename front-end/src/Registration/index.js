@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./registration.css";
 import FormInput from "./components/FormInput";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
+
 import {useLocalState} from "../util/useLocalStorage";
 import axios from 'axios';
 import {ButtonGroup, Col, Dropdown, DropdownButton, Form, FormControl, Row} from "react-bootstrap";
@@ -63,7 +64,7 @@ const Registration = () => {
             errorMessage:
                 "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
             label: "Password",
-            pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
+            pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*.])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
             required: true,
         },
         {
@@ -98,7 +99,8 @@ const Registration = () => {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
-    };
+        registerUser(values);
+    }
 
     function updateSelectedElement(element) {
         setSelectedRole(element);
@@ -145,7 +147,6 @@ const Registration = () => {
                                 onSelect={(selectedElement) => {
                                     updateSelectedElement(selectedElement);
                                 }}
-                                aria-required
                             >
                                 {userRoles.map((role) => (
                                     role.name !== "Admin" ?
@@ -161,7 +162,7 @@ const Registration = () => {
                     </Col>
                 </Form.Group>
 
-                <button onClick={() => registerUser(values)}>Submit</button>
+                <button>Submit</button>
             </form>
     );
 };

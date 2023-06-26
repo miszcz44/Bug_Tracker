@@ -154,7 +154,7 @@ public class AppUserService implements UserDetailsService {
         AppUser user = getUserFromContext().get();
         log.info(user.getPassword());
         if(bCryptPasswordEncoder.matches(oldPassword.subSequence(0, oldPassword.length()), user.getPassword())) {
-            user.setPassword(newPassword);
+            user.setPassword(bCryptPasswordEncoder.encode(newPassword.subSequence(0, newPassword.length())));
             appUserRepository.save(user);
             return true;
         }

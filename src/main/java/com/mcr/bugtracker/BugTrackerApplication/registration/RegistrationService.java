@@ -1,5 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.registration;
 
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiRequestException;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRole;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
@@ -8,6 +9,7 @@ import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationT
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
 import com.mcr.bugtracker.BugTrackerApplication.security.config.WebSecurityConfig;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class RegistrationService {
 
     private final AppUserService appUserService;
@@ -40,8 +43,10 @@ public class RegistrationService {
     public void validateEmail(RegistrationRequest request) {
         boolean isValidEmail = emailValidator.
                 test(request.getEmail());
+
         if (!isValidEmail) {
-            throw new IllegalStateException("email not valid");
+            log.info("533333333");
+            throw new ApiRequestException("email not valid");
         }
     }
 
