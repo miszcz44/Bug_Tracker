@@ -130,6 +130,7 @@ public class AppUserService implements UserDetailsService {
         for(String email : usersEmails) {
             AppUser user = appUserRepository.findByEmail(email).get();
             user.setAppUserRole(assignedRole);
+            user.setSRole(assignedRole.name());
             appUserRepository.save(user);
         }
     }

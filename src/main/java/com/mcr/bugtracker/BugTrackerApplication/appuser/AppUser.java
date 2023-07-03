@@ -47,6 +47,7 @@ public class AppUser implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private AppUserRole appUserRole;
+    private String sRole;
     private Boolean locked = false;
     private Boolean enabled = false;
 
@@ -60,6 +61,7 @@ public class AppUser implements UserDetails {
         this.email = email;
         this.password = password;
         this.appUserRole = appUserRole;
+        this.sRole = appUserRole.name();
     }
 
     @OneToMany(mappedBy = "appUser",

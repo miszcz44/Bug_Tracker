@@ -35,6 +35,7 @@ const RoleManagement = () => {
     function updateSelectedElement(element) {
         setSelectedRole(element);
         console.log(userRoles);
+        console.log(allUsers);
     }
 
     useEffect(() => {
@@ -72,7 +73,7 @@ const RoleManagement = () => {
             return changeRoleResponse.usersEmails.includes(user.email);
         })
         for(let i=0; i<selectedUsers.length; i++) {
-            selectedUsers[i].appUserRole.name = selectedRole;
+            selectedUsers[i].srole = selectedRole;
         }
         setAllUsers(selectedUsers.concat(nonSelectedUsers));
         if(changeRoleResponse.role === 'Admin') {
@@ -136,7 +137,7 @@ const RoleManagement = () => {
                 </Form.Label>
                 {allUsers.map((appUser) => (
                     <div sm="9" md="8" lg="6">
-                        {appUser.firstName + " " + appUser.lastName } {appUser.email} {appUser.appUserRole.name}
+                        {appUser.firstName + " " + appUser.lastName } {appUser.email} {appUser.srole}
                     </div>
                 ))}
             </Form.Group>

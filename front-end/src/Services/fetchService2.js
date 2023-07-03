@@ -1,8 +1,7 @@
-
-function grabAndAuthorizeRequestFromTheServer(url, requestMethod, jwt, requestBody) {
+function grabAndAuthorizeRequestFromTheServerFiles(url, requestMethod, jwt, requestBody) {
     const fetchData = {
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "multipart/formData"
         },
         method: requestMethod
     };
@@ -18,7 +17,7 @@ function grabAndAuthorizeRequestFromTheServer(url, requestMethod, jwt, requestBo
     return fetch(url, fetchData).then((response) => {
         if (response.status === 200) {
             const contentType = response.headers.get("content-type");
-            if (contentType && contentType.indexOf("application/json") !== -1) {
+            if (contentType && contentType.indexOf("multipart/formData") !== -1) {
                 return response.json();
             } else {
                 return response.text();
@@ -27,5 +26,4 @@ function grabAndAuthorizeRequestFromTheServer(url, requestMethod, jwt, requestBo
     });
 }
 
-export default grabAndAuthorizeRequestFromTheServer;
-
+export default grabAndAuthorizeRequestFromTheServerFiles;

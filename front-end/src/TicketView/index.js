@@ -15,6 +15,8 @@ import {
 import {Link, useOutlet} from "react-router-dom";
 import Select from "react-select";
 import {useUser} from "../UserProvider";
+import axios from "axios";
+import grabAndAuthorizeRequestFromTheServerFiles from "../Services/fetchService2";
 
 const TicketView = () => {
     const user = useUser();
@@ -37,6 +39,7 @@ const TicketView = () => {
     const [comment, setComment] = useState(emptyComment);
     const [comments, setComments] = useState([]);
     const [attachment, setAttachment] = useState(emptyAttachment);
+    const [notes, setNotes] = useState("");
     const [file, setFile] = useState();
     const [attachments, setAttachments] = useState([]);
     const [ticketTypes, setTicketTypes] = useState([]);
@@ -48,11 +51,76 @@ const TicketView = () => {
     const [developerEmail, setDeveloperEmail] = useState();
     const [devChangeFlag, setDevChangeFlag] = useState(0);
     const personnelEmails = projectPersonnel.map(user => ({value:user.email, label:user.email}));
+    const [imagePreview, setImagePreview] = useState(null);
+    const [imageData, setImageData] = useState(null);
+    const [imageName, setImageName] = useState("");
+
+    const [files, setFiles] = useState('');
+    //state for checking file size
+    const [fileSize, setFileSize] = useState(true);
+    // for file upload progress message
+    const [fileUploadProgress, setFileUploadProgress] = useState(false);
+    //for displaying response message
+    const [fileUploadResponse, setFileUploadResponse] = useState(null);
+
+    const uploadFileHandler = (event) => {
+        setFiles(event.target.files);
+    };
+
+    const fileSubmitHandler = (event) => {
+        event.preventDefault();
+        setFileSize(true);
+        setFileUploadProgress(true);
+        setFileUploadResponse(null);
+
+        const formData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].size > 1024){
+                console.log(files[i].size);
+                setFileSize(false);
+                setFileUploadProgress(false);
+                setFileUploadResponse(null);
+                return;
+            }
+
+            formData.append(`files`, files[i])
+            formData.append('notes', notes);
+        }
+
+        const requestOptions = {
+            method: 'POST',
+            body: formData
+        };
+
+        fetch('/api/v1/attachment', requestOptions)
+            .then(async response => {
+                const isJson = response.headers.get('content-type')?.includes('application/json');
+                const data = isJson && await response.json();
+
+                // check for error response
+                if (!response.ok) {
+                    // get error message
+                    const error = (data && data.message) || response.status;
+                    setFileUploadResponse(data.message);
+                    return Promise.reject(error);
+                }
+
+                console.log(data.message);
+                setFileUploadResponse(data.message);
+            })
+            .catch(error => {
+                console.error('Error while uploading file!', error);
+            });
+        setFileUploadProgress(false);
+    };
+
 
     function updateTicket(prop, value) {
         const newTicket = { ...ticket }
         newTicket[prop] = value;
         setTicket(newTicket);
+        console.log(notes);
     }
 
     function updateAttachment(prop, value) {
@@ -189,6 +257,9 @@ const TicketView = () => {
     //         });
     // }
 
+
+
+
     function saveAttachment() {
         console.log(file);
         grabAndAuthorizeRequestFromTheServer("/api/v1/file/upload", "POST", user.jwt, file)
@@ -199,6 +270,25 @@ const TicketView = () => {
                 // setAttachment(emptyAttachment);
             });
     }
+
+    const handleUploadClick = event => {
+        let file = event.target.files[0];
+        const imageData = new FormData();
+        imageData.append('imageFile', file);
+        setImageData(imageData);
+        setImagePreview(URL.createObjectURL(file));
+    };
+
+    const handleChange = event => {
+        setImageName(event.target.value)
+    };
+
+    // function updateNotes(value) {
+    //     const notesCopy = { ...notes }
+    //     commentCopy.message = value;
+    //     setComment(commentCopy);
+    //     console.log(comments)
+    // }
 
     return (
         <>
@@ -402,32 +492,41 @@ const TicketView = () => {
                         </Col>
                             ))}
                     </Form.Group>
-                    <Form.Group>
-                        <input type="file"  onChange={(e) =>
-                            setFile(e.target.files[0])
-                        }/>
-                        <Col sm="9" md="8" lg="6">
-                            <Form.Control
-                                onChange={(e) =>
-                                    updateAttachment("notes", e.target.value)
-                                }
-                                type="text"
-                                value={attachment.notes}
-                                placeholder="description"
-                            />
-                        </Col>
-                        <button onClick={() => saveAttachment()}>add </button>
-                        <div className="mt-5">
-                            {attachments.map((singleAttachment) => (
-                                <Col>>
-                                    <a target='_blank'>
-                                        {/*{singleAttachment.file.name}*/}
-                                    </a>
-                                        , {singleAttachment.notes}
-                                </Col>
-                            ))}
+                    {/*<Form.Group>*/}
+                    {/*    <input type="file"  onChange={handleUploadClick}/>*/}
+                    {/*    <Col sm="9" md="8" lg="6">*/}
+                    {/*        <Form.Control*/}
+                    {/*            onChange={handleChange}*/}
+                    {/*            type="text"*/}
+                    {/*            value={attachment.notes}*/}
+                    {/*            placeholder="description"*/}
+                    {/*        />*/}
+                    {/*    </Col>*/}
+                    {/*    <button onClick={() => uploadImageWithAdditionalData()}>add </button>*/}
+                    {/*    <div className="mt-5">*/}
+                    {/*        {attachments.map((singleAttachment) => (*/}
+                    {/*            <Col>>*/}
+                    {/*                <a target='_blank'>*/}
+                    {/*                    /!*{singleAttachment.file.name}*!/*/}
+                    {/*                </a>*/}
+                    {/*                    , {singleAttachment.notes}*/}
+                    {/*            </Col>*/}
+                    {/*        ))}*/}
+                    {/*    </div>*/}
+                    {/*</Form.Group>*/}
+                    <form onSubmit={fileSubmitHandler} enctype="multipart/form-data">
+                        <input type="file" multiple onChange={uploadFileHandler} required/>
+                        <div>
+                            <textarea
+                                style={{width: "30%", borderRadius: "0.3em"}}
+                                onChange={(e) => setNotes(e.target.value)}
+                            ></textarea>
                         </div>
-                    </Form.Group>
+                        <button type='submit'>Upload</button>
+                        {!fileSize && <p style={{color:'red'}}>File size exceeded!!</p>}
+                        {fileUploadProgress && <p style={{color:'red'}}>Uploading File(s)</p>}
+                        {fileUploadResponse!=null && <p style={{color:'green'}}>{fileUploadResponse}</p>}
+                    </form>
                 </>
 
             ) : (
