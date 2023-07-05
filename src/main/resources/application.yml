@@ -44,6 +44,16 @@ spring:
 file:
   upload-dir: /uploads
 
+gcp:
+  config:
+    file: bug-tracker-391811-a5f036ef7811.json
+  project:
+    id: bug-tracker-391811
+  bucket:
+    id: adfsga
+  dir:
+    name: dev
+
 security:
   jwt:
     token:

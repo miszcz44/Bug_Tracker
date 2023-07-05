@@ -76,7 +76,7 @@ const TicketView = () => {
         const formData = new FormData();
 
         for (let i = 0; i < files.length; i++) {
-            if (files[i].size > 1024){
+            if (files[i].size > 10240000){
                 console.log(files[i].size);
                 setFileSize(false);
                 setFileUploadProgress(false);

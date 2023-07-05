@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 public class BugTrackerApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(BugTrackerApplication.class, args);
 	}
 

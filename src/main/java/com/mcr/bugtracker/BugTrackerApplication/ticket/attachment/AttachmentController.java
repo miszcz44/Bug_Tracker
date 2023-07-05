@@ -1,5 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.attachment;
 
+import com.google.cloud.storage.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @RestController
@@ -28,10 +30,16 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 public class AttachmentController {
 
     private final AttachmentService attachmentService;
+    private final Storage storage = StorageOptions.getDefaultInstance().getService();
+//    private final Bucket bucket = storage.create(BucketInfo.of("adfsga"));
+//    private final String value = "Hello, World!";
+//    private final byte[] bytes = value.getBytes(UTF_8);
+//    private final Blob blob = bucket.create("my-first-blob", bytes);
 
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FileUploadResponse> uploadFiles(@RequestParam("files") MultipartFile[] files,
                                                           @RequestParam("notes") String notes) {
+        attachmentService.uploadFilesToGCS(files);
         try {
             createDirIfNotExist();
             log.info(notes);
