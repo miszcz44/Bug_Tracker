@@ -72,6 +72,7 @@ public class TicketController {
     public ResponseEntity<?> updateTicketData(@RequestBody Ticket ticket, @PathVariable Long ticketId) {
         if(ticket.getSubmitter() == null) {
             ticket.setSubmitter(ticketService.getUserFromContext().orElseThrow());
+            log.info(ticket.getSubmitter().toString());
         }
         ticketHistoryFieldService.retrieveDataForHistoryFields(ticket);
         Ticket updatedTicket = ticketService.saveTicket(ticket);

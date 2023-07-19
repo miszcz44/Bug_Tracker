@@ -29,7 +29,7 @@ public class Attachment {
             generator = "attachment_sequence"
     )
     private Long id;
-    private File file;
+    private String fileName;
     @ManyToOne
     @JoinColumn(name = "uploader_id")
     private AppUser uploader;
@@ -39,8 +39,8 @@ public class Attachment {
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
-    public Attachment(File file, String notes) {
-        this.file = file;
+    public Attachment(String fileName, String notes) {
+        this.fileName = fileName;
         this.notes = notes;
     }
 }

@@ -37,9 +37,10 @@ public class DataBucketUtil {
     private String gcpDirectoryName;
 
 
-    public FileDto uploadFile(MultipartFile multipartFile, String fileName, String contentType) {
+    public FileDto uploadFile(MultipartFile multipartFile, String fileName, String contentType, Long ticketId) {
 
         try{
+
 
             LOGGER.debug("Start file uploading process on GCS");
             byte[] fileData = FileUtils.readFileToByteArray(convertFile(multipartFile));
@@ -53,7 +54,7 @@ public class DataBucketUtil {
             Bucket bucket = storage.get(gcpBucketId,Storage.BucketGetOption.fields());
 
             RandomString id = new RandomString(6);
-            Blob blob = bucket.create(gcpDirectoryName + "/" + fileName + "-" + id.nextString() + checkFileExtension(fileName), fileData, contentType);
+            Blob blob = bucket.create("ticket" + ticketId + "/" + fileName + "-" + id.nextString() + checkFileExtension(fileName), fileData, contentType);
 
             if(blob != null){
                 LOGGER.debug("File successfully uploaded to GCS");

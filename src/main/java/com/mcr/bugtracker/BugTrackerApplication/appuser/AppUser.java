@@ -46,6 +46,7 @@ public class AppUser implements UserDetails {
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private AppUserRole appUserRole;
     private String sRole;
     private Boolean locked = false;
@@ -76,6 +77,7 @@ public class AppUser implements UserDetails {
     @Transient
     private List<Ticket> submittedTicket;
     @OneToMany(mappedBy = "uploader")
+    @Transient
     private List<Attachment> uploadedFiles;
     @OneToMany(mappedBy = "commentator")
     @Transient

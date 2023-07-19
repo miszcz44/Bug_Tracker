@@ -1,19 +1,21 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.attachment;
 
+import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -25,45 +27,52 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @RestController
 @RequestMapping(path = "api/v1/attachment")
-@AllArgsConstructor
+//@AllArgsConstructor
 @Slf4j
 public class AttachmentController {
 
     private final AttachmentService attachmentService;
+
+    public AttachmentController(AttachmentService attachmentService) {
+        this.attachmentService = attachmentService;
+    }
+
     private final Storage storage = StorageOptions.getDefaultInstance().getService();
 //    private final Bucket bucket = storage.create(BucketInfo.of("adfsga"));
 //    private final String value = "Hello, World!";
 //    private final byte[] bytes = value.getBytes(UTF_8);
 //    private final Blob blob = bucket.create("my-first-blob", bytes);
+    @Value("gs://adsfga/ticket32/message.txt-ekirad.txt")
+    private Resource gcsFile; // to delete
+    @Value("${gcp.bucket.id}")
+    private String bucketName;
+
+    @GetMapping("/test")
+    public List<String> listOfFiles() {
+
+        List<String> list = new ArrayList<>();
+        Page<Blob> blobs = storage.list(bucketName);
+        for (Blob blob : blobs.iterateAll()) {
+            list.add(blob.getName());
+        }
+        return list;
+    }
 
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<FileUploadResponse> uploadFiles(@RequestParam("files") MultipartFile[] files,
-                                                          @RequestParam("notes") String notes) {
-        attachmentService.uploadFilesToGCS(files);
-        try {
-            createDirIfNotExist();
-            log.info(notes);
-            List<String> fileNames = new ArrayList<>();
+    public void uploadFiles(@RequestParam("files") MultipartFile[] files,
+                            @RequestParam("notes") String notes,
+                            @RequestParam("ticketId") Long ticketId,
+                            @RequestParam("email") String email) {
+//        Blob blob = storage.get()
+//        ByteArrayResource resource = new ByteArrayResource(
+//                blob.getContent());
+//        log.info(resource.toString());
+        attachmentService.uploadFilesToGCS(files, ticketId);
+        Arrays.asList(files).forEach(file -> {
+            String originalFileName = file.getOriginalFilename();
+            attachmentService.saveAttachment(originalFileName, notes, email, ticketId);
+        });
 
-            // read and write the file to the local folder
-            Arrays.asList(files).stream().forEach(file -> {
-                byte[] bytes = new byte[0];
-                try {
-                    fileNames.add(file.getOriginalFilename());
-                    bytes = file.getBytes();
-                    log.info(bytes.toString());
-                    Files.write(Paths.get("uploadedFiles/" + file.getOriginalFilename()), bytes);
-                } catch (IOException e) {
-
-                }
-            });
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new FileUploadResponse("Files uploaded successfully: " + fileNames));
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-                    .body(new FileUploadResponse("Exception to upload files!"));
-        }
     }
 
     /**

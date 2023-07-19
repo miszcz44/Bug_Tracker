@@ -17,6 +17,8 @@ import Select from "react-select";
 import {useUser} from "../UserProvider";
 import axios from "axios";
 import grabAndAuthorizeRequestFromTheServerFiles from "../Services/fetchService2";
+import jwt_decode from "jwt-decode";
+import CommentContainer from "../CommentContainer";
 
 const TicketView = () => {
     const user = useUser();
@@ -63,6 +65,14 @@ const TicketView = () => {
     //for displaying response message
     const [fileUploadResponse, setFileUploadResponse] = useState(null);
 
+
+    function getEmailFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.sub;
+        }
+    }
     const uploadFileHandler = (event) => {
         setFiles(event.target.files);
     };
@@ -84,8 +94,10 @@ const TicketView = () => {
                 return;
             }
 
-            formData.append(`files`, files[i])
+            formData.append(`files`, files[i]);
             formData.append('notes', notes);
+            formData.append('ticketId', ticketId);
+            formData.append('email', getEmailFromJWT());
         }
 
         const requestOptions = {
@@ -120,7 +132,7 @@ const TicketView = () => {
         const newTicket = { ...ticket }
         newTicket[prop] = value;
         setTicket(newTicket);
-        console.log(notes);
+        console.log(newTicket);
     }
 
     function updateAttachment(prop, value) {
@@ -158,7 +170,7 @@ const TicketView = () => {
                     setTicket(ticketData);
                 });
         }
-        window.location.reload();
+        //window.location.reload();
     }
 
     function deleteTicket() {
@@ -166,70 +178,15 @@ const TicketView = () => {
         window.location.href = "/dashboard";
     }
 
-    function handleDeleteComment(commentId) {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/comments/${commentId}`, "DELETE", user.jwt)
-            .then((msg) => {
-                const commentsCopy = [...comments];
-                const i = commentsCopy.findIndex((comment) => comment.id === commentId);
-                commentsCopy.splice(i, 1);
-                setComments(commentsCopy);
-                console.log(comments);
-            });
-    }
 
-    function handleEditComment(commentId) {
-        const i = comments.findIndex((comment) => comment.id === commentId);
-        const commentCopy = {
-            id: comments[i].id,
-            message: comments[i].message,
-            ticketId: comments[i].ticket.id
-        }
-        setComment(commentCopy);
-    }
+
+
     function assignDeveloperToTicket() {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}/add-developer-to-ticket`, "PUT", user.jwt, developerEmail.value)
             .then((ticketData) => {
                 setTicket(ticketData);
             })
         }
-
-    function submitComment() {
-        if(comment.id && comment.message !== "") {
-            grabAndAuthorizeRequestFromTheServer(`/api/v1/comments/${comment.id}`, "PUT", user.jwt, comment.message)
-                .then((data) => {
-                    const commentsCopy = [...comments];
-                    console.log(comment.message);
-                    const i = commentsCopy.findIndex((comment) => comment.id === data.id);
-                    commentsCopy[i] = data;
-                    setComments(commentsCopy);
-                    setComment(emptyComment);
-                });
-        }
-        else if(comment.message !== "") {
-            grabAndAuthorizeRequestFromTheServer("/api/v1/comments", "POST", user.jwt, comment)
-                .then((data) => {
-                    const commentsCopy = [...comments];
-                    commentsCopy.push(data);
-                    setComments(commentsCopy);
-                    setComment(emptyComment);
-                });
-        }
-
-    }
-
-    function updateComment(value) {
-        const commentCopy = { ...comment }
-        commentCopy.message = value;
-        setComment(commentCopy);
-        console.log(comments)
-    }
-
-    useEffect(() => {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/comments?ticketId=${ticketId}`, "GET", user.jwt)
-            .then((commentsData) => {
-                setComments(commentsData);
-        });
-    }, []);
 
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}`, "GET", user.jwt)
@@ -462,26 +419,7 @@ const TicketView = () => {
                     </Form.Group>
                     <button onClick={() => save()}>Save</button>
                     <button onClick={() => deleteTicket()}>Delete</button>
-                    <div className="mt-5">
-                        <textarea
-                            style={{width: "100%", borderRadius: "0.25em"}}
-                            onChange={(e) => updateComment(e.target.value)}
-                            value={comment.message}
-                        ></textarea>
-                        <button onClick={() => submitComment()}>Post comment</button>
-                    </div>
-                    <div className="mt-5">
-                        {comments.map((comment) => (
-                            <Comment
-                                id = {comment.id}
-                                createdAt = {comment.createdAt}
-                                commentator = {comment.commentator}
-                                message = {comment.message}
-                                emitDeleteComment = {handleDeleteComment}
-                                emitEditComment = {handleEditComment}
-                            />
-                        ))}
-                    </div>
+                    <CommentContainer ticketId={ticketId} />
                     <Form.Group as={Row} className="my-3" controlId="historyFields">
                         <Form.Label column sm="3" md="2">
                             history field:
