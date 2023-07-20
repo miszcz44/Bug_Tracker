@@ -3,6 +3,8 @@ import {useLocalState} from "../util/useLocalStorage";
 import {Link} from "react-router-dom";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
+import SideBar from "../SideBar";
+import DefaultSidebar from "../SideBar";
 
 
 const Dashboard = () => {
@@ -45,6 +47,8 @@ const Dashboard = () => {
 
 
     return (
+        <>
+            <DefaultSidebar/>
         <div style={{ margin: "2em" }}>
             {tickets ? (
                 tickets.map((ticket) => (
@@ -73,6 +77,7 @@ const Dashboard = () => {
             {<button onClick={() => createProject()}>Create new project</button>}
 
         </div>
+        </>
     );
 };
 

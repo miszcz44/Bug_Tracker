@@ -22,7 +22,7 @@ const FormInput = (props) => {
                 }
                 focused={focused.toString()}
             />
-            <span>{errorMessage}</span>
+            <span className='register-span'>{errorMessage}</span>
         </div>
     );
 };
