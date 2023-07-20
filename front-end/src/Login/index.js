@@ -9,6 +9,7 @@ const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errorInfo, setErrorInfo] = useState("");
 
     // useEffect(() => {
     //     if (user.jwt) navigate("/dashboard");
@@ -39,7 +40,8 @@ const Login = () => {
                window.location.href = "dashboard";
            })
             .catch((message) => {
-                alert(message)
+                //window.location.reload()
+                setErrorInfo(message)
             });
 
     }
@@ -50,6 +52,9 @@ const Login = () => {
                 <div className='login'>
                     <h2 className='mb-3'>Login Form</h2>
                     <form className='needs-Validation'>
+                        <div className={'mb-2 text-danger'}>
+                            {errorInfo}
+                        </div>
                         <div className='form-group was-validated mb-2'>
                             <label htmlFor="email" className='form-label'>Username</label>
                             <input type="email" id="email" className='form-control' value={email} onChange={(e) => setEmail(e.target.value)}/>
@@ -64,6 +69,11 @@ const Login = () => {
                         <div>
                             <button id="submit" type="button" className='btn btn-success w-100 mt-2' onClick={() => sendLoginRequest()}>
                                 Sign in
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" className='btn btn-secondary w-100 mt-2' onClick={() => window.location.href="/register"}>
+                                Register
                             </button>
                         </div>
                     </form>

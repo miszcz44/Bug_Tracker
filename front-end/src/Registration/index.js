@@ -121,8 +121,9 @@ const Registration = () => {
     }, []);
 
     return (
-            <form onSubmit={handleSubmit}>
-                <h1>Register</h1>
+        <div className='registration'>
+            <form className='register-form' onSubmit={handleSubmit}>
+                <h1 className='register-h1'>Register</h1>
                 {inputs.map((input) => (
                     <FormInput
                         key={input.id}
@@ -132,8 +133,8 @@ const Registration = () => {
                     />
                 ))}
                 <Form.Group as={Row} className="my-3" controlId="roles">
-                    <Form.Label column sm="3" md="2">
-                        role
+                    <Form.Label column sm="6" md="5">
+                        Choose role:
                     </Form.Label>
                     <Col sm="9" md="8" lg="6">
                             <DropdownButton
@@ -162,8 +163,9 @@ const Registration = () => {
                     </Col>
                 </Form.Group>
 
-                <button>Submit</button>
+                <button className='register-button'>Submit</button>
             </form>
+        </div>
     );
 };
 
