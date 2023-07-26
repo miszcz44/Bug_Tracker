@@ -1,0 +1,25 @@
+.role-management-label-1 {
+    display:block;
+    margin-left:100px;
+}
+
+.role-management-select-1 {
+    margin-top: 50px;
+}
+
+.role-management-button-1 {
+    margin-left: 112px;
+    width:8.4%;
+    height:35px;
+    background-color: #0dcaf0;
+    border: none;
+    border-radius: 5px;
+}
+
+.role-management-button-1:hover {
+    background-color: #31d2f2;
+}
+
+.role-management-container-1 {
+    display:inline;
+}

@@ -1,9 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {ButtonGroup, Col, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
+import {ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
 import Select from "react-select";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
 import jwt_decode from "jwt-decode";
+import Sidebar from "../SideBar";
+import "./RoleManagement.css";
+import {DataTable} from "primereact/datatable";
+import {Column} from "primereact/column"
+import {FilterMatchMode} from "primereact/api";
+import {InputText} from "primereact/inputtext";
 
 const RoleManagement = () => {
     const user = useUser();
@@ -17,6 +23,9 @@ const RoleManagement = () => {
     const [userRoles, setUserRoles] = useState([]);
     const [selectedEmails, setSelectedEmails] = useState([]);
     const [selectedRole, setSelectedRole] = useState("");
+    const [filters, setFilters] = useState({
+        global: {value: null, matchMode: FilterMatchMode.CONTAINS}
+    });
     let nonAdminUsersEmails = nonAdminUsers.map(appUser => ({value:appUser.email, label:appUser.email}));
 
     function handleSelect(data) {
@@ -84,13 +93,16 @@ const RoleManagement = () => {
 
     return (
         <>
+            <Container className='role-management-container-1' style={{marginRight: 0 + 'em', padding: 0}}>
+            <Sidebar/>
             <Form.Group as={Row} className="my-3" controlId="nonAdminUsers">
-                <Form.Label column sm="3" md="2">
-                    all users:
-                </Form.Label>
-                <Col sm="9" md="8" lg="6">
+                <div className='role-management-container-1'>
+                <h1 className="role-management-label-1">
+                    Manage user roles
+                </h1>
+                <Col className='role-management-label-1 role-management-select-1' sm="3" md="8" lg="4">
                     <Select
-                    placeholder="Select user"
+                    placeholder="Select user(s)"
                     options={nonAdminUsersEmails}
                     value={selectedEmails}
                     onChange={handleSelect}
@@ -98,11 +110,9 @@ const RoleManagement = () => {
                     isMulti
                 />
                 </Col>
+                </div>
                 <Form.Group as={Row} className="my-3" controlId="roles">
-                    <Form.Label column sm="3" md="2">
-                        role
-                    </Form.Label>
-                    <Col sm="9" md="8" lg="6">
+                    <Col className='role-management-label-1 role-management-select-2' sm="9" md="8" lg="6">
                         <DropdownButton
                             as={ButtonGroup}
                             variant={"info"}
@@ -127,21 +137,26 @@ const RoleManagement = () => {
                         </DropdownButton>
                     </Col>
                 </Form.Group>
-
-
+            <button className="role-management-button-1" onClick={() => assignRoleToUsers()}>Assign role</button>
             </Form.Group>
-            <button onClick={() => assignRoleToUsers()}>assign role</button>
-            <Form.Group as={Row} className="my-3" controlId="allUsers">
-                <Form.Label column sm="3" md="2">
-                    Your personnel:
-                </Form.Label>
-                {allUsers.map((appUser) => (
-                    <div sm="9" md="8" lg="6">
-                        {appUser.firstName + " " + appUser.lastName } {appUser.email} {appUser.srole}
-                    </div>
-                ))}
-            </Form.Group>
+            <div className='role-management-container-1'>
+            <InputText
+                onInput={(e) =>
+                    setFilters({
+                        global: { value: e.target.value, matchMode: FilterMatchMode.CONTAINS}
+                    })
+                }
+            />
 
+            <DataTable  value={allUsers} sortMode="multiple" filters={filters}
+            paginator
+            rows={10}>
+                <Column field="email" header="email" sortable/>
+                <Column field="wholeName" header="Name" sortable/>
+                <Column field="srole" header="Role" sortable/>
+            </DataTable>
+            </div>
+            </Container>
         </>
     );
 };

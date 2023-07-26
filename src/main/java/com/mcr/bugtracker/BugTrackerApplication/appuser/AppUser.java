@@ -43,6 +43,7 @@ public class AppUser implements UserDetails {
     private Long id;
     private String firstName;
     private String lastName;
+    private String wholeName;
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
@@ -59,6 +60,7 @@ public class AppUser implements UserDetails {
                    AppUserRole appUserRole) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.wholeName = firstName + " " + lastName;
         this.email = email;
         this.password = password;
         this.appUserRole = appUserRole;

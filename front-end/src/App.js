@@ -29,6 +29,7 @@ function App() {
             console.log(decodedJwt);
             return decodedJwt.role;
         }
+        return "null";
     }
     return (
         <Routes>

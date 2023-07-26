@@ -1,9 +1,7 @@
 .navbar {
     background-color: #dddddd;
     height: 80px;
-    display: flex;
-    justify-content: start;
-    align-items: center;
+
 }
 
 .menu-bars {
@@ -84,10 +82,23 @@
     margin-top: 20px;
 }
 
-.list-element:focus {
-    color: #134122;
+.list-element:hover {
+    background-color: #999999;
 }
 
 .sidebar-link {
     text-decoration: none;
+}
+
+.sidebar-p {
+    margin-left: 100px;
+    margin-top: 10px;
+    font-size: 25px;
+}
+
+.navbar-link {
+    margin-right: 10px;
+    text-decoration: none;
+    color: #2f2a34;
+    font-size: 20px;
 }
