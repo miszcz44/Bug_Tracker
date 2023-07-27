@@ -1,0 +1,37 @@
+.all-projects-button-1 {
+    margin-left: 300px;
+    width:12%;
+    height:35px;
+    background-color: #0dcaf0;
+    border: none;
+    border-radius: 3px;
+    margin-top: 20px;
+}
+
+.all-projects-button-1:hover {
+    background-color: #31d2f2;
+}
+
+.all-projects-card-1 {
+    width: 70%;
+    margin-top: 25px;
+    margin-left: 350px;
+    background-color: #dfdfdf
+}
+
+.all-projects-label-1 {
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 5px;
+}
+
+.all-projects-input-1 {
+    width:20%;
+    height: 30px;
+    text-align: end;
+}
+
+.all-projects-div-1 {
+    background-color:#efefef;
+    height: 753px;
+}

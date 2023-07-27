@@ -9,6 +9,8 @@ import "./RoleManagement.css";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column"
 import {FilterMatchMode} from "primereact/api";
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.min.css"
 import {InputText} from "primereact/inputtext";
 
 const RoleManagement = () => {
@@ -93,14 +95,14 @@ const RoleManagement = () => {
 
     return (
         <>
-            <Container className='role-management-container-1' style={{marginRight: 0 + 'em', padding: 0}}>
             <Sidebar/>
-            <Form.Group as={Row} className="my-3" controlId="nonAdminUsers">
-                <div className='role-management-container-1'>
+            <Container className='role-management-container-1' style={{marginRight: 0 + 'em', padding: 0}}>
+            <Form.Group className="my-3" controlId="nonAdminUsers">
+                <div >
                 <h1 className="role-management-label-1">
                     Manage user roles
                 </h1>
-                <Col className='role-management-label-1 role-management-select-1' sm="3" md="8" lg="4">
+                <Col className='role-management-label-1 role-management-select-1' sm="3" md="8" lg="8">
                     <Select
                     placeholder="Select user(s)"
                     options={nonAdminUsersEmails}
@@ -111,7 +113,7 @@ const RoleManagement = () => {
                 />
                 </Col>
                 </div>
-                <Form.Group as={Row} className="my-3" controlId="roles">
+                {/*<Form.Group as={Row} className="my-3" controlId="roles">*/}
                     <Col className='role-management-label-1 role-management-select-2' sm="9" md="8" lg="6">
                         <DropdownButton
                             as={ButtonGroup}
@@ -136,28 +138,36 @@ const RoleManagement = () => {
                             ))}
                         </DropdownButton>
                     </Col>
-                </Form.Group>
+                {/*</Form.Group>*/}
             <button className="role-management-button-1" onClick={() => assignRoleToUsers()}>Assign role</button>
             </Form.Group>
-            <div className='role-management-container-1'>
-            <InputText
-                onInput={(e) =>
-                    setFilters({
-                        global: { value: e.target.value, matchMode: FilterMatchMode.CONTAINS}
-                    })
-                }
-            />
+            <div className='role-management-container-2'>
 
-            <DataTable  value={allUsers} sortMode="multiple" filters={filters}
-            paginator
-            rows={10}>
-                <Column field="email" header="email" sortable/>
-                <Column field="wholeName" header="Name" sortable/>
-                <Column field="srole" header="Role" sortable/>
-            </DataTable>
+            <div className="card role-management-card">
+                <div className='d-flex p-2'>
+                    <label className='role-management-label-2' style={{fontSize: '12px'}}>
+                        Search:
+                    </label>
+                    <InputText
+                        onInput={(e) =>
+                            setFilters({
+                                global: { value: e.target.value, matchMode: FilterMatchMode.CONTAINS}
+                            })
+                        }
+                        className='role-management-input-1'
+                        style={{fontSize: '12px'}}
+                    />
+                </div>
+                <DataTable value={allUsers} stripedRows showGridlines sortMode="multiple" filters={filters} tableStyle={{ minWidth: '50rem' }}
+                paginator rows={10} style={{backgroundColor: '#111111'}}>
+                    <Column field="email" header="email" sortable style={{ width: '33%', fontSize: '12px', padding: '6px' }}/>
+                    <Column field="wholeName" header="Name" sortable style={{ width: '33%', fontSize: '12px', padding: '6px' }}/>
+                    <Column field="srole" header="Role" sortable style={{ width: '33%', fontSize: '12px', padding: '6px' }}/>
+                </DataTable>
             </div>
-            </Container>
-        </>
+             </div>
+             </Container>
+         </>
     );
 };
 

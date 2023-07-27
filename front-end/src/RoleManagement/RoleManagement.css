@@ -1,15 +1,21 @@
 .role-management-label-1 {
-    display:block;
+    display:block!important;
     margin-left:100px;
 }
 
 .role-management-select-1 {
     margin-top: 50px;
+    margin-left: 100px;
+    margin-bottom: 20px;
+}
+
+.role-management-select-2 {
+    margin-bottom: 20px;
 }
 
 .role-management-button-1 {
-    margin-left: 112px;
-    width:8.4%;
+    margin-left: 100px;
+    width:26%;
     height:35px;
     background-color: #0dcaf0;
     border: none;
@@ -21,5 +27,24 @@
 }
 
 .role-management-container-1 {
-    display:inline;
+    display:flex;
+    background-color:#efefef;
+    height: 673px;
+}
+
+.role-management-input-1 {
+    width:20%;
+    height: 30px;
+    text-align: end;
+}
+
+.role-management-card {
+    margin-top: 115px;
+    background-color: #dfdfdf;
+}
+
+.role-management-label-2 {
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 5px;
 }

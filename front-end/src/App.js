@@ -16,6 +16,7 @@ import grabAndAuthorizeRequestFromTheServer from "./Services/fetchService";
 import DeveloperTicketView from "./DeveloperTicketView";
 import UserProfile from "./UserProfile";
 import PasswordChange from "./PasswordChange";
+import AllProjectsView from "./AllProjectsView";
 
 function App() {
 
@@ -57,6 +58,14 @@ function App() {
                 element={
                     <PrivateRoute>
                         <ProjectView/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/projects"
+                element={
+                    <PrivateRoute>
+                        <AllProjectsView/>
                     </PrivateRoute>
                 }
             />

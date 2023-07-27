@@ -32,7 +32,7 @@ export const SidebarData = [
     },
     {
         title: 'My Projects',
-        path: '/',
+        path: '/projects',
         icon: <BsIcons.BsList />,
         cname: 'nav-text'
     },

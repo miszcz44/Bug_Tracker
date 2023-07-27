@@ -49,8 +49,9 @@ const Dashboard = () => {
 
     return (
         <>
+            <DefaultSidebar/>
             <Container style={{marginRight: 0 + 'em', padding: 0}}>
-                <DefaultSidebar/>
+
                 <div className="row row-cols-1 row-cols-md-2 g-4">
                     <div className="col">
                         <div className="card">
