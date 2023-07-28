@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,5 +56,20 @@ public class TicketService {
 
     public void deleteTicket(Long ticketId) {
         ticketRepository.deleteById(ticketId);
+    }
+
+    public List<TicketForProjectViewDto> getDemandedTicketDataForProjectView(List<Ticket> tickets) {
+        List<TicketForProjectViewDto> demandedTickets = new ArrayList<>();
+        if(tickets != null) {
+            for (Ticket ticket : tickets) {
+                TicketForProjectViewDto demandedTicket = new TicketForProjectViewDto(ticket.getTitle(),
+                        ticket.getSubmitter().getWholeName(),
+                        ticket.getAssignedDeveloper().getWholeName(),
+                        ticket.getStatus(),
+                        ticket.getCreatedAt());
+                demandedTickets.add(demandedTicket);
+            }
+        }
+        return demandedTickets;
     }
 }

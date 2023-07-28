@@ -72,4 +72,10 @@ public class ProjectController {
         projectService.deleteUserFromProject(userId);
         return ResponseEntity.ok("deleted");
     }
+
+    @GetMapping("/details/{projectId}")
+    public ProjectViewDto getDataForProjectView(@PathVariable Long projectId) {
+        ProjectViewDto projectViewDto = projectService.getDataForProjectView(projectId);
+        return projectViewDto;
+    }
 }

@@ -3,6 +3,8 @@ package com.mcr.bugtracker.BugTrackerApplication.project;
 import java.util.List;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketForProjectViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import java.util.Optional;
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final AppUserRepository appUserRepository;
+    private final TicketService ticketService;
 
     public Project saveProject(Project project) {
         return projectRepository.save(project);
@@ -53,5 +56,16 @@ public class ProjectService {
 
     public void deleteUserFromProject(Long userId) {
         projectRepository.deleteUserFromProject(userId);
+    }
+
+    public ProjectViewDto getDataForProjectView(Long projectId) {
+        Project project = projectRepository.findById(projectId).orElseThrow();
+        Project projectWithDemandedFields = new Project.Builder()
+                .id(projectId)
+                .name(project.getName())
+                .description(project.getDescription())
+                .build();
+        List<TicketForProjectViewDto> tickets = ticketService.getDemandedTicketDataForProjectView(project.getTickets());
+        return(new ProjectViewDto(projectWithDemandedFields, project.getProjectPersonnel(), tickets));
     }
 }

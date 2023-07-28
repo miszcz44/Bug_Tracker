@@ -19,10 +19,10 @@ const AllProjectsView = () => {
         global: {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
     const actionBodyTemplate = (rowData) => {
-        let url = "/projects/"
+        let url = "/projects/details/"
         return <div>
-            <Link to={url.concat(rowData.id)}>Manage users </Link>
-            <Link to='/'>Details</Link>
+            <Link to='/'>Manage users </Link>
+            <Link to={url.concat(rowData.id)}>Details</Link>
         </div>
     };
 

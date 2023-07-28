@@ -17,6 +17,7 @@ import DeveloperTicketView from "./DeveloperTicketView";
 import UserProfile from "./UserProfile";
 import PasswordChange from "./PasswordChange";
 import AllProjectsView from "./AllProjectsView";
+import ProjectDetailsView from "./ProjectDetailsView";
 
 function App() {
 
@@ -58,6 +59,14 @@ function App() {
                 element={
                     <PrivateRoute>
                         <ProjectView/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/projects/details/:id"
+                element={
+                    <PrivateRoute>
+                        <ProjectDetailsView/>
                     </PrivateRoute>
                 }
             />
