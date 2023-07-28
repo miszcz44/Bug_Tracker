@@ -147,4 +147,76 @@ public class AppUser implements UserDetails {
     public void setConfirmationToken(Collection<ConfirmationToken> confirmationToken) {
         this.confirmationToken = confirmationToken;
     }
+
+    public static final class Builder {
+        private Long id;
+        private String firstName;
+        private String lastName;
+        private String wholeName;
+        private String email;
+        private String password;
+        private String sRole;
+        private Boolean locked = false;
+        private Boolean enabled = false;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder wholeName(String wholeName) {
+            this.wholeName = wholeName;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder sRole(String sRole) {
+            this.sRole = sRole;
+            return this;
+        }
+
+        public Builder locked() {
+            this.locked = true;
+            return this;
+        }
+
+        public Builder enabled() {
+            this.enabled = true;
+            return this;
+        }
+
+        public AppUser build() {
+            AppUser appUser = new AppUser();
+            appUser.id = this.id;
+            appUser.firstName = this.firstName;
+            appUser.lastName = this.lastName;
+            appUser.wholeName = this.wholeName;
+            appUser.sRole = this.sRole;
+            appUser.email = this.email;
+            appUser.password = this.password;
+            appUser.locked = this.locked;
+            appUser.enabled = this.enabled;
+            return appUser;
+        }
+    }
+
 }

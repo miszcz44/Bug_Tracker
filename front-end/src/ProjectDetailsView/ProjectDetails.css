@@ -1,7 +1,7 @@
 .project-details-card-1 {
     margin-left: 285px;
     width: 80%;
-    margin-top: 40px;
+    margin-top: 15px;
 }
 
 .project-details-row-1 {
@@ -24,4 +24,16 @@
 .project-details-p-2 {
     font-size: 16px;
     margin-left: 20px;
+}
+
+
+.project-details-label-2 {
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.project-details-input-1 {
+    width: 150px;
+    height: 30px;
+    text-align: end;
 }

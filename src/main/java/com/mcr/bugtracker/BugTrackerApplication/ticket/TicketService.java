@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,11 +63,16 @@ public class TicketService {
         List<TicketForProjectViewDto> demandedTickets = new ArrayList<>();
         if(tickets != null) {
             for (Ticket ticket : tickets) {
-                TicketForProjectViewDto demandedTicket = new TicketForProjectViewDto(ticket.getTitle(),
-                        ticket.getSubmitter().getWholeName(),
-                        ticket.getAssignedDeveloper().getWholeName(),
+                TicketForProjectViewDto demandedTicket = new TicketForProjectViewDto(ticket.getId(),
+                        ticket.getTitle(),
                         ticket.getStatus(),
-                        ticket.getCreatedAt());
+                        ticket.getCreatedAt().truncatedTo(ChronoUnit.SECONDS));
+                if(ticket.getSubmitter() != null){
+                    demandedTicket.setSubmitter(ticket.getSubmitter().getWholeName());
+                }
+                if(ticket.getAssignedDeveloper() != null){
+                    demandedTicket.setDeveloper(ticket.getAssignedDeveloper().getWholeName());
+                }
                 demandedTickets.add(demandedTicket);
             }
         }

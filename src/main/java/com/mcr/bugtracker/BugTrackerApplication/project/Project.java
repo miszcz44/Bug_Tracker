@@ -1,5 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import lombok.*;
@@ -38,7 +39,7 @@ public class Project {
     )
     private List<AppUser> projectPersonnel;
     @OneToMany(mappedBy = "project")
-    @Transient
+    @JsonIgnore
     private List<Ticket> tickets;
 
     public Project(AppUser projectManager) {

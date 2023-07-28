@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
@@ -160,5 +161,16 @@ public class AppUserService implements UserDetailsService {
             return true;
         }
         return false;
+    }
+
+    public List<AppUser> getDemandedPersonnelDataForProjectView(List<AppUser> projectPersonnel) {
+        List<AppUser> personnelWithDemandedData = new ArrayList<>();
+        for(AppUser user : projectPersonnel) {
+            personnelWithDemandedData.add(new AppUser.Builder().
+                    wholeName(user.getWholeName()).
+                    email(user.getEmail()).
+                    sRole(user.getSRole()).build());
+        }
+        return personnelWithDemandedData;
     }
 }

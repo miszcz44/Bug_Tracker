@@ -4,61 +4,114 @@ import './ProjectDetails.css'
 import {Link} from "react-router-dom";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
+import {InputText} from "primereact/inputtext";
+import {FilterMatchMode} from "primereact/api";
+import {DataTable} from "primereact/datatable";
+import {Column} from "primereact/column";
 
 const ProjectDetailsView = () => {
 
     const user = useUser();
     const projectId = window.location.href.split("/projects/details/")[1]
-    const[project, setProject] = useState({});
+    const [project, setProject] = useState({});
+    const [projectPersonnel, setProjectPersonnel] = useState([]);
+    const [projectTickets, setProjectTickets] = useState([]);
+    const [filters, setFilters] = useState({
+        global: {value: null, matchMode: FilterMatchMode.CONTAINS}
+    });
 
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/project/details/${projectId}`, "GET", user.jwt)
-            .then((projectResponse) => {
-                let projectData = projectResponse.project;
-                if (projectData.title === null);
-                setProject(projectData);
-                console.log(projectResponse);
+            .then((response) => {
+                setProject(response.project);
+                setProjectPersonnel(response.projectPersonnel);
+                setProjectTickets(response.tickets);
+                console.log(response);
             });
     }, []);
+
+    const actionBodyTemplate = (rowData) => {
+        let url = "/projects/details/"
+        return <div>
+            <Link to={url.concat(rowData.id)}>Details</Link>
+        </div>
+    };
 
     return (
         <div style={{backgroundColor: '#efefef', height: '753px'}}>
             <SideBar/>
             <div className="card project-details-card-1">
                 <h2 className="pt-2 px-2" style={{marginBottom: '4px'}}>
-                    Details for project
+                    Details for project - {project.name}
                 </h2>
                 <Link className="px-3" to='/' onClick={() => console.log(project.projectPersonnel.srole)}>Edit</Link>
                 <div className="container">
-                    <div className="row project-details-row-1">
-                        <div className="col-sm">
-                            <label className="project-details-label-1">
-                                Project Name
-                            </label>
-                            <p className="project-details-p-1">One of three columns</p>
-                        </div>
+                    <div className="row project-details-row-1 d-inline">
                         <div className="col-sm">
                             <label className="project-details-label-1">
                                 Project Description
                             </label>
-                            <p className="project-details-p-1">One of three columns. somebocy once told me the world is gonna roll me. i aint the sharpest tool in the shed. she was looking kind of dumb with her finger and her thumb with her head going down on her forehead</p>
+                            <p className="project-details-p-1">errrbzdsdbverrrbzdsdbverrrhearhaetthaethaethearhgraegaergaergaergaergaergaregraegrarbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbv</p>
                         </div>
                     </div>
                 </div>
                 <div className='card project-details-card-2'>
                     <div class="container">
                         <div class="row">
-                            <div class="card project-details-card-2 col-4">
+                            <div class="card project-details-card-2 col-5">
                                 <h3 className="pt-2 px-2" style={{marginBottom: '4px'}}>
                                     Assigned Personnel
                                 </h3>
                                 <p className="project-details-p-2">Current users on this project</p>
+                                <div className='d-flex p-2 pt-0'>
+                                    <label className='project-details-label-2' style={{fontSize: '12px'}}>
+                                        Search:
+                                    </label>
+                                    <InputText
+                                        onInput={(e) =>
+                                            setFilters({
+                                                global: { value: e.target.value, matchMode: FilterMatchMode.CONTAINS}
+                                            })
+                                        }
+                                        className='project-details-input-1'
+                                        style={{fontSize: '12px'}}
+                                    />
+                                </div>
+                                <DataTable value={projectPersonnel} stripedRows sortMode="multiple" filters={filters} tableStyle={{ minWidth: '30rem' }}
+                                           paginator rows={6} style={{backgroundColor: '#111111'}} className='all-projects-table-1'>
+                                    <Column field="wholeName" header="Name" sortable style={{fontSize: '12px', width: '35%', padding: '2px' }}/>
+                                    <Column field="email" header="Email" sortable style={{fontSize: '12px', width: '45%', padding: '2px' }}/>
+                                    <Column field="srole" header="Role" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
+                                </DataTable>
                             </div>
-                            <div class="card project-details-card-2 col-8">
+                            <div class="card project-details-card-2 col-7">
                                 <h3 className="pt-2 px-2" style={{marginBottom: '4px'}}>
                                     Tickets for this project
                                 </h3>
                                 <p className="project-details-p-2">Condensed ticket details</p>
+                                <div className='d-flex p-2 pt-0'>
+                                    <label className='project-details-label-2' style={{fontSize: '12px'}}>
+                                        Search:
+                                    </label>
+                                    <InputText
+                                        onInput={(e) =>
+                                            setFilters({
+                                                global: { value: e.target.value, matchMode: FilterMatchMode.CONTAINS}
+                                            })
+                                        }
+                                        className='project-details-input-1'
+                                        style={{fontSize: '12px'}}
+                                    />
+                                </div>
+                                <DataTable value={projectTickets} stripedRows sortMode="multiple" filters={filters} tableStyle={{ minWidth: '30rem' }}
+                                           paginator rows={8} style={{backgroundColor: '#111111'}} className='all-projects-table-1'>
+                                    <Column field="title" header="Title" sortable style={{fontSize: '12px', width: '23%', padding: '2px' }}/>
+                                    <Column field="submitter" header="Submitter" sortable style={{fontSize: '12px', width: '23%', padding: '2px' }}/>
+                                    <Column field="developer" header="Developer" sortable style={{fontSize: '12px', width: '23%', padding: '2px' }} />
+                                    <Column field="status" header="Status" sortable style={{fontSize: '12px', width: '10%', padding: '2px' }} />
+                                    <Column field="created" header="Created" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
+                                    <Column field="id" style={{padding: '2px', fontSize: '12px', paddingRight: '5px' }} body={actionBodyTemplate} />
+                                </DataTable>
                             </div>
                         </div>
                     </div>

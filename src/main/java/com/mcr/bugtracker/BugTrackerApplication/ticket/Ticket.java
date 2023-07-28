@@ -91,8 +91,8 @@ public class Ticket {
             this.id = id;
             return this;
         }
-        public Builder name(String name) {
-            this.title = name;
+        public Builder title(String title) {
+            this.title = title;
             return this;
         }
 

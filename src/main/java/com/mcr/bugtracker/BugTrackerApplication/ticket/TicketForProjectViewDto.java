@@ -5,18 +5,26 @@ import java.time.LocalDateTime;
 
 public class TicketForProjectViewDto {
 
+    private Long id;
     private String title;
     private String submitter;
     private String developer;
     private String status;
     private LocalDateTime created;
 
-    public TicketForProjectViewDto(String title, String submitter, String developer, String status, LocalDateTime created) {
+    public TicketForProjectViewDto(Long id, String title, String status, LocalDateTime created) {
+        this.id = id;
         this.title = title;
-        this.submitter = submitter;
-        this.developer = developer;
         this.status = status;
         this.created = created;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
