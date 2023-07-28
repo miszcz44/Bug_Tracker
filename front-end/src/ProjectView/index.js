@@ -11,6 +11,8 @@ import {
     Container,
 } from "react-bootstrap";
 import Select from "react-select";
+import SideBar from "../SideBar";
+import './ProjectView.css';
 const ProjectView = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const projectId = window.location.href.split("/projects/")[1];
@@ -80,122 +82,134 @@ const ProjectView = () => {
 
     return (
         <>
-            <Container className="mt-5">
-                <Row className="d-flex align-items-center">
-                    <Col>
-                        <h1>
-                            {projectId}
-                        </h1>
-                        {project ? (
-                            <>
-                                <h1>{project.name}</h1>
-                            </>
-                        ) : (
-                            <></>
-                        )}
-                    </Col>
-                </Row>
-                {project ? (
-                    <>
-                        <Form.Group as={Row} className="my-3" controlId="projectName">
-                            <Form.Label column sm="3" md="2">
-                                name:
-                            </Form.Label>
-                            <Col sm="9" md="8" lg="6">
-                                <Form.Control
-                                    onChange={(e) =>
-                                        updateProject("name", e.target.value)
-                                    }
-                                    type="text"
-                                    value={project.name}
-                                    placeholder="name"
+            <div style={{backgroundColor: '#efefef', height: '753px'}}>
+                <SideBar/>
+                <div className='card project-view-card-1'>
+                    <h2 className="pt-2 px-2" style={{marginBottom: '4px'}}>Edit Project</h2>
+                    <p className="px-4">Change project properties and personnel</p>
+                    {project ? (
+                        <>
+                            <div className='container'>
+                                <div className='row'>
+                                    <div className='col-sm'>
+                                        <Form.Group as={Row} className="my-1" controlId="projectName">
+                                            <Form.Label className='project-view-label-1' column sm="4" md="4">
+                                                Title
+                                            </Form.Label>
+                                            <p>
+                                                <Col sm="9" md="8" lg="6">
+                                                    <Form.Control
+                                                        onChange={(e) =>
+                                                            updateProject("name", e.target.value)
+                                                        }
+                                                        type="text"
+                                                        value={project.name}
+                                                        placeholder="name"
+                                                        style={{width:'300px'}}
+                                                    />
+                                                </Col>
+                                            </p>
+                                        </Form.Group>
+                                        <Form.Group as={Row} className="my-1" controlId="projectManager">
+                                            <Form.Label className='project-view-label-1' column sm="6" md="6">
+                                                Project Manager
+                                            </Form.Label>
+                                            <p>
+                                                <Col sm="9" md="8" lg="6">
+                                                    <Select
+                                                        placeholder="Select project manager"
+                                                        options={projectManagersEmails}
+                                                        value={selectedProjectManager}
+                                                        type="text"
+                                                        style={{width:'500px'}}
+                                                        isSearchable={true}
+                                                        onChange={handleSelect}
+                                                    />
+                                                </Col>
+                                            </p>
+                                        </Form.Group>
+                                    </div>
+                                    <div className='col-sm'>
+                                        <Form.Group as={Row} className="my-1" controlId="projectDescription">
+                                            <Form.Label className='project-view-label-1' column sm="4" md="4">
+                                                Description
+                                            </Form.Label>
+                                            <p>
+                                                <Col sm="9" md="8" lg="6">
+                                                    <textarea
+                                                        onChange={(e) =>
+                                                            updateProject("description", e.target.value)
+                                                        }
+                                                        type="text"
+                                                        value={project.description}
+                                                        placeholder="description"
+                                                        style={{width:'300px', height:'130px', resize:'none'}}
+                                                        className='project-view-textarea-1'
+                                                    />
+                                                </Col>
+                                            </p>
+                                        </Form.Group>
+                                    </div>
+                                </div>
+                            </div>
+                            <Form.Group as={Row} className="my-3" controlId="projectPersonnel">
+                                <Form.Label column sm="3" md="2">
+                                    project personnel:
+                                </Form.Label>
+                                {projectPersonnel.map((person) => (
+                                <Col sm="9" md="8" lg="6">
+                                    {person.email} <button onClick={() => deleteUserFromProject(person.id)}> delete user</button>
+                                </Col>
+                                ))}
+                            </Form.Group>
+                            <Form.Group as={Row} className="my-3" controlId="allUsers">
+                                <Form.Label column sm="3" md="2">
+                                    all users:
+                                </Form.Label>
+                                <Col sm="9" md="8" lg="6"><Select
+                                    placeholder="Select user"
+                                    options={usersEmails}
+                                    value={selectedEmails}
+                                    onChange={handleSelect}
+                                    isSearchable={true}
+                                    isMulti
                                 />
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} className="my-3" controlId="projectDescription">
-                            <Form.Label column sm="3" md="2">
-                                description:
-                            </Form.Label>
-                            <Col sm="9" md="8" lg="6">
-                                <Form.Control
-                                    onChange={(e) =>
-                                        updateProject("description", e.target.value)
-                                    }
-                                    type="text"
-                                    value={project.description}
-                                    placeholder="description"
-                                />
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} className="my-3" controlId="projectManager">
-                            <Form.Label column sm="3" md="2">
-                                project manager:
-                            </Form.Label>
-                            <Col sm="9" md="8" lg="6">
-                                <Form.Control
-                                    type="text"
-                                    value={managerName + " (You)"}
-                                    disabled
-                                />
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} className="my-3" controlId="projectPersonnel">
-                            <Form.Label column sm="3" md="2">
-                                project personnel:
-                            </Form.Label>
-                            {projectPersonnel.map((person) => (
-                            <Col sm="9" md="8" lg="6">
-                                {person.email} <button onClick={() => deleteUserFromProject(person.id)}> delete user</button>
-                            </Col>
-                            ))}
-                        </Form.Group>
-                        <Form.Group as={Row} className="my-3" controlId="allUsers">
-                            <Form.Label column sm="3" md="2">
-                                all users:
-                            </Form.Label>
-                            <Col sm="9" md="8" lg="6"><Select
-                                placeholder="Select user"
-                                options={usersEmails}
-                                value={selectedEmails}
-                                onChange={handleSelect}
-                                isSearchable={true}
-                                isMulti
-                            />
 
-                                {/*<DropdownButton*/}
-                                {/*    as={ButtonGroup}*/}
-                                {/*    variant={"info"}*/}
-                                {/*    title={*/}
-                                {/*        selectedOption*/}
-                                {/*            ? selectedOption*/}
-                                {/*            : "select user"*/}
-                                {/*    }*/}
-                                {/*    onSelect={(selectedElement) => {*/}
-                                {/*        handleOptionChange(selectedElement);*/}
-                                {/*    }}*/}
-                                {/*>*/}
-                                {/*    {allUsers.map((user) => (*/}
-                                {/*        <Dropdown.Item*/}
-                                {/*            key={user.email}*/}
-                                {/*            eventKey={user.email}*/}
-                                {/*        >*/}
-                                {/*            {user.email};*/}
-                                {/*        </Dropdown.Item>*/}
-                                {/*    ))}*/}
-                                {/*</DropdownButton>*/}
-                            </Col>
-                            <Col>
-                                {<button onClick={() => addUserToProject()}> add user</button>}
-                            </Col>
-                        </Form.Group>
-                        {<button onClick={() => createTicket()}>Create new ticket</button>}
-                        <button onClick={() => save()}>Save</button>
-                    </>
+                                    {/*<DropdownButton*/}
+                                    {/*    as={ButtonGroup}*/}
+                                    {/*    variant={"info"}*/}
+                                    {/*    title={*/}
+                                    {/*        selectedOption*/}
+                                    {/*            ? selectedOption*/}
+                                    {/*            : "select user"*/}
+                                    {/*    }*/}
+                                    {/*    onSelect={(selectedElement) => {*/}
+                                    {/*        handleOptionChange(selectedElement);*/}
+                                    {/*    }}*/}
+                                    {/*>*/}
+                                    {/*    {allUsers.map((user) => (*/}
+                                    {/*        <Dropdown.Item*/}
+                                    {/*            key={user.email}*/}
+                                    {/*            eventKey={user.email}*/}
+                                    {/*        >*/}
+                                    {/*            {user.email};*/}
+                                    {/*        </Dropdown.Item>*/}
+                                    {/*    ))}*/}
+                                    {/*</DropdownButton>*/}
+                                </Col>
+                                <Col>
+                                    {<button onClick={() => addUserToProject()}> add user</button>}
+                                </Col>
+                            </Form.Group>
+                            {<button onClick={() => createTicket()}>Create new ticket</button>}
+                            <button onClick={() => save()}>Save</button>
+                        </>
 
-                ) : (
-                    <></>
-                )}
-            </Container>
+                    ) : (
+                        <></>
+                    )}
+                </div>
+            </div>
         </>
     );
 };

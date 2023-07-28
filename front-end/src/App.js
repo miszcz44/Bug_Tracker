@@ -7,7 +7,7 @@ import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
 import TicketView from "./TicketView";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ProjectView from "./ProjectView";
+import ProjectView from "./ProjectView/index";
 import Registration from "./Registration";
 import {UserProvider, useUser} from "./UserProvider";
 import RoleManagement from "./RoleManagement";
