@@ -1,5 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
@@ -60,7 +61,7 @@ public class ProjectService {
         projectRepository.deleteUserFromProject(userId);
     }
 
-    public ProjectViewDto getDataForProjectView(Long projectId) {
+    public ProjectDetailsViewDto getDataForProjectDetailsView(Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow();
         Project projectWithDemandedFields = new Project.Builder()
                 .id(projectId)
@@ -68,7 +69,48 @@ public class ProjectService {
                 .description(project.getDescription())
                 .build();
         List<TicketForProjectViewDto> tickets = ticketService.getDemandedTicketDataForProjectView(project.getTickets());
-        List<AppUser> projectPersonnelWithDemandedData = appUserService.getDemandedPersonnelDataForProjectView(project.getProjectPersonnel());
-        return(new ProjectViewDto(projectWithDemandedFields, projectPersonnelWithDemandedData, tickets));
+        List<AppUser> projectPersonnelWithDemandedData =
+                appUserService.getDemandedPersonnelDataForProjectView(project.getProjectPersonnel());
+        return(new ProjectDetailsViewDto(projectWithDemandedFields, projectPersonnelWithDemandedData, tickets));
+    }
+
+    public ProjectResponseDto getDataForProjectResponse(Long projectId) {
+        Project project = projectRepository.findById(projectId).orElseThrow();
+        Project projectWithDemandedFields = new Project.Builder()
+                .name(project.getName())
+                .description(project.getDescription())
+                .build();
+        AppUser currentManagerWithDemandedData = new AppUser.Builder()
+                .wholeName(project.getProjectManager().getWholeName())
+                .email(project.getProjectManager().getEmail())
+                .build();
+        List<AppUser> projectManagersWithDemandedData =
+                appUserService.findProjectManagersParticipatingInProject(project.getProjectPersonnel());
+        projectManagersWithDemandedData.add(currentManagerWithDemandedData);
+        List<AppUser> projectPersonnelWithDemandedData =
+                retrieveDemandedDataFromUsersForProjectView(project.getProjectPersonnel());
+        List<AppUser> allUsersNotInProject =
+                appUserService.getAllUsersNotParticipatingInProject(project.getProjectPersonnel(), project.getProjectManager());
+        List<AppUser> allUsersNotInProjectWithDemandedData =
+                retrieveDemandedDataFromUsersForProjectView(allUsersNotInProject);
+        return new ProjectResponseDto(projectWithDemandedFields,
+                currentManagerWithDemandedData,
+                projectManagersWithDemandedData,
+                projectPersonnelWithDemandedData,
+                allUsersNotInProjectWithDemandedData);
+    }
+
+    private List<AppUser> retrieveDemandedDataFromUsersForProjectView(List<AppUser> projectPersonnel) {
+        List<AppUser> projectPersonnelWithDemandedData = new ArrayList<>();
+        for(AppUser appUser : projectPersonnel) {
+            AppUser appUserWithDemandedData = new AppUser.Builder()
+                    .id(appUser.getId())
+                    .email(appUser.getEmail())
+                    .sRole(appUser.getSRole())
+                    .wholeName(appUser.getWholeName())
+                    .build();
+            projectPersonnelWithDemandedData.add(appUserWithDemandedData);
+        }
+        return projectPersonnelWithDemandedData;
     }
 }

@@ -1,17 +1,16 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketForProjectViewDto;
 
 import java.util.List;
 
-public class ProjectViewDto {
+public class ProjectDetailsViewDto {
     private Project project;
     private List<AppUser> projectPersonnel;
     private List<TicketForProjectViewDto> tickets;
 
-    public ProjectViewDto(Project project, List<AppUser> projectPersonnel, List<TicketForProjectViewDto> tickets) {
+    public ProjectDetailsViewDto(Project project, List<AppUser> projectPersonnel, List<TicketForProjectViewDto> tickets) {
         this.project = project;
         this.projectPersonnel = projectPersonnel;
         this.tickets = tickets;

@@ -13,21 +13,41 @@ import {
 import Select from "react-select";
 import SideBar from "../SideBar";
 import './ProjectView.css';
+import {InputText} from "primereact/inputtext";
+import {FilterMatchMode} from "primereact/api";
+import {DataTable} from "primereact/datatable";
+import {Column} from "primereact/column";
+import {Link} from "react-router-dom";
 const ProjectView = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const projectId = window.location.href.split("/projects/")[1];
     const [project, setProject] = useState({});
-    const [managerName, setmanagerName] = useState();
+    const [currentManager, setCurrentManager] = useState({});
+    const currentManagerLabel = {value: currentManager, label: currentManager.wholeName + ' | ' + currentManager.email}
+    const [projectManagers, setProjectManagers] = useState([]);
+    const projectManagersLabel = projectManagers.map(manager => ({value: manager, label: manager.wholeName + ' | ' + manager.email}))
+    const [selectedProjectManager, setSelectedProjectManager] = useState();
     const [projectPersonnel, setProjectPersonnel] = useState([]);
-    const [allUsers, setAllUsers] = useState([]);
-    const [selectedEmails, setSelectedEmails] = useState([]);
-    const usersEmails = allUsers.map(user => ({value:user.email, label:user.email}));
+    const [allNotParticipatingUsers, setAllNotParticipatingUsers] = useState([]);
+    const allNotParticipatingUsersLabel = allNotParticipatingUsers.map(user => ({value: user, label: user.wholeName + ' | ' + user.email + ' | ' + user.srole}))
+    const [selectedUsers, setSelectedUsers] = useState([]);
+    const [personnelFilters, setPersonnelFilters] = useState({
+        global: {value: null, matchMode: FilterMatchMode.CONTAINS}
+    });
+    //const usersEmails = allUsers.map(user => ({value:user.email, label:user.email}));
+    let selectedUserCount = 0;
+
+    const actionBodyTemplate = (rowData) => {
+        let url = "/projects/details/"
+        return <div>
+            <Link to={url.concat(rowData.id)}>Details</Link>
+        </div>
+    };
     function updateProject(prop, value) {
         const newProject = { ...project }
         newProject[prop] = value;
         setProject(newProject);
         console.log(project);
-        console.log(allUsers);
     }
 
     // function handleOptionChange(selectedOption) {
@@ -36,7 +56,11 @@ const ProjectView = () => {
     // }
 
     function save() {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}`, "PUT", jwt, project)
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}`, "PUT", jwt, {
+            "project": {project},
+            "currentManager": {currentManager},
+            "projectPersonnel": {projectPersonnel}
+        })
             .then((projectData) => {
                 setProject(projectData);
             })
@@ -50,11 +74,17 @@ const ProjectView = () => {
     }
 
     function addUserToProject() {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}/add-user-to-project`, "PUT", jwt, selectedEmails.map(email => email.value))
-            .then((projectData) => {
-                setProject(projectData);
-            })
-        window.location.href = `/projects/${project.id}`;
+        for(let i=0; i<selectedUsers.length; i++) {
+            projectPersonnel.push(selectedUsers[i].value);
+            allNotParticipatingUsers.splice(1, allNotParticipatingUsers.indexOf(selectedUsers[i].value));
+            console.log(projectPersonnel);
+        }
+        setSelectedUsers([]);
+        // grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}/add-user-to-project`, "PUT", jwt, selectedUsers.map(email => email.value))
+        //     .then((projectData) => {
+        //         setProject(projectData);
+        //     })
+        // window.location.href = `/projects/${project.id}`;
     }
 
     function deleteUserFromProject(id) {
@@ -65,18 +95,22 @@ const ProjectView = () => {
     }
 
     function handleSelect(data) {
-        setSelectedEmails(data);
+        setSelectedUsers(data);
+    }
+
+    function handleManagerSelect(data) {
+        setSelectedProjectManager(data);
     }
 
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}`, "GET", jwt)
-            .then((projectResponse) => {
-                let projectData = projectResponse.project;
-                if (projectData.title === null);
-                setProject(projectData);
-                setmanagerName(projectResponse.managerName);
-                setProjectPersonnel(projectResponse.projectPersonnel);
-                setAllUsers(projectResponse.allUsers);
+            .then((response) => {
+                setProject(response.project);
+                setCurrentManager(response.currentManager);
+                setProjectManagers(response.projectManagers);
+                setProjectPersonnel(response.projectPersonnel);
+                setAllNotParticipatingUsers(response.allUsersNotInProject);
+                console.log(response);
             });
     }, []);
 
@@ -85,14 +119,19 @@ const ProjectView = () => {
             <div style={{backgroundColor: '#efefef', height: '753px'}}>
                 <SideBar/>
                 <div className='card project-view-card-1'>
-                    <h2 className="pt-2 px-2" style={{marginBottom: '4px'}}>Edit Project</h2>
+                    <div className='d-flex'>
+                        <h2 className="pt-1 px-2 d-inline" style={{marginBottom: '4px'}}>Edit Project</h2>
+                        <button className='project-view-button-2' onClick={() => save()} style={{marginLeft:'285px'}}>
+                            Save Changes
+                        </button>
+                    </div>
                     <p className="px-4">Change project properties and personnel</p>
                     {project ? (
                         <>
                             <div className='container'>
                                 <div className='row'>
                                     <div className='col-sm'>
-                                        <Form.Group as={Row} className="my-1" controlId="projectName">
+                                        <Form.Group as={Row} className="my-0" controlId="projectName">
                                             <Form.Label className='project-view-label-1' column sm="4" md="4">
                                                 Title
                                             </Form.Label>
@@ -110,27 +149,25 @@ const ProjectView = () => {
                                                 </Col>
                                             </p>
                                         </Form.Group>
-                                        <Form.Group as={Row} className="my-1" controlId="projectManager">
+                                        <Form.Group as={Row} className="my-0" controlId="projectManager">
                                             <Form.Label className='project-view-label-1' column sm="6" md="6">
                                                 Project Manager
                                             </Form.Label>
                                             <p>
-                                                <Col sm="9" md="8" lg="6">
+                                                <Col style={{width:'300px'}} sm="9" md="8" lg="6">
                                                     <Select
                                                         placeholder="Select project manager"
-                                                        options={projectManagersEmails}
-                                                        value={selectedProjectManager}
-                                                        type="text"
-                                                        style={{width:'500px'}}
+                                                        options={projectManagersLabel}
+                                                        value={selectedProjectManager ? selectedProjectManager : currentManager ? currentManagerLabel : ""}
                                                         isSearchable={true}
-                                                        onChange={handleSelect}
+                                                        onChange={handleManagerSelect}
                                                     />
                                                 </Col>
                                             </p>
                                         </Form.Group>
                                     </div>
                                     <div className='col-sm'>
-                                        <Form.Group as={Row} className="my-1" controlId="projectDescription">
+                                        <Form.Group as={Row} className="my-0" controlId="projectDescription">
                                             <Form.Label className='project-view-label-1' column sm="4" md="4">
                                                 Description
                                             </Form.Label>
@@ -152,57 +189,63 @@ const ProjectView = () => {
                                     </div>
                                 </div>
                             </div>
-                            <Form.Group as={Row} className="my-3" controlId="projectPersonnel">
-                                <Form.Label column sm="3" md="2">
-                                    project personnel:
+                            <Form.Group as={Row} className="my-0" controlId="allUsers">
+                                <Form.Label className='project-view-label-2' column sm="4" md="4">
+                                    Selected New Users
                                 </Form.Label>
-                                {projectPersonnel.map((person) => (
-                                <Col sm="9" md="8" lg="6">
-                                    {person.email} <button onClick={() => deleteUserFromProject(person.id)}> delete user</button>
-                                </Col>
-                                ))}
-                            </Form.Group>
-                            <Form.Group as={Row} className="my-3" controlId="allUsers">
-                                <Form.Label column sm="3" md="2">
-                                    all users:
-                                </Form.Label>
-                                <Col sm="9" md="8" lg="6"><Select
-                                    placeholder="Select user"
-                                    options={usersEmails}
-                                    value={selectedEmails}
-                                    onChange={handleSelect}
-                                    isSearchable={true}
-                                    isMulti
-                                />
+                                <p className='d-flex'>
+                                    <Col sm="9" md="8" lg="6"><Select
+                                        placeholder="Select user"
+                                        options={allNotParticipatingUsersLabel}
+                                        value={selectedUsers}
+                                        onChange={handleSelect}
+                                        isSearchable={true}
+                                        isMulti
+                                        className='project-view-select-1'
+                                    />
+                                    </Col>
+                                    <Col>
+                                        {<button className='project-view-button-1' onClick={() => addUserToProject()}>Add To Project</button>}
+                                    </Col>
+                                </p>
 
-                                    {/*<DropdownButton*/}
-                                    {/*    as={ButtonGroup}*/}
-                                    {/*    variant={"info"}*/}
-                                    {/*    title={*/}
-                                    {/*        selectedOption*/}
-                                    {/*            ? selectedOption*/}
-                                    {/*            : "select user"*/}
-                                    {/*    }*/}
-                                    {/*    onSelect={(selectedElement) => {*/}
-                                    {/*        handleOptionChange(selectedElement);*/}
-                                    {/*    }}*/}
-                                    {/*>*/}
-                                    {/*    {allUsers.map((user) => (*/}
-                                    {/*        <Dropdown.Item*/}
-                                    {/*            key={user.email}*/}
-                                    {/*            eventKey={user.email}*/}
-                                    {/*        >*/}
-                                    {/*            {user.email};*/}
-                                    {/*        </Dropdown.Item>*/}
-                                    {/*    ))}*/}
-                                    {/*</DropdownButton>*/}
-                                </Col>
-                                <Col>
-                                    {<button onClick={() => addUserToProject()}> add user</button>}
-                                </Col>
                             </Form.Group>
-                            {<button onClick={() => createTicket()}>Create new ticket</button>}
-                            <button onClick={() => save()}>Save</button>
+                            <div className="project-details-card-2">
+                                <h3 className="px-2" style={{marginBottom: '4px'}}>
+                                    Project Personnel
+                                </h3>
+                                <p className="project-details-p-2">
+                                    Current users on this project
+                                    <div className='d-inline p-2 pt-0'>
+                                        <label className='project-view-label-3 d-inline'>
+                                            Search:
+                                        </label>
+                                        <InputText
+                                            onInput={(e) =>
+                                                setPersonnelFilters({
+                                                    global: {value: e.target.value, matchMode: FilterMatchMode.CONTAINS}
+                                                })
+                                            }
+                                            className='project-view-input-1'
+                                            style={{fontSize: '12px'}}
+                                        />
+                                    </div>
+                                </p>
+
+                                <DataTable value={projectPersonnel} stripedRows sortMode="multiple"
+                                           filters={personnelFilters} tableStyle={{minWidth: '30rem'}}
+                                           paginator rows={5} style={{backgroundColor: '#111111'}}
+                                           className='project-view-table-1 px-2'>
+                                    <Column field="wholeName" header="Name" sortable
+                                            style={{fontSize: '12px', width: '35%', padding: '2px'}}/>
+                                    <Column field="email" header="Email" sortable
+                                            style={{fontSize: '12px', width: '45%', padding: '2px'}}/>
+                                    <Column field="srole" header="Role" sortable
+                                            style={{fontSize: '12px', width: '20%', padding: '2px'}}/>
+                                    <Column field="id" style={{padding: '2px', fontSize: '12px', paddingRight: '5px' }}
+                                            body={actionBodyTemplate} />
+                                </DataTable>
+                            </div>
                         </>
 
                     ) : (

@@ -5,31 +5,17 @@ import java.util.List;
 
 public class ProjectResponseDto {
     private Project project;
-    private String managerName;
+    private AppUser currentManager;
+    private List<AppUser> projectManagers;
     private List<AppUser> projectPersonnel;
-    private List<AppUser> allUsers;
+    private List<AppUser> allUsersNotInProject;
 
-    public ProjectResponseDto(Project project, String managerName, List<AppUser> projectPersonnel, List<AppUser> allUsers) {
+    public ProjectResponseDto(Project project, AppUser manager, List<AppUser> projectManagers, List<AppUser> projectPersonnel, List<AppUser> allUsersNotInProject) {
         this.project = project;
-        this.managerName = managerName;
+        this.currentManager = manager;
+        this.projectManagers = projectManagers;
         this.projectPersonnel = projectPersonnel;
-        this.allUsers = allUsers;
-    }
-
-    public List<AppUser> getProjectPersonnel() {
-        return projectPersonnel;
-    }
-
-    public void setProjectPersonnel(List<AppUser> projectPersonnel) {
-        this.projectPersonnel = projectPersonnel;
-    }
-
-    public List<AppUser> getAllUsers() {
-        return allUsers;
-    }
-
-    public void setAllUsers(List<AppUser> allUsers) {
-        this.allUsers = allUsers;
+        this.allUsersNotInProject = allUsersNotInProject;
     }
 
     public Project getProject() {
@@ -40,12 +26,35 @@ public class ProjectResponseDto {
         this.project = project;
     }
 
-    public String getManagerName() {
-        return managerName;
+    public AppUser getCurrentManager() {
+        return currentManager;
     }
 
-    public void setManagerName(String managerName) {
-        this.managerName = managerName;
+    public void setCurrentManager(AppUser currentManager) {
+        this.currentManager = currentManager;
     }
 
+    public List<AppUser> getProjectManagers() {
+        return projectManagers;
+    }
+
+    public void setProjectManagers(List<AppUser> projectManagers) {
+        this.projectManagers = projectManagers;
+    }
+
+    public List<AppUser> getProjectPersonnel() {
+        return projectPersonnel;
+    }
+
+    public void setProjectPersonnel(List<AppUser> projectPersonnel) {
+        this.projectPersonnel = projectPersonnel;
+    }
+
+    public List<AppUser> getAllUsersNotInProject() {
+        return allUsersNotInProject;
+    }
+
+    public void setAllUsersNotInProject(List<AppUser> allUsersNotInProject) {
+        this.allUsersNotInProject = allUsersNotInProject;
+    }
 }

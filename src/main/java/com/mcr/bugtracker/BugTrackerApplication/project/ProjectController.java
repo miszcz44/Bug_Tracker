@@ -2,17 +2,9 @@ package com.mcr.bugtracker.BugTrackerApplication.project;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketResponseDto;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,12 +31,9 @@ public class ProjectController {
     }
 
     @GetMapping("{projectId}")
-    public ResponseEntity<?> getProjectDataById(@PathVariable Long projectId) {
-        Optional<Project> projectOpt = projectService.findById(projectId);
-        String name = appUserService.getNameOfTheLoggedUser();
-        List<AppUser> projectPersonnel = projectService.getProjectPersonnel(projectOpt.orElseThrow().getId());
-        List<AppUser> allUsers = appUserService.getAllUsersExceptTheLoggedOneAndProjectPersonnel(projectPersonnel);
-        return ResponseEntity.ok(new ProjectResponseDto(projectOpt.orElse(new Project()), name, projectPersonnel, allUsers));
+    public ProjectResponseDto getProjectDataById(@PathVariable Long projectId) {
+        ProjectResponseDto projectResponseDto = projectService.getDataForProjectResponse(projectId);
+        return projectResponseDto;
     }
     @PostMapping("/add-users")
     public void addUsers(@RequestBody UsersToProjectRequest request) {
@@ -52,9 +41,9 @@ public class ProjectController {
     }
 
     @PutMapping("{projectId}")
-    public ResponseEntity<?> updateTicketData(@RequestBody Project project, @PathVariable Long projectId) {
-        Project updatedProject = projectService.saveProject(project);
-        return ResponseEntity.ok(updatedProject);
+    public ResponseEntity<?> updateTicketData(@RequestBody ProjectResponseDto project, @PathVariable Long projectId) {
+//        Project updatedProject = projectService.saveProject(project);
+        return ResponseEntity.ok("updatedProject");
     }
 
     @PutMapping("{projectId}/add-user-to-project")
@@ -74,8 +63,8 @@ public class ProjectController {
     }
 
     @GetMapping("/details/{projectId}")
-    public ProjectViewDto getDataForProjectView(@PathVariable Long projectId) {
-        ProjectViewDto projectViewDto = projectService.getDataForProjectView(projectId);
-        return projectViewDto;
+    public ProjectDetailsViewDto getDataForProjectDetailsView(@PathVariable Long projectId) {
+        ProjectDetailsViewDto projectDetailsViewDto = projectService.getDataForProjectDetailsView(projectId);
+        return projectDetailsViewDto;
     }
 }

@@ -88,7 +88,7 @@ public class AppUser implements UserDetails {
     @Transient
     private List<Project> managedProject;
     @ManyToMany(mappedBy = "projectPersonnel")
-    @Transient
+    @JsonIgnore
     private List<Project> assignedProjects;
 
     @Override

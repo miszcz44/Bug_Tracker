@@ -85,6 +85,7 @@ public class Project {
 
         public Project build() {
             Project project = new Project();
+            project.name = this.name;
             project.description = this.description;
             project.id = this.id;
             project.projectManager = this.projectManager;

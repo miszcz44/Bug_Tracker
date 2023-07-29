@@ -108,10 +108,21 @@ public class AppUserService implements UserDetailsService {
                 .map(AppUser::getId)
                 .collect(Collectors.toList());
         Long projectManagerId = getUserFromContext().orElseThrow().getId();
+        log.info(projectManagerId.toString());
         if(idList.isEmpty()) {
             return appUserRepository.getAllUsersButProjectManager(projectManagerId);
         }
         return appUserRepository.getAllUsersButProjectManagerAndPersonnel(projectManagerId, idList);
+    }
+
+    public List<AppUser> getAllUsersNotParticipatingInProject(List<AppUser> projectPersonnel, AppUser manager) {
+        List<Long> idList = projectPersonnel.stream()
+                .map(AppUser::getId)
+                .collect(Collectors.toList());
+        if(idList.isEmpty()) {
+            return appUserRepository.getAllUsersButProjectManager(manager.getId());
+        }
+        return appUserRepository.getAllUsersButProjectManagerAndPersonnel(manager.getId(), idList);
     }
 
 
@@ -172,5 +183,19 @@ public class AppUserService implements UserDetailsService {
                     sRole(user.getSRole()).build());
         }
         return personnelWithDemandedData;
+    }
+
+    public List<AppUser> findProjectManagersParticipatingInProject(List<AppUser> projectPersonnel) {
+        List<AppUser> projectManagers = new ArrayList<>();
+        for(AppUser appUser : projectPersonnel) {
+            if(appUser.getSRole().equals("PROJECT_MANAGER")) {
+                AppUser projectManagerWithDemandedData = new AppUser.Builder()
+                        .email(appUser.getEmail())
+                        .wholeName(appUser.getWholeName())
+                        .build();
+                projectManagers.add(projectManagerWithDemandedData);
+            }
+        }
+        return projectManagers;
     }
 }
