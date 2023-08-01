@@ -47,7 +47,7 @@ body {
 }
 
 .project-view-button-2 {
-    margin-left: 437px!important;
+    margin-left: 15px!important;
     margin-top: 10px;
     background-color: #0dcaf0;
     border: none;
@@ -57,6 +57,20 @@ body {
 }
 
 .project-view-button-2:hover {
+    background-color: #31d2f2;
+}
+
+.project-view-button-3 {
+    margin-left: 300px!important;
+    margin-top: 10px;
+    background-color: #0dcaf0;
+    border: none;
+    border-radius: 5px;
+    width: 130px;
+    height: 35px;
+}
+
+.project-view-button-3:hover {
     background-color: #31d2f2;
 }
 

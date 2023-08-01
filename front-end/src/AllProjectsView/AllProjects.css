@@ -35,3 +35,12 @@
     background-color:#efefef;
     height: 753px;
 }
+
+.all-projects-span-1 {
+    color: #EE2121;
+}
+
+.all-projects-span-1:hover {
+    color: #AA4444;
+    cursor: pointer;
+}

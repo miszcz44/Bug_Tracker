@@ -56,6 +56,11 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
+    @DeleteMapping
+    public void deleteProject(@RequestBody Long projectId) {
+        projectService.deleteProjectById(projectId);
+    }
+
     @DeleteMapping("{projectId}/delete-user-from-project")
     public ResponseEntity<?> deleteUserFromProject(@RequestBody Long userId, @PathVariable Long projectId) {
         projectService.deleteUserFromProject(userId);

@@ -85,7 +85,7 @@ public class AppUser implements UserDetails {
     @Transient
     private List<Commentary> commentaries;
     @OneToMany(mappedBy = "projectManager")
-    @Transient
+    @JsonIgnore
     private List<Project> managedProject;
     @ManyToMany(mappedBy = "projectPersonnel")
     @JsonIgnore

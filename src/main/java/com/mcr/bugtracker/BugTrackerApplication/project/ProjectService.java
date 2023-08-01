@@ -39,11 +39,18 @@ public class ProjectService {
     } // TODO sa 3 takie same klasy w 3 serwisach
 
     public List<Project> findAllProjectsAssignedToUser() {
-        List<Long> projectIds = projectRepository.findAllProjectsIdsAssignedToUser(getUserFromContext().orElseThrow().getId());
-        if(projectIds.isEmpty()) {
+        AppUser user = getUserFromContext().orElseThrow();
+        List<Project> projects = new ArrayList<>();
+        if(user.getAssignedProjects() != null) {
+            projects = user.getAssignedProjects();
+        }
+        if(user.getManagedProject() != null) {
+            projects.addAll(user.getManagedProject());
+        }
+        if(projects.isEmpty()) {
             return List.of();
         }
-        return projectRepository.findByIds(projectIds);
+        return projects;
     }
 
     public Optional<Project> findById(Long id) {
@@ -124,5 +131,9 @@ public class ProjectService {
         project.setProjectManager(appUserService.findById(projectResponse.getCurrentManager().getId()));
         project.setProjectPersonnel(projectResponse.getProjectPersonnel());
         projectRepository.save(project);
+    }
+
+    public void deleteProjectById(Long projectId) {
+        projectRepository.deleteById(projectId);
     }
 }

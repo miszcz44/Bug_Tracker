@@ -18,11 +18,21 @@ const AllProjectsView = () => {
     const [filters, setFilters] = useState({
         global: {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
+
+    function deleteProject(id) {
+        for(let i = 0; i < projects.length; i++) {
+            if(projects[i].id === id) {
+                projects.splice(i, 1);
+            }
+        }
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/project`, "DELETE", user.jwt, id);
+    }
+
     const actionBodyTemplate = (rowData) => {
         let url = "/projects/details/"
         return <div>
-            <Link to='/'>Manage users </Link>
-            <Link to={url.concat(rowData.id)}>Details</Link>
+            <Link style={{textDecoration: 'none'}} className='px-4' to={url.concat(rowData.id)}>Details </Link>
+            <span className='all-projects-span-1' onClick={() => deleteProject(rowData.id)} to='/'>Delete</span>
         </div>
     };
 
@@ -33,10 +43,17 @@ const AllProjectsView = () => {
             });
     }, []);
 
+    function createNewProject() {
+        grabAndAuthorizeRequestFromTheServer("api/v1/project", "POST", user.jwt)
+            .then((project) => {
+                window.location.href = `/projects/${project.id}`;
+            });
+    }
+
     return (
         <div className='all-projects-div-1'>
             <SideBar/>
-            <button className="all-projects-button-1">Create new project</button>
+            <button className="all-projects-button-1" onClick={() => createNewProject()}>Create new project</button>
             <div className="card all-projects-card-1">
                 <h3 className='p-2'>Your projects</h3>
                 <div className='d-flex p-2'>

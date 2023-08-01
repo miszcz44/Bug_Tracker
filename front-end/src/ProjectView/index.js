@@ -48,6 +48,7 @@ const ProjectView = () => {
         newProject[prop] = value;
         setProject(newProject);
         console.log(project);
+        console.log(projectPersonnel);
         console.log(selectedProjectManager);
     }
 
@@ -113,15 +114,15 @@ const ProjectView = () => {
 
     function handleManagerSelect(data) {
         const currentOption = selectedProjectManager ? selectedProjectManager.value : currentManager;
-        if(currentOption !== data.value) {
+        if(currentOption.id !== data.value.id) {
             projectPersonnel.push(currentOption);
+            for(let i = 0; i < projectPersonnel.length ; i++) {
+                if(projectPersonnel[i].id === data.value.id) {
+                    projectPersonnel.splice(i, 1);
+                }
+            }
+            setSelectedProjectManager(data);
         }
-        const newPersonnel = [ ...projectPersonnel ];
-        newPersonnel.splice(newPersonnel.indexOf(data.value), 1);
-        setProjectPersonnel(newPersonnel);
-        console.log(projectPersonnel);
-
-        setSelectedProjectManager(data);
     }
 
     useEffect(() => {
@@ -143,7 +144,10 @@ const ProjectView = () => {
                 <div className='card project-view-card-1'>
                     <div className='d-flex'>
                         <h2 className="pt-1 px-2 d-inline" style={{marginBottom: '4px'}}>Edit Project</h2>
-                        <button className='project-view-button-2' onClick={() => save()} style={{marginLeft:'285px'}}>
+                        <button className='project-view-button-3' onClick={() => window.location.href = `/projects/details/${projectId}`}>
+                            Back To Details
+                        </button>
+                        <button className='project-view-button-2' onClick={() => save()}>
                             Save Changes
                         </button>
                     </div>
