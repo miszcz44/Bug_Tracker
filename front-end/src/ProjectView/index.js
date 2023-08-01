@@ -38,9 +38,9 @@ const ProjectView = () => {
     let selectedUserCount = 0;
 
     const actionBodyTemplate = (rowData) => {
-        let url = "/projects/details/"
+
         return <div>
-            <Link to={url.concat(rowData.id)}>Details</Link>
+            <Link onClick={() => deleteUserFromProject(rowData.id)}>{rowData.id}</Link>
         </div>
     };
     function updateProject(prop, value) {
@@ -48,6 +48,7 @@ const ProjectView = () => {
         newProject[prop] = value;
         setProject(newProject);
         console.log(project);
+        console.log(selectedProjectManager);
     }
 
     // function handleOptionChange(selectedOption) {
@@ -57,13 +58,16 @@ const ProjectView = () => {
 
     function save() {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}`, "PUT", jwt, {
-            "project": {project},
-            "currentManager": {currentManager},
-            "projectPersonnel": {projectPersonnel}
+            "project": project,
+            "currentManager": selectedProjectManager ? selectedProjectManager.value : currentManager,
+            "projectPersonnel": projectPersonnel,
+            "allUsersNotInProject": null,
+            "projectManagers": null
         })
             .then((projectData) => {
                 setProject(projectData);
             })
+        window.location.href = `/projects/${project.id}`;
     }
 
     function createTicket() {
@@ -76,7 +80,7 @@ const ProjectView = () => {
     function addUserToProject() {
         for(let i=0; i<selectedUsers.length; i++) {
             projectPersonnel.push(selectedUsers[i].value);
-            allNotParticipatingUsers.splice(1, allNotParticipatingUsers.indexOf(selectedUsers[i].value));
+            allNotParticipatingUsers.splice(allNotParticipatingUsers.indexOf(selectedUsers[i].value), 1);
             console.log(projectPersonnel);
         }
         setSelectedUsers([]);
@@ -88,10 +92,19 @@ const ProjectView = () => {
     }
 
     function deleteUserFromProject(id) {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}/delete-user-from-project`, "DELETE", jwt, id)
-            .then((msg) => {
-            });
-        window.location.href = `/projects/${project.id}`;
+        const newPersonnel = [ ...projectPersonnel];
+        for(let i=0; i<projectPersonnel.length; i++) {
+            if(newPersonnel[i].id === id) {
+                allNotParticipatingUsers.push(newPersonnel[i]);
+                newPersonnel.splice(i, 1);
+                break;
+            }
+        }
+        setProjectPersonnel(newPersonnel);
+        // grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}/delete-user-from-project`, "DELETE", jwt, id)
+        //     .then((msg) => {
+        //     });
+        // window.location.href = `/projects/${project.id}`;
     }
 
     function handleSelect(data) {
@@ -99,6 +112,15 @@ const ProjectView = () => {
     }
 
     function handleManagerSelect(data) {
+        const currentOption = selectedProjectManager ? selectedProjectManager.value : currentManager;
+        if(currentOption !== data.value) {
+            projectPersonnel.push(currentOption);
+        }
+        const newPersonnel = [ ...projectPersonnel ];
+        newPersonnel.splice(newPersonnel.indexOf(data.value), 1);
+        setProjectPersonnel(newPersonnel);
+        console.log(projectPersonnel);
+
         setSelectedProjectManager(data);
     }
 

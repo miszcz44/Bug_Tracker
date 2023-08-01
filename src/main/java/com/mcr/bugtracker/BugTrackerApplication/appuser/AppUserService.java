@@ -190,12 +190,18 @@ public class AppUserService implements UserDetailsService {
         for(AppUser appUser : projectPersonnel) {
             if(appUser.getSRole().equals("PROJECT_MANAGER")) {
                 AppUser projectManagerWithDemandedData = new AppUser.Builder()
+                        .id(appUser.getId())
                         .email(appUser.getEmail())
                         .wholeName(appUser.getWholeName())
+                        .sRole(appUser.getSRole())
                         .build();
                 projectManagers.add(projectManagerWithDemandedData);
             }
         }
         return projectManagers;
+    }
+
+    public AppUser findById(Long id) {
+        return appUserRepository.findById(id).orElseThrow();
     }
 }

@@ -8,6 +8,7 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketForProjectViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ProjectService {
     private final ProjectRepository projectRepository;
     private final AppUserRepository appUserRepository;
@@ -77,12 +79,15 @@ public class ProjectService {
     public ProjectResponseDto getDataForProjectResponse(Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow();
         Project projectWithDemandedFields = new Project.Builder()
+                .id(projectId)
                 .name(project.getName())
                 .description(project.getDescription())
                 .build();
         AppUser currentManagerWithDemandedData = new AppUser.Builder()
+                .id(project.getProjectManager().getId())
                 .wholeName(project.getProjectManager().getWholeName())
                 .email(project.getProjectManager().getEmail())
+                .sRole(project.getProjectManager().getSRole())
                 .build();
         List<AppUser> projectManagersWithDemandedData =
                 appUserService.findProjectManagersParticipatingInProject(project.getProjectPersonnel());
@@ -112,5 +117,12 @@ public class ProjectService {
             projectPersonnelWithDemandedData.add(appUserWithDemandedData);
         }
         return projectPersonnelWithDemandedData;
+    }
+
+    public void saveResponseElements(ProjectResponseDto projectResponse) {
+        Project project = projectResponse.getProject();
+        project.setProjectManager(appUserService.findById(projectResponse.getCurrentManager().getId()));
+        project.setProjectPersonnel(projectResponse.getProjectPersonnel());
+        projectRepository.save(project);
     }
 }

@@ -41,8 +41,8 @@ public class ProjectController {
     }
 
     @PutMapping("{projectId}")
-    public ResponseEntity<?> updateTicketData(@RequestBody ProjectResponseDto project, @PathVariable Long projectId) {
-//        Project updatedProject = projectService.saveProject(project);
+    public ResponseEntity<?> updateTicketData(@RequestBody ProjectResponseDto projectResponse, @PathVariable Long projectId) {
+        projectService.saveResponseElements(projectResponse);
         return ResponseEntity.ok("updatedProject");
     }
 

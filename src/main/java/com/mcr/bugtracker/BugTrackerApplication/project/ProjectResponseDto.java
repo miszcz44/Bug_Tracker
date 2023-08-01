@@ -17,6 +17,14 @@ public class ProjectResponseDto {
         this.projectPersonnel = projectPersonnel;
         this.allUsersNotInProject = allUsersNotInProject;
     }
+    public ProjectResponseDto(Project project, AppUser manager, List<AppUser> projectPersonnel) {
+        this.project = project;
+        this.currentManager = manager;
+        this.projectPersonnel = projectPersonnel;
+    }
+
+    public ProjectResponseDto() {}
+
 
     public Project getProject() {
         return project;
