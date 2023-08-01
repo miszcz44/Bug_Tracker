@@ -18,6 +18,8 @@ import UserProfile from "./UserProfile";
 import PasswordChange from "./PasswordChange";
 import AllProjectsView from "./AllProjectsView";
 import ProjectDetailsView from "./ProjectDetailsView";
+import AllTicketsView from "./AllTicketsView";
+import TicketDetails from "./TicketDetails";
 
 function App() {
 
@@ -83,6 +85,22 @@ function App() {
                 element={
                     <PrivateRoute>
                         <TicketView/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/tickets/details/:ticketId"
+                element={
+                    <PrivateRoute>
+                        <TicketDetails/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/tickets"
+                element={
+                    <PrivateRoute>
+                        <AllTicketsView/>
                     </PrivateRoute>
                 }
             />

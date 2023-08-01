@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,5 +78,24 @@ public class TicketService {
             }
         }
         return demandedTickets;
+    }
+
+
+    public List<AllTicketsViewDto> getAllTicketsConnectedToUser() {
+        AppUser user = getUserFromContext().orElseThrow();
+        List<AllTicketsViewDto> allTickets = new ArrayList<>();
+        List<Ticket> tickets = user.getAssignedTicket();
+        for(Ticket ticket : tickets) {
+            allTickets.add(new AllTicketsViewDto(ticket.getId(),
+                    ticket.getTitle(),
+                    ticket.getProject().getName(),
+                    ticket.getAssignedDeveloper().getWholeName(),
+                    ticket.getPriority(),
+                    ticket.getStatus(),
+                    ticket.getType(),
+                    ticket.getCreatedAt().truncatedTo(ChronoUnit.SECONDS)
+                    ));
+        }
+        return allTickets;
     }
 }

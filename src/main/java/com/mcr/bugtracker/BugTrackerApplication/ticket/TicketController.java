@@ -49,8 +49,8 @@ public class TicketController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllTickets() {
-        return ResponseEntity.ok(ticketService.getAllTickets());
+    public List<AllTicketsViewDto> getAllTicketsConnectedToUser() {
+        return ticketService.getAllTicketsConnectedToUser();
     }
 
 

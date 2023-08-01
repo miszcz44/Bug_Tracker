@@ -73,16 +73,16 @@ public class AppUser implements UserDetails {
     private Collection<ConfirmationToken> confirmationToken;
 
     @OneToMany(mappedBy = "assignedDeveloper")
-    @Transient
+    @JsonIgnore
     private List<Ticket> assignedTicket;
     @OneToMany(mappedBy = "submitter")
-    @Transient
+    @JsonIgnore
     private List<Ticket> submittedTicket;
     @OneToMany(mappedBy = "uploader")
-    @Transient
+    @JsonIgnore
     private List<Attachment> uploadedFiles;
     @OneToMany(mappedBy = "commentator")
-    @Transient
+    @JsonIgnore
     private List<Commentary> commentaries;
     @OneToMany(mappedBy = "projectManager")
     @JsonIgnore

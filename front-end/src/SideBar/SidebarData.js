@@ -38,7 +38,7 @@ export const SidebarData = [
     },
     {
         title: 'My Tickets',
-        path: '/',
+        path: '/tickets',
         icon: <BsIcons.BsListUl />,
         cname: 'nav-text'
     },
