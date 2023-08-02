@@ -85,18 +85,6 @@ const CommentContainer = (props) => {
                 ></textarea>
                 <button onClick={() => submitComment()}>Post comment</button>
             </div>
-            <div className="mt-5">
-                {comments.map((comment) => (
-                    <Comment
-                        id = {comment.id}
-                        createdAt = {comment.createdAt}
-                        commentator = {comment.commentator}
-                        message = {comment.message}
-                        emitDeleteComment = {handleDeleteComment}
-                        emitEditComment = {handleEditComment}
-                    />
-                ))}
-            </div>
         </>
     );
 };
