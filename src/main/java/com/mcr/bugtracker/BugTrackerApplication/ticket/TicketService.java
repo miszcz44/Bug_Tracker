@@ -2,6 +2,8 @@ package com.mcr.bugtracker.BugTrackerApplication.ticket;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentaryService;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTicketDetailsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final AppUserRepository appUserRepository;
+    private final CommentaryService commentaryService;
 
     public void saveTicket(TicketRequest request) {
         ticketRepository.save(new Ticket(request.getTitle(),
@@ -97,5 +100,24 @@ public class TicketService {
                     ));
         }
         return allTickets;
+    }
+
+    public TicketDetailsViewDto getDemandedDataForProjectDetailsView(Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow();
+        Ticket ticketWithDemandedData = new Ticket.Builder()
+                .title(ticket.getTitle())
+                .description(ticket.getDescription())
+                .priority(ticket.getPriority())
+                .status(ticket.getStatus())
+                .type(ticket.getType())
+                .createdAt(ticket.getCreatedAt().truncatedTo(ChronoUnit.SECONDS))
+                .build();
+        List<CommentsForTicketDetailsViewDto> comments = commentaryService.getCommentsWithDemandedData(ticket.getComments());
+        return new TicketDetailsViewDto(ticketWithDemandedData,
+                ticket.getAssignedDeveloper().getWholeName(),
+                ticket.getSubmitter().getWholeName(),
+                ticket.getProject().getName(),
+                comments,
+                ticket.getTicketHistoryFields());
     }
 }

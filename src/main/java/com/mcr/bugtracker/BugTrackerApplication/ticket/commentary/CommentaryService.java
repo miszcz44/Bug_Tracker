@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,5 +53,14 @@ public class CommentaryService {
 
     public void deleteCommentById(Long commentId) {
         commentaryRepository.deleteById(commentId);
+    }
+
+    public List<CommentsForTicketDetailsViewDto> getCommentsWithDemandedData(List <Commentary> comments) {
+        List<CommentsForTicketDetailsViewDto> commentsWithDemandedData = new ArrayList<>();
+        for(Commentary comment : comments) {
+            commentsWithDemandedData.add(
+                    new CommentsForTicketDetailsViewDto(comment.getCommentator().getWholeName(), comment));
+        }
+        return commentsWithDemandedData;
     }
 }

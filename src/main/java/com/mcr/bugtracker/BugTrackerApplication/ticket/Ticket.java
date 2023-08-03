@@ -49,13 +49,13 @@ public class Ticket {
     @JoinColumn(name = "project_id")
     private Project project;
     @OneToMany(mappedBy = "ticket")
-    @Transient
+    @JsonIgnore
     private List<Commentary> comments;
     @OneToMany(mappedBy = "ticket")
-    @Transient
+    @JsonIgnore
     private List<Attachment> attachments;
     @OneToMany(mappedBy = "ticket")
-    @Transient
+    @JsonIgnore
     private List<TicketHistoryField> ticketHistoryFields;
     private String priority;
     private String status;

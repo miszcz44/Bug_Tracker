@@ -56,16 +56,8 @@ public class TicketController {
 
 
     @GetMapping("{ticketId}")
-    public ResponseEntity<?> getTicketDataById(@PathVariable Long ticketId) {
-        Ticket ticketOpt = ticketService.findById(ticketId).orElseThrow();
-        List<AppUser> usersAssignedToProject = appUserService.findAllUsersAssignedToProject(ticketOpt.getProject().getId());
-        List<TicketHistoryField> historyFields = ticketHistoryFieldService.getAllFieldsByTicketId(ticketId);
-        List<Attachment> attachments = attachmentService.getAllAttachmentsByTicketId(ticketId);
-        TicketResponseDto response = new TicketResponseDto(ticketOpt, usersAssignedToProject, historyFields, attachments);
-        if(ticketOpt.getAssignedDeveloper() != null) {
-            response.setDeveloper(ticketOpt.getAssignedDeveloper());
-        }
-        return ResponseEntity.ok(response);
+    public TicketDetailsViewDto getTicketDataById(@PathVariable Long ticketId) {
+        return ticketService.getDemandedDataForProjectDetailsView(ticketId);
     }
 
     @PutMapping("{ticketId}")
