@@ -14,12 +14,6 @@ import java.util.List;
 public class CommentaryController {
 
     private final CommentaryService commentaryService;
-    @PostMapping
-    public ResponseEntity<?> createCommentary(@RequestBody CommentaryRequest request) {
-        Commentary commentary = commentaryService.saveCommentary(request);
-        return ResponseEntity.ok(commentary);
-    }
-
     @GetMapping
     public ResponseEntity<List<Commentary>> getCommentsByTicket(@RequestParam Long ticketId) {
         List<Commentary> commentaries = commentaryService.findAllCommentsByTicketId(ticketId);
@@ -36,5 +30,9 @@ public class CommentaryController {
     public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
         commentaryService.deleteCommentById(commentId);
         return ResponseEntity.ok("");
+    }
+    @PostMapping("{ticketId}")
+    public void saveComment(@RequestBody CommentsForTicketDetailsViewDto comment, @PathVariable Long ticketId) {
+        commentaryService.saveComment(comment, ticketId);
     }
 }

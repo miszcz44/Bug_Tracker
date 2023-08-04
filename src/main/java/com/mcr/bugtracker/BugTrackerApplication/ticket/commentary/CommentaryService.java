@@ -4,12 +4,14 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketRepository;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,19 +24,6 @@ public class CommentaryService {
     private final CommentaryRepository commentaryRepository;
     private final TicketRepository ticketRepository;
     private final AppUserRepository appUserRepository;
-    public Commentary saveCommentary(CommentaryRequest request) {
-        log.info(request.toString());
-        Ticket ticket = ticketRepository.findById(request.getTicketId()).orElseThrow();
-        Commentary commentary = new Commentary(request.getId(),
-                getUserFromContext().orElseThrow(),
-                request.getMessage(),
-                LocalDateTime.now(),
-                ticket);
-
-        commentaryRepository.save(commentary);
-        return commentary;
-    }
-
     public Optional<AppUser> getUserFromContext() {
         AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return appUserRepository.findById(user.getId());
@@ -59,8 +48,19 @@ public class CommentaryService {
         List<CommentsForTicketDetailsViewDto> commentsWithDemandedData = new ArrayList<>();
         for(Commentary comment : comments) {
             commentsWithDemandedData.add(
-                    new CommentsForTicketDetailsViewDto(comment.getCommentator().getWholeName(), comment));
+                    new CommentsForTicketDetailsViewDto(comment.getId(),
+                            comment.getCommentator().getEmail(),
+                            comment.getMessage(),
+                            comment.getCreatedAt().truncatedTo(ChronoUnit.SECONDS)));
         }
         return commentsWithDemandedData;
+    }
+
+    public void saveComment(CommentsForTicketDetailsViewDto comment, Long ticketId) {
+        Commentary commentForDb = new Commentary(appUserRepository.findByEmail(comment.getCommentatorEmail()).orElseThrow(),
+                comment.getMessage(),
+                LocalDateTime.now(),
+                ticketRepository.findById(ticketId).orElseThrow());
+        commentaryRepository.save(commentForDb);
     }
 }

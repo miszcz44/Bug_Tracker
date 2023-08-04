@@ -9,16 +9,24 @@ import {FilterMatchMode} from "primereact/api";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import CommentContainer from "../CommentContainer";
-
+import jwt_decode from "jwt-decode";
 const TicketDetails = () => {
 
     const user = useUser();
+    const decodedJwt = jwt_decode(user.jwt);
     const ticketId = window.location.href.split("/tickets/details/")[1]
     const [ticket, setTicket] = useState({});
     const [developerName, setDeveloperName] = useState("");
     const [submitterName, setSubmitterName] = useState("");
     const [projectName, setProjectName] = useState("");
     const [comments, setComments] = useState([]);
+    const [emptyComment, setEmptyComment] = useState({
+        id: null,
+        commentatorEmail: decodedJwt.sub,
+        message: "",
+        created: null
+    })
+    const [comment, setComment] = useState(emptyComment);
     const [historyFields, setHistoryFields] = useState([]);
     const [commentsFilters, setCommentsFilters] = useState({
         global: {value: null, matchMode: FilterMatchMode.CONTAINS}
@@ -29,6 +37,7 @@ const TicketDetails = () => {
     const [attachmentsFilters, setAttachmentsFilters] = useState({
         global: {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
+
     let editUrl = '/tickets/';
 
     useEffect(() => {
@@ -50,6 +59,25 @@ const TicketDetails = () => {
             <Link to={url.concat(rowData.id)}>Details</Link>
         </div>
     };
+
+    function addComment() {
+        const newComment = { ...comment};
+        newComment["created"] = null;
+        setComment(newComment);
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/comments/${ticketId}`, "POST", user.jwt, comment)
+        const commentsCopy = [...comments];
+        newComment["created"] = "Just Now";
+        commentsCopy.push(newComment);
+        setComments(commentsCopy);
+        setComment(emptyComment);
+    }
+
+    function updateComment(value) {
+        const newComment = { ...comment};
+        newComment["message"] = value;
+        setComment(newComment);
+        console.log(comment);
+    }
 
     return (
         <div>
@@ -151,17 +179,17 @@ const TicketDetails = () => {
                             </div>
                             <DataTable value={comments} stripedRows sortMode="multiple" filters={commentsFilters} tableStyle={{ minWidth: '30rem' }}
                                        paginator rows={6} style={{backgroundColor: '#111111'}} className='ticket-details-table-1'>
-                                <Column field="commentatorName" header="Name" sortable style={{fontSize: '12px', width: '35%', padding: '2px' }}/>
-                                <Column field="commentary.message" header="Email" sortable style={{fontSize: '12px', width: '45%', padding: '2px' }}/>
-                                <Column field="commentary.createdAt" header="Role" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
+                                <Column field="commentatorEmail" header="Email" sortable style={{fontSize: '12px', width: '35%', padding: '2px' }}/>
+                                <Column field="message" header="Message" sortable style={{fontSize: '12px', width: '45%', padding: '2px' }}/>
+                                <Column field={"created" ? "created" : "just now"} header="Created" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
                             </DataTable>
                         </div>
                         <label className="ticket-details-label-1">
                             Your Comment
                         </label>
                         <div className='d-flex'>
-                            <textarea className='ticket-details-textarea-1'/>
-                            <button className="ticket-details-button-1">Add Comment</button>
+                            <textarea className='ticket-details-textarea-1' value={comment.message ? comment.message : ""} onChange={(e) => updateComment(e.target.value)}/>
+                            <button className="ticket-details-button-1" onClick={() => addComment()}>Add Comment</button>
                         </div>
                     </div>
                 </div>

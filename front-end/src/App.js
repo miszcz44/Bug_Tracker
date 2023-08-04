@@ -20,6 +20,7 @@ import AllProjectsView from "./AllProjectsView";
 import ProjectDetailsView from "./ProjectDetailsView";
 import AllTicketsView from "./AllTicketsView";
 import TicketDetails from "./TicketDetails";
+import TicketEditView from "./TicketEditView";
 
 function App() {
 
@@ -42,20 +43,21 @@ function App() {
                     <Dashboard/>
                 </PrivateRoute>
             }/>
-            <Route
-                path="/tickets/:id"
-                element={
-                role.authority === "DEVELOPER" ? (
-                <PrivateRoute>
-                    <DeveloperTicketView/>
-                </PrivateRoute>
-                ) : (
-                <PrivateRoute>
-                    <TicketView/>
-                </PrivateRoute>
-                )
-                }
-            />
+            {/*<Route*/}
+            {/*    path="/tickets/:id"*/}
+            {/*    element={*/}
+            {/*    role.authority === "DEVELOPER" ? (*/}
+            {/*    <PrivateRoute>*/}
+            {/*        <DeveloperTicketView/>*/}
+            {/*    </PrivateRoute>*/}
+            {/*    ) : (*/}
+            {/*    <PrivateRoute>*/}
+            {/*        <TicketView/>*/}
+            {/*    </PrivateRoute>*/}
+            {/*    )*/}
+            {/*    }*/}
+            {/*/>*/}
+            {/* BEHAVIOR BASED ON ROLES!!!!!!!*/}
             <Route
                 path="/projects/:id"
                 element={
@@ -81,18 +83,18 @@ function App() {
                 }
             />
             <Route
-                path="/projects/:id/tickets/:ticketId"
-                element={
-                    <PrivateRoute>
-                        <TicketView/>
-                    </PrivateRoute>
-                }
-            />
-            <Route
                 path="/tickets/details/:ticketId"
                 element={
                     <PrivateRoute>
                         <TicketDetails/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/tickets/:ticketId"
+                element={
+                    <PrivateRoute>
+                        <TicketEditView/>
                     </PrivateRoute>
                 }
             />

@@ -1,28 +1,50 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.commentary;
 
+import java.time.LocalDateTime;
+
 public class CommentsForTicketDetailsViewDto {
 
-    private String commentatorName;
-    private Commentary commentary;
+    private Long id;
+    private String commentatorEmail;
+    private String message;
+    private LocalDateTime created;
 
-    public CommentsForTicketDetailsViewDto(String commentatorName, Commentary commentary) {
-        this.commentatorName = commentatorName;
-        this.commentary = commentary;
+    public CommentsForTicketDetailsViewDto(Long id, String commentatorEmail, String message, LocalDateTime created) {
+        this.id = id;
+        this.commentatorEmail = commentatorEmail;
+        this.message = message;
+        this.created = created;
     }
 
-    public String getCommentatorName() {
-        return commentatorName;
+    public Long getId() {
+        return id;
     }
 
-    public void setCommentatorName(String commentatorName) {
-        this.commentatorName = commentatorName;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Commentary getCommentary() {
-        return commentary;
+    public String getCommentatorEmail() {
+        return commentatorEmail;
     }
 
-    public void setCommentary(Commentary commentary) {
-        this.commentary = commentary;
+    public void setCommentatorEmail(String commentatorEmail) {
+        this.commentatorEmail = commentatorEmail;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
     }
 }

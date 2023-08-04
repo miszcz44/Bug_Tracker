@@ -136,4 +136,13 @@ public class ProjectService {
     public void deleteProjectById(Long projectId) {
         projectRepository.deleteById(projectId);
     }
+
+    public Project getProjectForTicketEditView(Project project) {
+        return new Project.Builder()
+                .id(project.getId())
+                .name(project.getName())
+                .build();
+    }
+
+
 }

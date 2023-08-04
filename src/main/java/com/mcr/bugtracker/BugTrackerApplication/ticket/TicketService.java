@@ -2,6 +2,9 @@ package com.mcr.bugtracker.BugTrackerApplication.ticket;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
+import com.mcr.bugtracker.BugTrackerApplication.project.Project;
+import com.mcr.bugtracker.BugTrackerApplication.project.ProjectService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentaryService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTicketDetailsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;
@@ -24,6 +27,8 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final AppUserRepository appUserRepository;
     private final CommentaryService commentaryService;
+    private final AppUserService appUserService;
+
 
     public void saveTicket(TicketRequest request) {
         ticketRepository.save(new Ticket(request.getTitle(),
@@ -119,5 +124,21 @@ public class TicketService {
                 ticket.getProject().getName(),
                 comments,
                 ticket.getTicketHistoryFields());
+    }
+
+    public TicketEditViewDto getDataForTicketEditView(Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow();
+        Ticket ticketWithDemandedData = new Ticket.Builder()
+                .id(ticket.getId())
+                .title(ticket.getTitle())
+                .description(ticket.getDescription())
+                .priority(ticket.getPriority())
+                .status(ticket.getStatus())
+                .type(ticket.getType())
+                .build();
+        AppUser developerWithDemandedData = appUserService.getDeveloperForTicketEditView(ticket.getAssignedDeveloper());
+        List<AppUser> possibleDevelopersWithDemandedData = appUserService.getProjectDevelopers(ticket.getProject());
+        return new TicketEditViewDto(ticketWithDemandedData, ticket.getProject().getName(),
+                developerWithDemandedData, possibleDevelopersWithDemandedData);
     }
 }

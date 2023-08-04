@@ -40,8 +40,7 @@ public class Commentary {
         this.message = message;
     }
 
-    public Commentary(Long id, AppUser commentator, String message, LocalDateTime createdAt, Ticket ticket) {
-        this.id = id;
+    public Commentary(AppUser commentator, String message, LocalDateTime createdAt, Ticket ticket) {
         this.commentator = commentator;
         this.message = message;
         this.createdAt = createdAt;

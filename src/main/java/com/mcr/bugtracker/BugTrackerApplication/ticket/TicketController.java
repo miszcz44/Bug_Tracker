@@ -60,6 +60,11 @@ public class TicketController {
         return ticketService.getDemandedDataForProjectDetailsView(ticketId);
     }
 
+    @GetMapping("/edit/{ticketId}")
+    public TicketEditViewDto getDataForTicketEditView(@PathVariable Long ticketId) {
+        return ticketService.getDataForTicketEditView(ticketId);
+    }
+
     @PutMapping("{ticketId}")
     public ResponseEntity<?> updateTicketData(@RequestBody Ticket ticket, @PathVariable Long ticketId) {
         if(ticket.getSubmitter() == null) {
