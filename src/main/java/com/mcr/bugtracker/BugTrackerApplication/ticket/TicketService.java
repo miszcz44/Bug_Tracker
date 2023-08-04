@@ -8,11 +8,14 @@ import com.mcr.bugtracker.BugTrackerApplication.project.ProjectService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentaryService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTicketDetailsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ public class TicketService {
     private final AppUserRepository appUserRepository;
     private final CommentaryService commentaryService;
     private final AppUserService appUserService;
+    private final TicketHistoryFieldService ticketHistoryFieldService;
 
 
     public void saveTicket(TicketRequest request) {
@@ -140,5 +144,60 @@ public class TicketService {
         List<AppUser> possibleDevelopersWithDemandedData = appUserService.getProjectDevelopers(ticket.getProject());
         return new TicketEditViewDto(ticketWithDemandedData, ticket.getProject().getName(),
                 developerWithDemandedData, possibleDevelopersWithDemandedData);
+    }
+
+    // this needs refactoring XD TODO
+    public void updateTicketData(TicketEditViewDto ticketDto) {
+        Ticket ticketWithUpdataData = ticketDto.getTicket();
+        Ticket ticket = ticketRepository.findById(ticketWithUpdataData.getId()).orElseThrow();
+        if(!ticket.getTitle().equals(ticketWithUpdataData.getTitle())) {
+            ticketHistoryFieldService.save(new TicketHistoryField("Title",
+                    ticket.getTitle(),
+                    ticketWithUpdataData.getTitle(),
+                    ticket,
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+            ticket.setTitle(ticketWithUpdataData.getTitle());
+        }
+        if(!ticket.getDescription().equals(ticketWithUpdataData.getDescription())) {
+            ticketHistoryFieldService.save(new TicketHistoryField("Description",
+                    ticket.getDescription(),
+                    ticketWithUpdataData.getDescription(),
+                    ticket,
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+            ticket.setDescription(ticketWithUpdataData.getDescription());
+        }
+        if(!ticket.getAssignedDeveloper().getId().equals(ticketDto.getDeveloper().getId())) {
+            ticketHistoryFieldService.save(new TicketHistoryField("Developer",
+                    ticket.getAssignedDeveloper().getWholeName(),
+                    ticketDto.getDeveloper().getWholeName(),
+                    ticket,
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+            ticket.setAssignedDeveloper(appUserService.findById(ticketDto.getDeveloper().getId()));
+        }
+        if(!ticket.getPriority().equals(ticketWithUpdataData.getPriority())) {
+            ticketHistoryFieldService.save(new TicketHistoryField("Priority", // property should be enum !!! TODO
+                    ticket.getPriority(),
+                    ticketWithUpdataData.getPriority(),
+                    ticket,
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+            ticket.setPriority(ticketWithUpdataData.getPriority());
+        }
+        if(!ticket.getType().equals(ticketWithUpdataData.getType())) {
+            ticketHistoryFieldService.save(new TicketHistoryField("Type", // property should be enum !!! TODO
+                    ticket.getType(),
+                    ticketWithUpdataData.getType(),
+                    ticket,
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+            ticket.setType(ticketWithUpdataData.getType());
+        }
+        if(!ticket.getStatus().equals(ticketWithUpdataData.getStatus())) {
+            ticketHistoryFieldService.save(new TicketHistoryField("Status", // property should be enum !!! TODO
+                    ticket.getStatus(),
+                    ticketWithUpdataData.getStatus(),
+                    ticket,
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+            ticket.setStatus(ticketWithUpdataData.getStatus());
+        }
+        ticketRepository.save(ticket);
     }
 }

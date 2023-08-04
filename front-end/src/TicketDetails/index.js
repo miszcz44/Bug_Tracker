@@ -215,10 +215,10 @@ const TicketDetails = () => {
                         </div>
                         <DataTable value={historyFields} stripedRows sortMode="multiple" filters={historyFilters} tableStyle={{ minWidth: '30rem' }}
                                    paginator rows={6} style={{backgroundColor: '#111111'}} className='ticket-details-table-1'>
-                            <Column field="property" header="Name" sortable style={{fontSize: '12px', width: '35%', padding: '2px' }}/>
-                            <Column field="oldValue" header="Email" sortable style={{fontSize: '12px', width: '45%', padding: '2px' }}/>
-                            <Column field="newValue" header="Role" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
-                            <Column field="createdAt" header="Role" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
+                            <Column field="property" header="Property" sortable style={{fontSize: '12px', width: '35%', padding: '2px' }}/>
+                            <Column field="oldValue" header="Old Value" sortable style={{fontSize: '12px', width: '45%', padding: '2px' }}/>
+                            <Column field="newValue" header="New Value" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
+                            <Column field="dateChanged" header="Changed" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
                         </DataTable>
                     </div>
                     <div className='col card ticket-details-card-2'>

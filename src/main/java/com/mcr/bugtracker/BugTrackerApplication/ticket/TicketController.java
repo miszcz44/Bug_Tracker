@@ -66,14 +66,8 @@ public class TicketController {
     }
 
     @PutMapping("{ticketId}")
-    public ResponseEntity<?> updateTicketData(@RequestBody Ticket ticket, @PathVariable Long ticketId) {
-        if(ticket.getSubmitter() == null) {
-            ticket.setSubmitter(ticketService.getUserFromContext().orElseThrow());
-            log.info(ticket.getSubmitter().toString());
-        }
-        ticketHistoryFieldService.retrieveDataForHistoryFields(ticket);
-        Ticket updatedTicket = ticketService.saveTicket(ticket);
-        return ResponseEntity.ok(updatedTicket);
+    public void updateTicketData(@RequestBody TicketEditViewDto ticket) {
+        ticketService.updateTicketData(ticket);
     }
 
     @PutMapping("{ticketId}/add-developer-to-ticket")

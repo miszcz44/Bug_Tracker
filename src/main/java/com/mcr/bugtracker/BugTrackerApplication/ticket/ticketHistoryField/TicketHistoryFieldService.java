@@ -63,4 +63,8 @@ public class TicketHistoryFieldService {
                     LocalDateTime.now()));
         }
     }
+
+    public void save(TicketHistoryField field) {
+        ticketHistoryFieldRepository.save(field);
+    }
 }
