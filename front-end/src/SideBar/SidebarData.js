@@ -44,7 +44,7 @@ export const SidebarData = [
     },
     {
         title: 'User Profile',
-        path: '/',
+        path: '/user-profile',
         icon: <AiIcons.AiOutlineUser />,
         cname: 'nav-text'
     }

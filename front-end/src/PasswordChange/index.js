@@ -3,6 +3,8 @@ import {Col, Form, Row} from "react-bootstrap";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
 import {focus} from "@testing-library/user-event/dist/focus";
+import Sidebar from "../SideBar";
+import "./PasswordChange.css";
 
 const PasswordChange = () => {
     const user = useUser();
@@ -25,12 +27,18 @@ const PasswordChange = () => {
                 if (response === 0) {
                     updateError("oldPassword", "old password is incorrect");
                 }
+                else {
+                    alert("Password changed succesfully!")
+                }
             });
     }
     function updateResponse(prop, value) {
         const newResponse = { ...response }
         newResponse[prop] = value;
         setResponse(newResponse);
+        if (prop === "oldPassword") {
+            updateError("oldPassword", "")
+        }
     }
 
     function updateError(prop, value) {
@@ -46,11 +54,15 @@ const PasswordChange = () => {
             const stateObj = {...prev, [name]: ""};
 
             switch (name) {
+                case "oldPassword":
+                    if(!value) {
+                        stateObj[name] = "Please enter old Password"
+                    }
                 case "newPassword":
                     if (!value) {
                         stateObj[name] = "Please enter Password.";
                     } else if (response.confirmPassword && value !== response.confirmPassword) {
-                        stateObj["confirmPassword"] = "Password and Confirm Password does not match.";
+                        stateObj["confirmPassword"] = "Password and Confirm Password do not match.";
                     } else {
                         stateObj["confirmPassword"] = response.confirmPassword ? "" : error.confirmPassword;
                     }
@@ -60,7 +72,7 @@ const PasswordChange = () => {
                     if (!value) {
                         stateObj[name] = "Please enter Confirm Password.";
                     } else if (response.newPassword && value !== response.newPassword) {
-                        stateObj[name] = "Password and Confirm Password does not match.";
+                        stateObj[name] = "Password and Confirm Password do not match.";
                     }
                     break;
 
@@ -72,75 +84,87 @@ const PasswordChange = () => {
         });
     }
 
-    function submit() {
-        if(error.newPassword) {
-            console.log("baedbnvndbvs;ndbsnbesi;on");
-        }
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/password-change`, "PUT", user.jwt, response)
-            .then((response) => {
-                if (response === 0) {
-                    updateError("oldPassword", "old password is incorrect");
-                }
-            });
-    }
+    // function submit() {
+    //     grabAndAuthorizeRequestFromTheServer(`/api/v1/user/password-change`, "PUT", user.jwt, response)
+    //         .then((response) => {
+    //             if (response === 0) {
+    //                 updateError("oldPassword", "old password is incorrect");
+    //             }
+    //             else {
+    //                 alert("Password changed succesfully!")
+    //             }
+    //         });
+    // }
 
     return (
-        <div>
+        <>
+        <Sidebar/>
+        <div className='password-change-container-1'>
             <form onSubmit={handleSubmit}>
-                <Form.Group as={Row} className="my-3" controlId="oldPassword">
-                    <Form.Label column sm="3" md="2">
-                        old password
+                <Form.Group as={Row} className="mt-5 password-change-form-1" controlId="oldPassword" >
+                    <Form.Label className='password-change-label-1' column sm="6" md="6">
+                        Old Password
                     </Form.Label>
-                    <Col sm="9" md="8" lg="6">
-                        <Form.Control
-                            type="password"
-                            onChange={(e) =>
-                                updateResponse("oldPassword", e.target.value)
-                            }
-                        />
-                        {error.oldPassword && <p className='err'>{error.oldPassword}</p>}
-                    </Col>
+                    <p>
+                        <Col>
+                            <Form.Control
+                                type="password"
+                                onChange={(e) =>
+                                    updateResponse("oldPassword", e.target.value)
+                                }
+                                className='password-change-control-1'
+                            />
+                            {error.oldPassword && <p className='err'>{error.oldPassword}</p>}
+                        </Col>
+                    </p>
                 </Form.Group>
 
-                <Form.Group as={Row} className="my-3" controlId="newPassword">
-                    <Form.Label column sm="3" md="2">
-                        new password
+                <Form.Group as={Row} className="my-1 password-change-form-1" controlId="newPassword">
+                    <Form.Label className='password-change-label-1' column sm="6" md="6">
+                        New Password
                     </Form.Label>
-                    <Col sm="9" md="8" lg="6">
-                        <Form.Control
-                            type="password"
-                            name="newPassword"
-                            onBlur={(e) =>
-                                validateInput(e)}
-                            onChange={(e) =>
-                                updateResponse("newPassword", e.target.value)
-                            }
-                        />
-                        {error.newPassword && <p className='err'>{error.newPassword}</p>}
-                    </Col>
+                    <p>
+                        <Col>
+                            <Form.Control
+                                type="password"
+                                name="newPassword"
+                                onBlur={(e) =>
+                                    validateInput(e)}
+                                onChange={(e) =>
+                                    updateResponse("newPassword", e.target.value)
+                                }
+                                className='password-change-control-1'
+                            />
+                            {error.newPassword && <p className='err'>{error.newPassword}</p>}
+                        </Col>
+                    </p>
                 </Form.Group>
 
-                <Form.Group as={Row} className="my-3" controlId="confirmPassword">
-                    <Form.Label column sm="3" md="2">
-                        confirm new password
+                <Form.Group as={Row} className="my-1 password-change-form-1" controlId="confirmPassword">
+                    <Form.Label className='password-change-label-1' column sm="6" md="6">
+                        Confirm New Password
                     </Form.Label>
-                    <Col sm="9" md="8" lg="6">
-                        <Form.Control
-                            type="password"
-                            name="confirmPassword"
-                            onBlur={(e) =>
-                                validateInput(e)}
-                            onChange={(e) =>
-                                updateResponse("confirmPassword", e.target.value)
-                            }
-                            pattern={response.newPassword}
-                        />
-                        {error.confirmPassword && <p className='err'>{error.confirmPassword}</p>}
-                    </Col>
+                    <p>
+                        <Col>
+                            <Form.Control
+                                type="password"
+                                name="confirmPassword"
+                                onBlur={(e) =>
+                                    validateInput(e)}
+                                onChange={(e) =>
+                                    updateResponse("confirmPassword", e.target.value)
+                                }
+                                className='password-change-control-1'
+                                pattern={response.newPassword}
+                            />
+                            {error.confirmPassword && <p className='err'>{error.confirmPassword}</p>}
+                        </Col>
+                    </p>
                 </Form.Group>
-                <button>Submit</button>
+                <button className='password-change-button-1'>Submit</button>
             </form>
         </div>
+        </>
 
     );
 };

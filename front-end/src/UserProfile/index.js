@@ -5,110 +5,95 @@ import jwt_decode from "jwt-decode";
 import FormInput from "../Registration/components/FormInput";
 import {Col, Form, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import SideBar from "../SideBar";
+import {InputText} from "primereact/inputtext";
+import {FilterMatchMode} from "primereact/api";
+import {DataTable} from "primereact/datatable";
+import {Column} from "primereact/column";
+import './UserProfile.css'
 
 const UserProfile = () => {
 
     const user = useUser();
-    const [appUser, setAppUser] = useState({});
-    const [role, setRole] = useState({});
-    function getEmailFromJWT() {
-        if (user.jwt) {
-            const decodedJwt = jwt_decode(user.jwt);
-            return decodedJwt.sub;
-        }
-    }
-
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [role, setRole] = useState("");
+    const [email, setEmail] = useState("");
+    const [numberOfManagedProjects, setNumberOfManagedProjects] = useState(0);
+    const [numberOfSubmittedTickets, setNumberOfSubmittedTickets] = useState(0);
     useEffect(() => {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/${getEmailFromJWT()}`, "GET", user.jwt)
-            .then((userResponse) => {
-                setAppUser(userResponse.user);
-                setRole(userResponse.role);
+        grabAndAuthorizeRequestFromTheServer("/api/v1/user/user-profile", "GET", user.jwt)
+            .then((response) => {
+                setFirstName(response.firstName);
+                setLastName(response.lastName);
+                setRole(response.role);
+                setEmail(response.email);
+                setNumberOfSubmittedTickets(response.numberOfSubmittedTickets);
+                setNumberOfManagedProjects(response.numberOfManagedProjects);
             });
     }, []);
-
-    function updateAppUser(prop, value) {
-        const newAppUser = { ...appUser }
-        newAppUser[prop] = value;
-        setAppUser(newAppUser);
-    }
-
-    function saveUser() {
-        grabAndAuthorizeRequestFromTheServer()
-    }
-
     return (
         <div>
-            {appUser ? (
-                <>
-                <Form.Group as={Row} className="my-3" controlId="firstName">
-                    <Form.Label column sm="3" md="2">
-                        first name
-                    </Form.Label>
-                    <Col sm="9" md="8" lg="6">
-                        <Form.Control
-                            onChange={(e) =>
-                                updateAppUser("firstName", e.target.value)
-                            }
-                            type="text"
-                            value={appUser.firstName}
-                            placeholder="first name"
-                        />
-                    </Col>
-                </Form.Group>
-
-                    <Form.Group as={Row} className="my-3" controlId="lastName">
-                        <Form.Label column sm="3" md="2">
-                            last name
-                        </Form.Label>
-                        <Col sm="9" md="8" lg="6">
-                            <Form.Control
-                                onChange={(e) =>
-                                    updateAppUser("lastName", e.target.value)
-                                }
-                                type="text"
-                                value={appUser.lastName}
-                                placeholder="last name"
-                            />
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="my-3" controlId="email">
-                        <Form.Label column sm="3" md="2">
-                            email
-                        </Form.Label>
-                        <Col sm="9" md="8" lg="6">
-                            <Form.Control
-                                disabled
-                                type="text"
-                                value={appUser.email}
-                                placeholder="email"
-                            />
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="my-3" controlId="role">
-                        <Form.Label column sm="3" md="2">
-                            role
-                        </Form.Label>
-                        <Col sm="9" md="8" lg="6">
-                            <Form.Control
-                                disabled
-                                type="text"
-                                value={role.name}
-                                placeholder="role"
-                            />
-                        </Col>
-                    </Form.Group>
-                    <button onClick={() => saveUser()}>save</button>
-                    <div>
-                        <Link to={`/change-password`}>
-                            change password
-                        </Link>
+            <SideBar/>
+            <div className="user-profile-container-1">
+                <div className="row">
+                    <div className="col card ticket-details-card-1">
+                        <div className='d-flex p-2'>
+                            <h3 className="pt-2 pl-2" style={{marginBottom: '4px'}}>
+                                User Profile
+                            </h3>
+                            <button className='user-profile-button-2'>
+                                Change Email
+                            </button>
+                            <button className='user-profile-button-1' onClick={() => window.location.href = '/change-password'}>
+                                Change Password
+                            </button>
+                        </div>
+                        <div className="row mt-4 p-2">
+                            <div className="col-6">
+                                <label className="project-details-label-1">
+                                    First Name
+                                </label>
+                                <p className="ticket-details-p-1">{firstName}</p>
+                            </div>
+                            <div className="col-6">
+                                <label className="project-details-label-1">
+                                    Last Name
+                                </label>
+                                <p className="ticket-details-p-1">{lastName}</p>
+                            </div>
+                        </div>
+                        <div className="row mt-4 p-2">
+                            <div className="col-6">
+                                <label className="project-details-label-1">
+                                    Email
+                                </label>
+                                <p className="ticket-details-p-1">{email}</p>
+                            </div>
+                            <div className="col-6">
+                                <label className="project-details-label-1">
+                                    Role
+                                </label>
+                                <p className="ticket-details-p-1">{role}</p>
+                            </div>
+                        </div>
+                        <div className="row mt-4 mb-4 p-2">
+                            <div className="col-6">
+                                <label className="project-details-label-1">
+                                    Managed Projects Count
+                                </label>
+                                <p className="ticket-details-p-1">{numberOfManagedProjects}</p>
+                            </div>
+                            <div className="col-6">
+                                <label className="project-details-label-1">
+                                    Submitted Tickets Count
+                                </label>
+                                <p className="ticket-details-p-1">{numberOfSubmittedTickets}</p>
+                            </div>
+                        </div>
                     </div>
-
-                </>
-            ) : (<></>)
-            }
+                </div>
+            </div>
         </div>
     );
 };

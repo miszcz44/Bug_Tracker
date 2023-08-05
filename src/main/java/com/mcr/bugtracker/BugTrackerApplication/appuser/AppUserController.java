@@ -31,6 +31,11 @@ public class AppUserController {
         return new AppUsersResponseDto(allUsers);
     }
 
+    @GetMapping("/user-profile")
+    public UserProfileDto getDataForUserProfile() {
+        return userService.getDataForUserProfile();
+    }
+
     @GetMapping("/{email}")
     public AppUserResponseDto getAppUserByEmail(@PathVariable String email) {
         AppUser user = userService.getUserByEmail(email);

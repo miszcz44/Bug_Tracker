@@ -37,6 +37,7 @@ public class AppUserService implements UserDetailsService {
     private final AppUserRepository appUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
+    private final UserProfileDtoMapper userProfileDtoMapper;
 
     @Override
     public AppUser loadUserByUsername(String email)
@@ -225,5 +226,10 @@ public class AppUserService implements UserDetailsService {
             }
         }
         return developersWithDemandedData;
+    }
+
+    public UserProfileDto getDataForUserProfile() {
+        AppUser user = getUserFromContext().orElseThrow();
+        return userProfileDtoMapper.apply(user);
     }
 }

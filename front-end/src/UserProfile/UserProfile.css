@@ -1,0 +1,33 @@
+.user-profile-container-1 {
+    margin-left: 350px;
+    width: 60%;
+    margin-top: 50px;
+}
+
+.user-profile-button-1 {
+    margin-left: 15px!important;
+    margin-top: 10px;
+    background-color: #0dcaf0;
+    border: none;
+    border-radius: 5px;
+    width: 150px;
+    height: 35px;
+}
+
+.user-profile-button-1:hover {
+    background-color: #31d2f2;
+}
+
+.user-profile-button-2 {
+    margin-left: 400px!important;
+    margin-top: 10px;
+    background-color: #0dcaf0;
+    border: none;
+    border-radius: 5px;
+    width: 150px;
+    height: 35px;
+}
+
+.user-profile-button-2:hover {
+    background-color: #31d2f2;
+}
