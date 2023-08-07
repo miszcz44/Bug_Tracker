@@ -4,42 +4,56 @@ import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
 import {focus} from "@testing-library/user-event/dist/focus";
 import Sidebar from "../SideBar";
-import "./PasswordChange.css";
+import jwt_decode from "jwt-decode";
 
-const PasswordChange = () => {
+const EmailChange = () => {
     const user = useUser();
     const emptyResponse = {
-        oldPassword: "",
-        newPassword: "",
-        confirmPassword: ""
+        oldEmail: "",
+        newEmail: "",
+        password: ""
     }
     const [response, setResponse]  = useState(emptyResponse);
     const [error, setError] = useState({
-        oldPassword: '',
-        newPassword: '',
-        confirmPassword: ''
+        oldEmail: "",
+        newEmail: "",
+        password: ""
     })
-    let regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    let regex = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     grabAndAuthorizeRequestFromTheServer(`/api/v1/user/email-change`, "PUT", user.jwt, response)
+    //         .then((response) => {
+    //             if (response === 0) {
+    //                 updateError("oldPassword", "old password is incorrect");
+    //             }
+    //             else {
+    //                 alert("Password changed successfully!")
+    //             }
+    //         });
+    // }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/password-change`, "PUT", user.jwt, response)
-            .then((response) => {
-                if (response === 0) {
-                    updateError("oldPassword", "old password is incorrect");
-                }
-                else {
-                    alert("Password changed succesfully!")
-                }
-            });
+    function handleSubmit() {
+        grabAndAuthorizeRequestFromTheServer("api/v1/user/email-change", "PUT", user.jwt, response)
+            .then(answer => {
+                console.log("biuhuhbyubyu");
+            })
+            .catch(err => {
+                console.log("ijoijoijo");
+            })
+    }
+    function getEmailFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.sub;
+        }
+        return "null";
     }
     function updateResponse(prop, value) {
         const newResponse = { ...response }
         newResponse[prop] = value;
         setResponse(newResponse);
-        if (prop === "oldPassword") {
-            updateError("oldPassword", "")
-        }
     }
 
     function updateError(prop, value) {
@@ -53,31 +67,25 @@ const PasswordChange = () => {
         console.log(error);
         setError((prev) => {
             const stateObj = {...prev, [name]: ""};
-
             switch (name) {
-                case "oldPassword":
-                    if(!value) {
-                        stateObj[name] = "Please enter old Password";
+                case "oldEmail":
+                    console.log(value);
+                    if(value !== getEmailFromJWT()) {
+                        stateObj[name] = "That is not your current email";
                     }
                     break;
-                case "newPassword":
+                case "newEmail":
+                    if (!value) {
+                        stateObj[name] = "Please enter new Email.";
+                    }
+                    else if (!regex.test(value)) {
+                        stateObj[name] = "Please provide a correct Email address";
+                    }
+                    break;
+
+                case "password":
                     if (!value) {
                         stateObj[name] = "Please enter Password.";
-                    } else if (!regex.test(value)) {
-                        stateObj[name] = "Password must contain one lowercase and uppercase character, a digit, a special character and a total of minimum 8 characters";
-                    }
-                    else if (response.confirmPassword && value !== response.confirmPassword) {
-                        stateObj["confirmPassword"] = "Password and Confirm Password do not match.";
-                    } else {
-                        stateObj["confirmPassword"] = response.confirmPassword ? "" : error.confirmPassword;
-                    }
-                    break;
-
-                case "confirmPassword":
-                    if (!value) {
-                        stateObj[name] = "Please enter Confirm Password.";
-                    } else if (response.newPassword && value !== response.newPassword) {
-                        stateObj[name] = "Password and Confirm Password do not match.";
                     }
                     break;
 
@@ -103,75 +111,76 @@ const PasswordChange = () => {
 
     return (
         <>
-        <Sidebar/>
-        <div className='password-change-container-1'>
-            <form onSubmit={handleSubmit}>
-                <Form.Group as={Row} className="mt-5 password-change-form-1" controlId="oldPassword" >
+            <Sidebar/>
+            <div className='password-change-container-1'>
+                <Form.Group as={Row} className="mt-5 password-change-form-1" controlId="oldEmail" >
                     <Form.Label className='password-change-label-1' column sm="6" md="6">
-                        Old Password
+                        Old Email
                     </Form.Label>
                     <p>
                         <Col>
                             <Form.Control
-                                type="password"
+                                type="email"
+                                name="oldEmail"
+                                onBlur={(e) =>
+                                    validateInput(e)}
                                 onChange={(e) =>
-                                    updateResponse("oldPassword", e.target.value)
+                                    updateResponse("oldEmail", e.target.value)
                                 }
                                 className='password-change-control-1'
                             />
-                            {error.oldPassword && <p className='err'>{error.oldPassword}</p>}
+                            {error.oldEmail && <p className='err'>{error.oldEmail}</p>}
                         </Col>
                     </p>
                 </Form.Group>
 
-                <Form.Group as={Row} className="my-1 password-change-form-1" controlId="newPassword">
+                <Form.Group as={Row} className="my-1 password-change-form-1" controlId="newEmail">
                     <Form.Label className='password-change-label-1' column sm="6" md="6">
-                        New Password
+                        New Email
                     </Form.Label>
                     <p>
                         <Col>
                             <Form.Control
-                                type="password"
-                                name="newPassword"
+                                type="text"
+                                name="newEmail"
                                 onBlur={(e) =>
                                     validateInput(e)}
                                 onChange={(e) =>
-                                    updateResponse("newPassword", e.target.value)
+                                    updateResponse("newEmail", e.target.value)
                                 }
                                 className='password-change-control-1'
                             />
-                            {error.newPassword && <p className='err'>{error.newPassword}</p>}
+                            {error.newEmail && <p className='err'>{error.newEmail}</p>}
                         </Col>
                     </p>
                 </Form.Group>
 
-                <Form.Group as={Row} className="my-1 password-change-form-1" controlId="confirmPassword">
+                <Form.Group as={Row} className="my-1 password-change-form-1" controlId="password">
                     <Form.Label className='password-change-label-1' column sm="6" md="6">
-                        Confirm New Password
+                        Password
                     </Form.Label>
                     <p>
                         <Col>
                             <Form.Control
                                 type="password"
-                                name="confirmPassword"
+                                name="password"
                                 onBlur={(e) =>
                                     validateInput(e)}
                                 onChange={(e) =>
-                                    updateResponse("confirmPassword", e.target.value)
+                                    updateResponse("password", e.target.value)
                                 }
                                 className='password-change-control-1'
-                                pattern={response.newPassword}
+                                pattern={response.password}
                             />
-                            {error.confirmPassword && <p className='err'>{error.confirmPassword}</p>}
+                            {error.password && <p className='err'>{error.password}</p>}
                         </Col>
                     </p>
                 </Form.Group>
-                <button className='password-change-button-1'>Submit</button>
-            </form>
-        </div>
+                <button className='password-change-button-1' onClick={() => handleSubmit(response)}>Submit</button>
+            </div>
         </>
 
     );
 };
 
-export default PasswordChange;
+export default EmailChange;

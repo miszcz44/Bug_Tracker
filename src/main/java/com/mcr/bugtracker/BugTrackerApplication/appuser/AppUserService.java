@@ -232,4 +232,29 @@ public class AppUserService implements UserDetailsService {
         AppUser user = getUserFromContext().orElseThrow();
         return userProfileDtoMapper.apply(user);
     }
+
+    public void validateEmailChange(String newEmail, String password) {
+        validateEmailAvailability(newEmail);
+        validatePassword(password);
+        changeEmail(newEmail);
+    }
+
+    private void changeEmail(String newEmail) {
+        AppUser user = getUserFromContext().get();
+        user.setEmail(newEmail);
+        appUserRepository.save(user);
+    }
+
+    private void validatePassword(String password) {
+        AppUser user = getUserFromContext().get();
+        if(!bCryptPasswordEncoder.matches(password.subSequence(0, password.length()), user.getPassword())) {
+            throw new ApiRequestException("Password is wrong");
+        }
+    }
+
+    private void validateEmailAvailability(String newEmail) {
+        if(appUserRepository.existsByEmail(newEmail)) {
+            throw new ApiRequestException("Email is already taken");
+        }
+    }
 }

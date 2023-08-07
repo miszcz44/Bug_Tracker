@@ -21,6 +21,7 @@ import ProjectDetailsView from "./ProjectDetailsView";
 import AllTicketsView from "./AllTicketsView";
 import TicketDetails from "./TicketDetails";
 import TicketEditView from "./TicketEditView";
+import EmailChange from "./EmailChange";
 
 function App() {
 
@@ -111,6 +112,14 @@ function App() {
                 element={
                     <PrivateRoute>
                         <UserProfile/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/change-email"
+                element={
+                    <PrivateRoute>
+                        <EmailChange/>
                     </PrivateRoute>
                 }
             />

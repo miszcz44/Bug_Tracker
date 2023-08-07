@@ -42,7 +42,7 @@ const UserProfile = () => {
                             <h3 className="pt-2 pl-2" style={{marginBottom: '4px'}}>
                                 User Profile
                             </h3>
-                            <button className='user-profile-button-2'>
+                            <button className='user-profile-button-2' onClick={() => window.location.href = '/change-email'}>
                                 Change Email
                             </button>
                             <button className='user-profile-button-1' onClick={() => window.location.href = '/change-password'}>

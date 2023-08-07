@@ -7,10 +7,6 @@ import {useLocalState} from "../util/useLocalStorage";
 import axios from 'axios';
 import {ButtonGroup, Col, Dropdown, DropdownButton, Form, FormControl, Row} from "react-bootstrap";
 import {useUser} from "../UserProvider";
-
-
-
-
 const Registration = () => {
     const user = useUser();
     const [values, setValues] = useState({
