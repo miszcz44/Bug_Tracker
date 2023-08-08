@@ -32,10 +32,8 @@ public class TicketController {
 
 
     @PostMapping
-    public ResponseEntity<?> createEmptyTicket() {
-        Ticket ticket = new Ticket();
-        ticketService.saveTicket(ticket);
-        return ResponseEntity.ok(ticket);
+    public Ticket createNewTicket(@RequestBody Project project) {
+        return ticketService.createNewTicket(project);
     }
 
     @PostMapping("/to-project")

@@ -23,20 +23,20 @@ const TicketEditView = () => {
     const [ticket, setTicket] = useState("");
     const [projectName, setProjectName] = useState("");
     const [currentDeveloper, setCurrentDeveloper] = useState({});
-    const currentDeveloperLabel = {value: currentDeveloper, label: currentDeveloper.wholeName + ' | ' + currentDeveloper.email}
+    const currentDeveloperLabel = currentDeveloper ? {value: currentDeveloper, label: currentDeveloper.wholeName + ' | ' + currentDeveloper.email} : null;
     const [developers, setDevelopers] = useState([]);
     const developersLabel = developers.map(developer => ({value: developer, label: developer.wholeName + ' | ' + developer.email}))
     const [selectedDeveloper, setSelectedDeveloper] = useState();
     const [types, setTypes] = useState([]);
-    const typeLabel = {value: ticket.type, label: ticket.type};
+    const typeLabel = ticket.type ? {value: ticket.type, label: ticket.type} : "";
     const typesLabel = types.map(type => ({value: type.name, label: type.name}))
     const [selectedType, setSelectedType] = useState();
     const [priorities, setPriorities] = useState([]);
-    const priorityLabel = {value: ticket.priority, label: ticket.priority};
+    const priorityLabel = ticket.priority ? {value: ticket.priority, label: ticket.priority} : "";
     const prioritiesLabel = priorities.map(priority => ({value: priority.name, label: priority.name}))
     const [selectedPriority, setSelectedPriority] = useState();
     const [status, setStatuses] = useState([]);
-    const statusLabel = {value: ticket.status, label: ticket.status};
+    const statusLabel = ticket.status ? {value: ticket.status, label: ticket.status} : "";
     const statusesLabel = status.map(progressStatus => ({value: progressStatus.name, label: progressStatus.name}))
     const [selectedStatus, setSelectedStatus] = useState();
     const [personnelFilters, setPersonnelFilters] = useState({
@@ -201,7 +201,7 @@ const TicketEditView = () => {
                                                 <Select
                                                     placeholder="Select priority"
                                                     options={prioritiesLabel}
-                                                    value={selectedPriority ? selectedPriority : priorityLabel}
+                                                    value={selectedPriority ? selectedPriority : priorityLabel ? priorityLabel : ""}
                                                     onChange={handlePrioritySelect}
                                                 />
                                             </Col>
@@ -220,7 +220,7 @@ const TicketEditView = () => {
                                                 <Select
                                                     placeholder="Select type"
                                                     options={typesLabel}
-                                                    value={selectedType ? selectedType : typeLabel}
+                                                    value={selectedType ? selectedType : typeLabel ? typeLabel : ""}
                                                     onChange={handleTypeSelect}
                                                 />
                                             </Col>
@@ -237,7 +237,7 @@ const TicketEditView = () => {
                                                 <Select
                                                     placeholder="Select status"
                                                     options={statusesLabel}
-                                                    value={selectedStatus ? selectedStatus : statusLabel}
+                                                    value={selectedStatus ? selectedStatus : statusLabel ? statusLabel: ""}
                                                     onChange={handleStatusSelect}
                                                 />
                                             </Col>

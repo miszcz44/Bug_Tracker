@@ -140,7 +140,10 @@ public class TicketService {
                 .status(ticket.getStatus())
                 .type(ticket.getType())
                 .build();
-        AppUser developerWithDemandedData = appUserService.getDeveloperForTicketEditView(ticket.getAssignedDeveloper());
+        AppUser developerWithDemandedData = null;
+        if(ticket.getAssignedDeveloper() != null) {
+            developerWithDemandedData = appUserService.getDeveloperForTicketEditView(ticket.getAssignedDeveloper());
+        }
         List<AppUser> possibleDevelopersWithDemandedData = appUserService.getProjectDevelopers(ticket.getProject());
         return new TicketEditViewDto(ticketWithDemandedData, ticket.getProject().getName(),
                 developerWithDemandedData, possibleDevelopersWithDemandedData);
@@ -199,5 +202,11 @@ public class TicketService {
             ticket.setStatus(ticketWithUpdataData.getStatus());
         }
         ticketRepository.save(ticket);
+    }
+
+    public Ticket createNewTicket(Project project) {
+        Ticket ticket = new Ticket();
+        ticket.setProject(project);
+        return ticketRepository.save(ticket);
     }
 }

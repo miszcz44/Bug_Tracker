@@ -233,10 +233,15 @@ public class AppUserService implements UserDetailsService {
         return userProfileDtoMapper.apply(user);
     }
 
-    public void validateEmailChange(String newEmail, String password) {
-        validateEmailAvailability(newEmail);
-        validatePassword(password);
+    public int validateEmailChange(String newEmail, String password) {
+        if(isEmailTaken(newEmail)) {
+            return 0;
+        }
+        if(!isPasswordCorrect(password)){
+            return -1;
+        }
         changeEmail(newEmail);
+        return 1;
     }
 
     private void changeEmail(String newEmail) {
@@ -245,16 +250,18 @@ public class AppUserService implements UserDetailsService {
         appUserRepository.save(user);
     }
 
-    private void validatePassword(String password) {
+    private boolean isPasswordCorrect(String password) {
         AppUser user = getUserFromContext().get();
         if(!bCryptPasswordEncoder.matches(password.subSequence(0, password.length()), user.getPassword())) {
-            throw new ApiRequestException("Password is wrong");
+            return false;
         }
+        return true;
     }
 
-    private void validateEmailAvailability(String newEmail) {
-        if(appUserRepository.existsByEmail(newEmail)) {
-            throw new ApiRequestException("Email is already taken");
+    private boolean isEmailTaken(String newEmail) {
+        if(!appUserRepository.existsByEmail(newEmail)) {
+            return false;
         }
+        return true;
     }
 }

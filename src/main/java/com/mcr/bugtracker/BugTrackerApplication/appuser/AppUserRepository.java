@@ -47,6 +47,5 @@ public interface AppUserRepository
     @Query(value = "SELECT app_user_role FROM app_user WHERE email = ?1",
             nativeQuery = true)
     AppUserRole findRoleByEmail(String email);
-
     boolean existsByEmail(String email);
 }

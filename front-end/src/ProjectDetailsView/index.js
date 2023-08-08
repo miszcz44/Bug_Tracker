@@ -35,14 +35,23 @@ const ProjectDetailsView = () => {
     }, []);
 
     const actionBodyTemplate = (rowData) => {
-        let url = "/projects/details/"
+        let url = "/tickets/details/"
         return <div>
             <Link to={url.concat(rowData.id)}>Details</Link>
         </div>
     };
 
+    function createNewTicket() {
+        grabAndAuthorizeRequestFromTheServer("/api/v1/ticket", "POST", user.jwt, {
+            "id": projectId
+        })
+            .then((ticket) => {
+                window.location.href = `/tickets/${ticket.id}`;
+            });
+    }
+
     return (
-        <div style={{backgroundColor: '#efefef', height: '753px'}}>
+        <div>
             <SideBar/>
             <div className="card project-details-card-1">
                 <h2 className="pt-2 px-2" style={{marginBottom: '4px'}}>
@@ -50,7 +59,7 @@ const ProjectDetailsView = () => {
                 </h2>
                 <div className='d-inline py-1'>
                     <Link className="px-3" to={editUrl.concat(projectId)}>Edit</Link>
-                    <Link to={editUrl.concat(projectId)}>Create New Ticket</Link>
+                    <Link onClick={() => createNewTicket()}>Create New Ticket</Link>
                 </div>
                 <div className="container">
                     <div className="row project-details-row-1 d-inline">
@@ -58,7 +67,7 @@ const ProjectDetailsView = () => {
                             <label className="project-details-label-1">
                                 Project Description
                             </label>
-                            <p className="project-details-p-1">errrbzdsdbverrrbzdsdbverrrhearhaetthaethaethearhgraegaergaergaergaergaergaregraegrarbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbverrrbzdsdbv</p>
+                            <p className="project-details-p-1">{project.description}</p>
                         </div>
                     </div>
                 </div>

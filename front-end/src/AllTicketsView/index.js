@@ -28,10 +28,11 @@ const AllTicketsView = () => {
     // }
 
     const actionBodyTemplate = (rowData) => {
-        let url = "/tickets/details/"
+        let detailsUrl = "/tickets/details/"
+        let editUrl = "/tickets/"
         return <div>
-            <Link style={{textDecoration: 'none'}} className='px-4' to={url.concat(rowData.id)}>Details </Link>
-            <span className='all-projects-span-1' to='/'>Edit</span>
+            <Link style={{textDecoration: 'none'}} className='px-4' to={detailsUrl.concat(rowData.id)}>Details </Link>
+            <Link style={{textDecoration: 'none'}} className='all-projects-span-1' to={editUrl.concat(rowData.id)}>Edit</Link>
         </div>
     };
 

@@ -69,9 +69,8 @@ public class AppUserController {
     }
 
     @PutMapping("email-change")
-    public ResponseEntity<?> changeEmail(@RequestBody EmailChangeResponse response) {
-        userService.validateEmailChange(response.getNewEmail(), response.getPassword());
-        return ResponseEntity.ok(null);
+    public int changeEmail(@RequestBody EmailChangeResponse response) {
+        return userService.validateEmailChange(response.getNewEmail(), response.getPassword());
     }
 
 }

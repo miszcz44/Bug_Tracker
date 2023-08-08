@@ -19,10 +19,10 @@ public class ProjectController {
     private final AppUserService appUserService;
 
     @PostMapping
-    public ResponseEntity<?> createEmptyProject() {
+    public Project createEmptyProject() {
         Project project = new Project(appUserService.getUserFromContext().orElseThrow());
         projectService.saveProject(project);
-        return ResponseEntity.ok(project);
+        return project;
     }
 
     @GetMapping
