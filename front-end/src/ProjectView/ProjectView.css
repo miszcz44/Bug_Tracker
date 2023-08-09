@@ -90,3 +90,12 @@ body {
     height: 30px;
     text-align: end;
 }
+
+.project-view-link-1 {
+    text-decoration: none;
+    color: #ee1111;
+}
+
+.project-view-link-1:hover {
+    color: #bb2321;
+}

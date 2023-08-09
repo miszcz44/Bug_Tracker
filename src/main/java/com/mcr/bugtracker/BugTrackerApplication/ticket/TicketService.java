@@ -207,6 +207,7 @@ public class TicketService {
     public Ticket createNewTicket(Project project) {
         Ticket ticket = new Ticket();
         ticket.setProject(project);
+        ticket.setCreatedAt(LocalDateTime.now());
         return ticketRepository.save(ticket);
     }
 }

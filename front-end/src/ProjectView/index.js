@@ -40,7 +40,7 @@ const ProjectView = () => {
     const actionBodyTemplate = (rowData) => {
 
         return <div>
-            <Link onClick={() => deleteUserFromProject(rowData.id)}>{rowData.id}</Link>
+            <Link className='project-view-link-1' onClick={() => deleteUserFromProject(rowData.id)}>Delete</Link>
         </div>
     };
     function updateProject(prop, value) {

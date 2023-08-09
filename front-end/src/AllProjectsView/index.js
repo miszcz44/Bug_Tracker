@@ -29,10 +29,11 @@ const AllProjectsView = () => {
     }
 
     const actionBodyTemplate = (rowData) => {
-        let url = "/projects/details/"
+        let detailsUrl = "/projects/details/"
+        let editUrl = "/projects/"
         return <div>
-            <Link style={{textDecoration: 'none'}} className='px-4' to={url.concat(rowData.id)}>Details </Link>
-            <span className='all-projects-span-1' onClick={() => deleteProject(rowData.id)} to='/'>Delete</span>
+            <Link style={{textDecoration: 'none'}} className='px-4' to={detailsUrl.concat(rowData.id)}>Details </Link>
+            <Link className='d-block all-projects-span-1'to={editUrl.concat(rowData.id)}>Edit</Link>
         </div>
     };
 

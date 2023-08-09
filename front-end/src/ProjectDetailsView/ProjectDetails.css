@@ -37,3 +37,17 @@
     height: 30px;
     text-align: end;
 }
+
+.project-details-button-1 {
+    margin-left: 50px!important;
+    margin-top: 10px;
+    background-color: #ef3205;
+    border: none;
+    border-radius: 5px;
+    width: 150px;
+    height: 40px;
+}
+
+.project-details-button-1:hover {
+    background-color: #cc2122;
+}

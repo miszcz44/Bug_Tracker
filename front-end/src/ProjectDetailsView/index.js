@@ -45,18 +45,29 @@ const ProjectDetailsView = () => {
         grabAndAuthorizeRequestFromTheServer("/api/v1/ticket", "POST", user.jwt, {
             "id": projectId
         })
-            .then((ticket) => {
+            .then(ticket => {
                 window.location.href = `/tickets/${ticket.id}`;
             });
+    }
+    function deleteProject() {
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/project`, "DELETE", user.jwt, projectId)
+            .then(response => {
+                window.location.href = '/projects';
+            })
     }
 
     return (
         <div>
             <SideBar/>
             <div className="card project-details-card-1">
-                <h2 className="pt-2 px-2" style={{marginBottom: '4px'}}>
-                    Details for project - {project.name}
-                </h2>
+                <div className='d-flex'>
+                    <h2 className="pt-2 px-2" style={{marginBottom: '4px', width: '80%'}}>
+                        Details for project - {project.name}
+                    </h2>
+                    <button className='project-details-button-1' onClick={() => deleteProject()}>
+                        Delete Project
+                    </button>
+                </div>
                 <div className='d-inline py-1'>
                     <Link className="px-3" to={editUrl.concat(projectId)}>Edit</Link>
                     <Link onClick={() => createNewTicket()}>Create New Ticket</Link>

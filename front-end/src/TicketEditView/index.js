@@ -59,7 +59,7 @@ const TicketEditView = () => {
             "ticket": ticket,
             "developer": selectedDeveloper ? selectedDeveloper.value : currentDeveloper
         })
-      //  window.location.href = `/tickets/${ticket.id}`;
+        window.location.href = `/tickets/${ticket.id}`;
     }
 
     function handleDeveloperSelect(data) {
@@ -112,6 +112,7 @@ const TicketEditView = () => {
                         </button>
                     </div>
                     <p className="px-4">Change Ticket properties</p>
+                    <form onSubmit={() => save()}>
                         <div className='container'>
                             <div className='row'>
                                 <div className='col-sm'>
@@ -129,6 +130,7 @@ const TicketEditView = () => {
                                                     value={ticket.title}
                                                     placeholder="name"
                                                     style={{width:'300px'}}
+                                                    required
                                                 />
                                             </Col>
                                         </p>
@@ -166,6 +168,7 @@ const TicketEditView = () => {
                                                     placeholder="description"
                                                     style={{width:'300px', height:'130px', resize:'none'}}
                                                     className='project-view-textarea-1'
+                                                    required
                                                 />
                                             </Col>
                                         </p>
@@ -246,6 +249,7 @@ const TicketEditView = () => {
                                 </div>
                             </div>
                         </div>
+                    </form>
                 </div>
             </div>
         </>
