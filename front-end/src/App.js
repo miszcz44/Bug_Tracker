@@ -25,6 +25,7 @@ import EmailChange from "./EmailChange";
 import TicketCreateView from "./TicketCreateView";
 import ProjectManagerViewDashboard from "./ProjectManagerViewDashboard";
 import DeveloperViewDashboard from "./DeveloperViewDashboard";
+import NoRoleViewDashboard from "./NoRoleViewDashboard";
 
 function App() {
 
@@ -53,9 +54,9 @@ function App() {
                             <DeveloperViewDashboard/>
                         </PrivateRoute>
                         ) :
-                <PrivateRoute>
-                    <Dashboard/>
-                </PrivateRoute>
+                        <PrivateRoute>
+                            <NoRoleViewDashboard/>
+                        </PrivateRoute>
             }/>
             <Route
                 path="/tickets/:id"

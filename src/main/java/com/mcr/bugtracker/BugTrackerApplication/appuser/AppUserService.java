@@ -275,7 +275,17 @@ public class AppUserService implements UserDetailsService {
         else if(currentUser.getSRole().equals("SUBMITTER")) {
             return getDataForSubmitterDashboardView(currentUser);
         }
+        else if(currentUser.getSRole().equals("NONE")) {
+            return getDataForNoRoleDashboardView(currentUser);
+        }
         return null;
+    }
+
+    private DashboardViewDto getDataForNoRoleDashboardView(AppUser currentUser) {
+        DashboardViewDto dashboardViewDto = new DashboardViewDto();
+        List<Project> belongingProjects = currentUser.getAssignedProjects();
+        dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, belongingProjects);
+        return dashboardViewDto;
     }
 
     private DashboardViewDto getDataForSubmitterDashboardView(AppUser currentUser) {
