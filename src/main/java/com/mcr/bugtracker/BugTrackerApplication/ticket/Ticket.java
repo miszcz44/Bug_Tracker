@@ -51,10 +51,12 @@ public class Ticket {
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Commentary> comments;
-    @OneToMany(mappedBy = "ticket")
+    @OneToMany(mappedBy = "ticket",
+                cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Attachment> attachments;
-    @OneToMany(mappedBy = "ticket")
+    @OneToMany(mappedBy = "ticket",
+                cascade = CascadeType.ALL)
     @JsonIgnore
     private List<TicketHistoryField> ticketHistoryFields;
     private String priority;

@@ -73,4 +73,9 @@ public class AppUserController {
         return userService.validateEmailChange(response.getNewEmail(), response.getPassword());
     }
 
+    @GetMapping("/dashboard")
+    public DashboardViewDto getDataForDashboardView() {
+        return userService.getDataForDashboardView();
+    }
+
 }

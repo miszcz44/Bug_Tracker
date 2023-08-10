@@ -121,9 +121,13 @@ public class TicketService {
                 .type(ticket.getType())
                 .createdAt(ticket.getCreatedAt().truncatedTo(ChronoUnit.SECONDS))
                 .build();
+        String developerName = "";
+        if(ticket.getAssignedDeveloper() != null) {
+            developerName = ticket.getAssignedDeveloper().getWholeName();
+        }
         List<CommentsForTicketDetailsViewDto> comments = commentaryService.getCommentsWithDemandedData(ticket.getComments());
         return new TicketDetailsViewDto(ticketWithDemandedData,
-                ticket.getAssignedDeveloper().getWholeName(),
+                developerName,
                 ticket.getSubmitter().getWholeName(),
                 ticket.getProject().getName(),
                 comments,
@@ -182,9 +186,14 @@ public class TicketService {
                     ticketDto.getDeveloper().getWholeName(),
                     ticket,
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setAssignedDeveloper(appUserService.findById(ticketDto.getDeveloper().getId()));
+            if(ticketDto.getDeveloper() == null) {
+                ticket.setAssignedDeveloper(null);
+            }
+            else {
+                ticket.setAssignedDeveloper(appUserService.findById(ticketDto.getDeveloper().getId()));
+            }
         }
-        else if(ticket.getAssignedDeveloper() == null) {
+        else if(ticket.getAssignedDeveloper() == null && ticketDto.getDeveloper() != null) {
             ticket.setAssignedDeveloper(appUserService.findById(ticketDto.getDeveloper().getId()));
         }
         if(ticket.getPriority() != null && !ticket.getPriority().equals(ticketWithUpdatedData.getPriority())) {

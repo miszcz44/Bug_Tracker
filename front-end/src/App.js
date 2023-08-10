@@ -2,7 +2,7 @@ import './App.css';
 import {useEffect, useState} from "react";
 import {useLocalState} from "./util/useLocalStorage";
 import {Route, Routes} from "react-router-dom";
-import Dashboard from "./Dashboard";
+import Dashboard from "./ProjectManagerViewDashboard";
 import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
 import TicketView from "./TicketView";
@@ -23,6 +23,8 @@ import TicketDetails from "./TicketDetails";
 import TicketEditView from "./TicketEditView";
 import EmailChange from "./EmailChange";
 import TicketCreateView from "./TicketCreateView";
+import ProjectManagerViewDashboard from "./ProjectManagerViewDashboard";
+import DeveloperViewDashboard from "./DeveloperViewDashboard";
 
 function App() {
 
@@ -41,25 +43,35 @@ function App() {
     return (
         <Routes>
             <Route path="dashboard" element={
+                role.authority === "PROJECT_MANAGER" ? (
+                    <PrivateRoute>
+                        <ProjectManagerViewDashboard/>
+                    </PrivateRoute>
+                    ) :
+                    role.authority === "DEVELOPER" || role.authority === "SUBMITTER" ? (
+                        <PrivateRoute>
+                            <DeveloperViewDashboard/>
+                        </PrivateRoute>
+                        ) :
                 <PrivateRoute>
                     <Dashboard/>
                 </PrivateRoute>
             }/>
-            {/*<Route*/}
-            {/*    path="/tickets/:id"*/}
-            {/*    element={*/}
-            {/*    role.authority === "DEVELOPER" ? (*/}
-            {/*    <PrivateRoute>*/}
-            {/*        <DeveloperTicketView/>*/}
-            {/*    </PrivateRoute>*/}
-            {/*    ) : (*/}
-            {/*    <PrivateRoute>*/}
-            {/*        <TicketView/>*/}
-            {/*    </PrivateRoute>*/}
-            {/*    )*/}
-            {/*    }*/}
-            {/*/>*/}
-            {/* BEHAVIOR BASED ON ROLES!!!!!!!*/}
+            <Route
+                path="/tickets/:id"
+                element={
+                role.authority === "DEVELOPER" ? (
+                <PrivateRoute>
+                    <DeveloperTicketView/>
+                </PrivateRoute>
+                ) : (
+                <PrivateRoute>
+                    <TicketView/>
+                </PrivateRoute>
+                )
+                }
+            />
+             BEHAVIOR BASED ON ROLES!!!!!!!
             <Route
                 path="/projects/:id"
                 element={

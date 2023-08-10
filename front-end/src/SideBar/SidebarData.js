@@ -15,7 +15,7 @@ import * as BsIcons from 'react-icons/bs'
 // import "./App.css";
 import UserProfile from "../UserProfile";
 import RoleManagement from "../RoleManagement";
-import Dashboard from "../Dashboard";
+import Dashboard from "../ProjectManagerViewDashboard";
 
 export const SidebarData = [
     {

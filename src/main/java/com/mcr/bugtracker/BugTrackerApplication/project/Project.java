@@ -38,7 +38,8 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<AppUser> projectPersonnel;
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project",
+                cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Ticket> tickets;
 

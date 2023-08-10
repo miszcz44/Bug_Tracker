@@ -5,6 +5,7 @@ import com.mcr.bugtracker.BugTrackerApplication.email.EmailSender;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.FALSE;
@@ -38,6 +36,7 @@ public class AppUserService implements UserDetailsService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
     private final UserProfileDtoMapper userProfileDtoMapper;
+    private static final Random RANDOM = new Random();
 
     @Override
     public AppUser loadUserByUsername(String email)
@@ -263,5 +262,82 @@ public class AppUserService implements UserDetailsService {
             return false;
         }
         return true;
+    }
+
+    public DashboardViewDto getDataForDashboardView() {
+        AppUser currentUser = getUserFromContext().get();
+        if(currentUser.getSRole().equals("PROJECT_MANAGER")) {
+            return getDataForProjectManagerDashboardView(currentUser);
+        }
+        else if(currentUser.getSRole().equals("DEVELOPER")) {
+            return getDataForDeveloperDashboardView(currentUser);
+        }
+        else if(currentUser.getSRole().equals("SUBMITTER")) {
+            return getDataForSubmitterDashboardView(currentUser);
+        }
+        return null;
+    }
+
+    private DashboardViewDto getDataForSubmitterDashboardView(AppUser currentUser) {
+        DashboardViewDto dashboardViewDto = new DashboardViewDto();
+        List<Project> belongingProjects = currentUser.getAssignedProjects();
+        dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, belongingProjects);
+        List<Ticket> submittedTickets = currentUser.getSubmittedTicket();
+        dashboardViewDto = setValuesFromRandomTicket(dashboardViewDto, submittedTickets);
+        return dashboardViewDto;
+    }
+
+    private DashboardViewDto getDataForDeveloperDashboardView(AppUser currentUser) {
+        DashboardViewDto dashboardViewDto = new DashboardViewDto();
+        List<Project> belongingProjects = currentUser.getAssignedProjects();
+        dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, belongingProjects);
+        List<Ticket> assignedTickets = currentUser.getAssignedTicket();
+        dashboardViewDto = setValuesFromRandomTicket(dashboardViewDto, assignedTickets);
+        return dashboardViewDto;
+    }
+
+    private DashboardViewDto getDataForProjectManagerDashboardView(AppUser currentUser) {
+        DashboardViewDto dashboardViewDto = new DashboardViewDto();
+        List<Project> managedProjects = currentUser.getManagedProject();
+        dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, managedProjects);
+        List<Ticket> submittedTickets = currentUser.getSubmittedTicket();
+        if (dashboardViewDto != setValuesFromRandomTicket(dashboardViewDto, submittedTickets)) {
+            dashboardViewDto = setValuesFromRandomTicket(dashboardViewDto, submittedTickets);
+        }
+        else {
+            Collections.shuffle(managedProjects);
+            for(Project project : managedProjects) {
+                List<Ticket> ticketsInProject = project.getTickets();
+                if(ticketsInProject.size() > 0) {
+                    Ticket ticket = ticketsInProject.get(RANDOM.nextInt(ticketsInProject.size()));
+                    dashboardViewDto.setTicketId(ticket.getId());
+                    dashboardViewDto.setTicketTitle(ticket.getTitle());
+                    dashboardViewDto.setTicketDescription(ticket.getDescription());
+                    break;
+                }
+            }
+        }
+        return dashboardViewDto;
+    }
+    private DashboardViewDto setValuesFromRandomTicket(DashboardViewDto dashboardViewDto, List<Ticket> tickets) {
+        if(tickets.size() > 0) {
+            Ticket ticket = tickets.get(RANDOM.nextInt(tickets.size()));
+            dashboardViewDto.setTicketId(ticket.getId());
+            dashboardViewDto.setTicketTitle(ticket.getTitle());
+            dashboardViewDto.setTicketDescription(ticket.getDescription());
+            return dashboardViewDto;
+        }
+        return dashboardViewDto;
+    }
+
+    private DashboardViewDto setValuesFromRandomProject(DashboardViewDto dashboardViewDto, List<Project> projects) {
+        if(projects.size() > 0) {
+            Project project = projects.get(RANDOM.nextInt(projects.size()));
+            dashboardViewDto.setProjectId(project.getId());
+            dashboardViewDto.setProjectTitle(project.getName());
+            dashboardViewDto.setProjectDescription(project.getDescription());
+            return dashboardViewDto;
+        }
+        return dashboardViewDto;
     }
 }
