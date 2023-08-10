@@ -151,25 +151,32 @@ public class TicketService {
 
     // this needs refactoring XD TODO
     public void updateTicketData(TicketEditViewDto ticketDto) {
-        Ticket ticketWithUpdataData = ticketDto.getTicket();
-        Ticket ticket = ticketRepository.findById(ticketWithUpdataData.getId()).orElseThrow();
-        if(!ticket.getTitle().equals(ticketWithUpdataData.getTitle())) {
+        Ticket ticketWithUpdatedData = ticketDto.getTicket();
+        Ticket ticket = ticketRepository.findById(ticketWithUpdatedData.getId()).orElseThrow();
+        if(ticket.getTitle() != null && !ticket.getTitle().equals(ticketWithUpdatedData.getTitle())) {
             ticketHistoryFieldService.save(new TicketHistoryField("Title",
                     ticket.getTitle(),
-                    ticketWithUpdataData.getTitle(),
+                    ticketWithUpdatedData.getTitle(),
                     ticket,
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setTitle(ticketWithUpdataData.getTitle());
+            ticket.setTitle(ticketWithUpdatedData.getTitle());
         }
-        if(!ticket.getDescription().equals(ticketWithUpdataData.getDescription())) {
+        else if(ticket.getTitle() == null) {
+            ticket.setTitle(ticketWithUpdatedData.getTitle());
+        }
+        if(ticket.getDescription() != null && !ticket.getDescription().equals(ticketWithUpdatedData.getDescription())) {
             ticketHistoryFieldService.save(new TicketHistoryField("Description",
                     ticket.getDescription(),
-                    ticketWithUpdataData.getDescription(),
+                    ticketWithUpdatedData.getDescription(),
                     ticket,
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setDescription(ticketWithUpdataData.getDescription());
+            ticket.setDescription(ticketWithUpdatedData.getDescription());
         }
-        if(!ticket.getAssignedDeveloper().getId().equals(ticketDto.getDeveloper().getId())) {
+        else if(ticket.getDescription() == null) {
+            ticket.setDescription(ticketWithUpdatedData.getDescription());
+        }
+        if(ticket.getAssignedDeveloper() != null &&
+                !ticket.getAssignedDeveloper().getId().equals(ticketDto.getDeveloper().getId())) {
             ticketHistoryFieldService.save(new TicketHistoryField("Developer",
                     ticket.getAssignedDeveloper().getWholeName(),
                     ticketDto.getDeveloper().getWholeName(),
@@ -177,29 +184,41 @@ public class TicketService {
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
             ticket.setAssignedDeveloper(appUserService.findById(ticketDto.getDeveloper().getId()));
         }
-        if(!ticket.getPriority().equals(ticketWithUpdataData.getPriority())) {
+        else if(ticket.getAssignedDeveloper() == null) {
+            ticket.setAssignedDeveloper(appUserService.findById(ticketDto.getDeveloper().getId()));
+        }
+        if(ticket.getPriority() != null && !ticket.getPriority().equals(ticketWithUpdatedData.getPriority())) {
             ticketHistoryFieldService.save(new TicketHistoryField("Priority", // property should be enum !!! TODO
                     ticket.getPriority(),
-                    ticketWithUpdataData.getPriority(),
+                    ticketWithUpdatedData.getPriority(),
                     ticket,
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setPriority(ticketWithUpdataData.getPriority());
+            ticket.setPriority(ticketWithUpdatedData.getPriority());
         }
-        if(!ticket.getType().equals(ticketWithUpdataData.getType())) {
+        else if(ticket.getPriority() == null) {
+            ticket.setPriority(ticketWithUpdatedData.getPriority());
+        }
+        if(ticket.getType() != null && !ticket.getType().equals(ticketWithUpdatedData.getType())) {
             ticketHistoryFieldService.save(new TicketHistoryField("Type", // property should be enum !!! TODO
                     ticket.getType(),
-                    ticketWithUpdataData.getType(),
+                    ticketWithUpdatedData.getType(),
                     ticket,
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setType(ticketWithUpdataData.getType());
+            ticket.setType(ticketWithUpdatedData.getType());
         }
-        if(!ticket.getStatus().equals(ticketWithUpdataData.getStatus())) {
+        else if(ticket.getType() == null) {
+            ticket.setType(ticketWithUpdatedData.getType());
+        }
+        if(ticket.getStatus() != null && !ticket.getStatus().equals(ticketWithUpdatedData.getStatus())) {
             ticketHistoryFieldService.save(new TicketHistoryField("Status", // property should be enum !!! TODO
                     ticket.getStatus(),
-                    ticketWithUpdataData.getStatus(),
+                    ticketWithUpdatedData.getStatus(),
                     ticket,
                     LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setStatus(ticketWithUpdataData.getStatus());
+            ticket.setStatus(ticketWithUpdatedData.getStatus());
+        }
+        else if(ticket.getStatus() == null) {
+            ticket.setStatus(ticketWithUpdatedData.getStatus());
         }
         ticketRepository.save(ticket);
     }
@@ -208,6 +227,7 @@ public class TicketService {
         Ticket ticket = new Ticket();
         ticket.setProject(project);
         ticket.setCreatedAt(LocalDateTime.now());
+        ticket.setSubmitter(appUserRepository.findById(getUserFromContext().orElseThrow().getId()).orElseThrow());
         return ticketRepository.save(ticket);
     }
 }

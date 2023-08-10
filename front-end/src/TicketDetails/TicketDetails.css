@@ -49,3 +49,17 @@
 .ticket-details-button-1:hover {
     background-color: #31d2f2;
 }
+
+.ticket-details-button-2 {
+    margin-left: 180px!important;
+    margin-top: 10px;
+    background-color: #ef3205;
+    border: none;
+    border-radius: 5px;
+    width: 150px;
+    height: 40px;
+}
+
+.ticket-details-button-2:hover {
+    background-color: #cc2122;
+}

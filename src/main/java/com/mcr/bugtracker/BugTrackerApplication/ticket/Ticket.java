@@ -48,7 +48,7 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
-    @OneToMany(mappedBy = "ticket")
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Commentary> comments;
     @OneToMany(mappedBy = "ticket")

@@ -17,9 +17,10 @@ import {FilterMatchMode} from "primereact/api";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {Link} from "react-router-dom";
-const TicketEditView = () => {
+const TicketCreateView = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const ticketId = window.location.href.split("tickets/")[1];
+    const projectId = window.location.href.split("/")[4];
     const [ticket, setTicket] = useState("");
     const [projectName, setProjectName] = useState("");
     const [currentDeveloper, setCurrentDeveloper] = useState({});
@@ -104,7 +105,7 @@ const TicketEditView = () => {
                 <div className='card project-view-card-1'>
                     <div className='d-flex'>
                         <h2 className="pt-1 px-2 d-inline" style={{marginBottom: '4px'}}>Edit Ticket</h2>
-                        <button className='project-view-button-3' onClick={() => window.location.href = `/tickets/details/${ticketId}`}>
+                        <button className='project-view-button-3' onClick={() => window.location.href = `/projects/details/${projectId}`}>
                             Back To Details
                         </button>
                         <button className='project-view-button-2' onClick={() => save()}>
@@ -256,4 +257,4 @@ const TicketEditView = () => {
     );
 };
 
-export default TicketEditView;
+export default TicketCreateView;

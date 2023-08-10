@@ -22,6 +22,7 @@ import AllTicketsView from "./AllTicketsView";
 import TicketDetails from "./TicketDetails";
 import TicketEditView from "./TicketEditView";
 import EmailChange from "./EmailChange";
+import TicketCreateView from "./TicketCreateView";
 
 function App() {
 
@@ -96,6 +97,14 @@ function App() {
                 element={
                     <PrivateRoute>
                         <TicketEditView/>
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/projects/:projectId/tickets/:ticketId"
+                element={
+                    <PrivateRoute>
+                        <TicketCreateView/>
                     </PrivateRoute>
                 }
             />

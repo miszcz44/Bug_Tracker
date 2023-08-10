@@ -60,6 +60,13 @@ const TicketDetails = () => {
         </div>
     };
 
+    function deleteTicket() {
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket`, "DELETE", user.jwt, ticketId)
+            .then(response => {
+                window.history.back();
+            })
+    }
+
     function addComment() {
         const newComment = { ...comment};
         newComment["created"] = null;
@@ -85,11 +92,16 @@ const TicketDetails = () => {
             <div className="container ticket-details-container-1">
                 <div className="row">
                     <div className="col card ticket-details-card-1">
-                        <h3 className="pt-2 px-2" style={{marginBottom: '4px'}}>
-                            Details for ticket
-                        </h3>
+                        <div className='d-flex'>
+                            <h3 className="pt-2 px-2" style={{marginBottom: '4px'}}>
+                                Details for ticket
+                            </h3>
+                            <button className='ticket-details-button-2' onClick={() => deleteTicket()}>
+                                Delete Ticket
+                            </button>
+                        </div>
                         <div className='d-inline py-0'>
-                            <Link className="px-3" to="/tickets">Back To List</Link>
+                            <Link className="px-3" to="/tickets">To Ticket List</Link>
                             <Link to={editUrl.concat(ticketId)}>Edit Ticket</Link>
                         </div>
                         <div className="row mt-4">

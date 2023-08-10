@@ -46,7 +46,7 @@ const ProjectDetailsView = () => {
             "id": projectId
         })
             .then(ticket => {
-                window.location.href = `/tickets/${ticket.id}`;
+                window.location.href = `/projects/${projectId}/tickets/${ticket.id}`;
             });
     }
     function deleteProject() {
@@ -132,10 +132,10 @@ const ProjectDetailsView = () => {
                                 </div>
                                 <DataTable value={projectTickets} stripedRows sortMode="multiple" filters={ticketFilters} tableStyle={{ minWidth: '30rem' }}
                                            paginator rows={8} style={{backgroundColor: '#111111'}} className='all-projects-table-1'>
-                                    <Column field="title" header="Title" sortable style={{fontSize: '12px', width: '23%', padding: '2px' }}/>
-                                    <Column field="submitter" header="Submitter" sortable style={{fontSize: '12px', width: '23%', padding: '2px' }}/>
-                                    <Column field="developer" header="Developer" sortable style={{fontSize: '12px', width: '23%', padding: '2px' }} />
-                                    <Column field="status" header="Status" sortable style={{fontSize: '12px', width: '10%', padding: '2px' }} />
+                                    <Column field="title" header="Title" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }}/>
+                                    <Column field="submitter" header="Submitter" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }}/>
+                                    <Column field="developer" header="Developer" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
+                                    <Column field="status" header="Status" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
                                     <Column field="created" header="Created" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
                                     <Column field="id" style={{padding: '2px', fontSize: '12px', paddingRight: '5px' }} body={actionBodyTemplate} />
                                 </DataTable>
