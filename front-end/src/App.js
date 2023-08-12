@@ -58,21 +58,21 @@ function App() {
                             <NoRoleViewDashboard/>
                         </PrivateRoute>
             }/>
-            <Route
-                path="/tickets/:id"
-                element={
-                role.authority === "DEVELOPER" ? (
-                <PrivateRoute>
-                    <DeveloperTicketView/>
-                </PrivateRoute>
-                ) : (
-                <PrivateRoute>
-                    <TicketView/>
-                </PrivateRoute>
-                )
-                }
-            />
-             BEHAVIOR BASED ON ROLES!!!!!!!
+            {/*<Route*/}
+            {/*    path="/tickets/:id"*/}
+            {/*    element={*/}
+            {/*    role.authority === "DEVELOPER" ? (*/}
+            {/*    <PrivateRoute>*/}
+            {/*        <DeveloperTicketView/>*/}
+            {/*    </PrivateRoute>*/}
+            {/*    ) : (*/}
+            {/*    <PrivateRoute>*/}
+            {/*        <TicketView/>*/}
+            {/*    </PrivateRoute>*/}
+            {/*    )*/}
+            {/*    }*/}
+            {/*/>*/}
+            {/* BEHAVIOR BASED ON ROLES!!!!!!!*/}
             <Route
                 path="/projects/:id"
                 element={

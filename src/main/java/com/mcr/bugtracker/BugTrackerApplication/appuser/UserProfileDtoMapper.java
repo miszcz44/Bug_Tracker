@@ -12,8 +12,8 @@ public class UserProfileDtoMapper implements Function<AppUser, UserProfileDto> {
                 appUser.getLastName(),
                 appUser.getAppUserRole().getName(),
                 appUser.getEmail(),
-                appUser.getManagedProject().size(),
-                appUser.getSubmittedTicket().size()
+                appUser.getManagedProjects().size(),
+                appUser.getSubmittedTickets().size()
         );
     }
 }

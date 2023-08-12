@@ -26,8 +26,8 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllProjectsConnectedToUser() {
-        return ResponseEntity.ok(projectService.findAllProjectsAssignedToUser());
+    public List<AllProjectsViewDto> getAllProjectsConnectedToUser() {
+        return projectService.findAllProjectsAssignedToUser();
     }
 
     @GetMapping("{projectId}")

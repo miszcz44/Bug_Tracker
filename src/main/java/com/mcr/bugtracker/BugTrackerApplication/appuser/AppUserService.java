@@ -1,7 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiRequestException;
-import com.mcr.bugtracker.BugTrackerApplication.email.EmailSender;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
@@ -10,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,9 +17,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 @Service
 @AllArgsConstructor
@@ -292,7 +287,7 @@ public class AppUserService implements UserDetailsService {
         DashboardViewDto dashboardViewDto = new DashboardViewDto();
         List<Project> belongingProjects = currentUser.getAssignedProjects();
         dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, belongingProjects);
-        List<Ticket> submittedTickets = currentUser.getSubmittedTicket();
+        List<Ticket> submittedTickets = currentUser.getSubmittedTickets();
         dashboardViewDto = setValuesFromRandomTicket(dashboardViewDto, submittedTickets);
         return dashboardViewDto;
     }
@@ -301,16 +296,18 @@ public class AppUserService implements UserDetailsService {
         DashboardViewDto dashboardViewDto = new DashboardViewDto();
         List<Project> belongingProjects = currentUser.getAssignedProjects();
         dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, belongingProjects);
-        List<Ticket> assignedTickets = currentUser.getAssignedTicket();
+        List<Ticket> assignedTickets = currentUser.getAssignedTickets();
         dashboardViewDto = setValuesFromRandomTicket(dashboardViewDto, assignedTickets);
         return dashboardViewDto;
     }
 
     private DashboardViewDto getDataForProjectManagerDashboardView(AppUser currentUser) {
         DashboardViewDto dashboardViewDto = new DashboardViewDto();
-        List<Project> managedProjects = currentUser.getManagedProject();
+        List<Project> managedProjects = currentUser.getManagedProjects();
         dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, managedProjects);
-        List<Ticket> submittedTickets = currentUser.getSubmittedTicket();
+        List<Project> belongingProjects = currentUser.getAssignedProjects();
+        dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, belongingProjects);
+        List<Ticket> submittedTickets = currentUser.getSubmittedTickets();
         if (dashboardViewDto != setValuesFromRandomTicket(dashboardViewDto, submittedTickets)) {
             dashboardViewDto = setValuesFromRandomTicket(dashboardViewDto, submittedTickets);
         }

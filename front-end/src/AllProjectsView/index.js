@@ -10,6 +10,7 @@ import {InputText} from "primereact/inputtext";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
 import {Link} from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 const AllProjectsView = () => {
 
@@ -19,6 +20,14 @@ const AllProjectsView = () => {
         global: {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
 
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role.authority;
+        }
+        return "null";
+    }
     function deleteProject(id) {
         for(let i = 0; i < projects.length; i++) {
             if(projects[i].id === id) {
@@ -33,7 +42,12 @@ const AllProjectsView = () => {
         let editUrl = "/projects/"
         return <div>
             <Link style={{textDecoration: 'none'}} className='px-4' to={detailsUrl.concat(rowData.id)}>Details </Link>
-            <Link className='d-block all-projects-span-1'to={editUrl.concat(rowData.id)}>Edit</Link>
+            {
+                getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ?
+                <Link className='d-block all-projects-span-1'to={editUrl.concat(rowData.id)}>Edit</Link>
+                :
+                <></>
+            }
         </div>
     };
 
@@ -54,7 +68,12 @@ const AllProjectsView = () => {
     return (
         <div className='all-projects-div-1'>
             <SideBar/>
-            <button className="all-projects-button-1" onClick={() => createNewProject()}>Create new project</button>
+            {
+                getRoleFromJWT() === "PROJECT_MANAGER" ?
+                <button className="all-projects-button-1" onClick={() => createNewProject()}>Create new project</button>
+                :
+                <></>
+            }
             <div className="card all-projects-card-1">
                 <h3 className='p-2'>Your projects</h3>
                 <div className='d-flex p-2'>

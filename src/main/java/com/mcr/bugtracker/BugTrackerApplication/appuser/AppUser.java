@@ -1,6 +1,5 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
@@ -13,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +27,7 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
+@Slf4j
 public class AppUser implements UserDetails {
 
 
@@ -57,14 +58,15 @@ public class AppUser implements UserDetails {
                    String lastName,
                    String email,
                    String password,
-                   AppUserRole appUserRole) {
+                   AppUserRole appUserRole,
+                   String sRole) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.wholeName = firstName + " " + lastName;
         this.email = email;
         this.password = password;
         this.appUserRole = appUserRole;
-        this.sRole = appUserRole.name();
+        this.sRole = sRole;
     }
 
     @OneToMany(mappedBy = "appUser",
@@ -74,10 +76,10 @@ public class AppUser implements UserDetails {
 
     @OneToMany(mappedBy = "assignedDeveloper")
     @JsonIgnore
-    private List<Ticket> assignedTicket;
+    private List<Ticket> assignedTickets;
     @OneToMany(mappedBy = "submitter")
     @JsonIgnore
-    private List<Ticket> submittedTicket;
+    private List<Ticket> submittedTickets;
     @OneToMany(mappedBy = "uploader")
     @JsonIgnore
     private List<Attachment> uploadedFiles;
@@ -86,7 +88,7 @@ public class AppUser implements UserDetails {
     private List<Commentary> commentaries;
     @OneToMany(mappedBy = "projectManager")
     @JsonIgnore
-    private List<Project> managedProject;
+    private List<Project> managedProjects;
     @ManyToMany(mappedBy = "projectPersonnel")
     @JsonIgnore
     private List<Project> assignedProjects;

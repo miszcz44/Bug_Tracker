@@ -9,6 +9,7 @@ import {InputText} from "primereact/inputtext";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
 import {Link} from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 const AllTicketsView = () => {
 
@@ -32,9 +33,23 @@ const AllTicketsView = () => {
         let editUrl = "/tickets/"
         return <div>
             <Link style={{textDecoration: 'none'}} className='px-4' to={detailsUrl.concat(rowData.id)}>Details </Link>
-            <Link style={{textDecoration: 'none'}} className='all-projects-span-1' to={editUrl.concat(rowData.id)}>Edit</Link>
+            {
+                getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "SUBMITTER" ?
+                <Link style={{textDecoration: 'none'}} className='all-projects-span-1' to={editUrl.concat(rowData.id)}>Edit</Link>
+                :
+                <></>
+            }
         </div>
     };
+
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role.authority;
+        }
+        return "null";
+    }
 
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket`, "GET", user.jwt)

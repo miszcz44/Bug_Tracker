@@ -59,7 +59,7 @@ const TicketEditView = () => {
             "ticket": ticket,
             "developer": selectedDeveloper ? selectedDeveloper.value : currentDeveloper
         })
-        window.location.href = `/tickets/${ticket.id}`;
+        window.location.reload();
     }
 
     function handleDeveloperSelect(data) {
@@ -112,144 +112,143 @@ const TicketEditView = () => {
                         </button>
                     </div>
                     <p className="px-4">Change Ticket properties</p>
-                    <form onSubmit={() => save()}>
-                        <div className='container'>
-                            <div className='row'>
-                                <div className='col-sm'>
-                                    <Form.Group as={Row} className="my-0" controlId="title">
-                                        <Form.Label className='project-view-label-1' column sm="4" md="4">
-                                            Title
-                                        </Form.Label>
-                                        <p>
-                                            <Col sm="9" md="8" lg="6">
-                                                <Form.Control
-                                                    onChange={(e) =>
-                                                        updateTicket("title", e.target.value)
-                                                    }
-                                                    type="text"
-                                                    value={ticket.title}
-                                                    placeholder="name"
-                                                    style={{width:'300px'}}
-                                                    required
-                                                />
-                                            </Col>
-                                        </p>
-                                    </Form.Group>
-                                    <Form.Group as={Row} className="my-0" controlId="projectName">
-                                        <Form.Label className='project-view-label-1' column sm="6" md="6">
-                                            Project Name
-                                        </Form.Label>
-                                        <p>
-                                            <Col style={{width:'300px'}} sm="9" md="8" lg="6">
-                                                <Form.Control
-                                                    type="text"
-                                                    value={projectName}
-                                                    placeholder="name"
-                                                    style={{width:'300px'}}
-                                                    disabled
-                                                />
-                                            </Col>
-                                        </p>
-                                    </Form.Group>
-                                </div>
-                                <div className='col-sm'>
-                                    <Form.Group as={Row} className="my-0" controlId="ticketDescription">
-                                        <Form.Label className='project-view-label-1' column sm="4" md="4">
-                                            Description
-                                        </Form.Label>
-                                        <p>
-                                            <Col sm="9" md="8" lg="6">
-                                                <textarea
-                                                    onChange={(e) =>
-                                                        updateTicket("description", e.target.value)
-                                                    }
-                                                    type="text"
-                                                    value={ticket.description}
-                                                    placeholder="description"
-                                                    style={{width:'300px', height:'130px', resize:'none'}}
-                                                    className='project-view-textarea-1'
-                                                    required
-                                                />
-                                            </Col>
-                                        </p>
-                                    </Form.Group>
-                                </div>
+
+                    <div className='container'>
+                        <div className='row'>
+                            <div className='col-sm'>
+                                <Form.Group as={Row} className="my-0" controlId="title">
+                                    <Form.Label className='project-view-label-1' column sm="4" md="4">
+                                        Title
+                                    </Form.Label>
+                                    <p>
+                                        <Col sm="9" md="8" lg="6">
+                                            <Form.Control
+                                                onChange={(e) =>
+                                                    updateTicket("title", e.target.value)
+                                                }
+                                                type="text"
+                                                value={ticket.title}
+                                                placeholder="name"
+                                                style={{width:'300px'}}
+                                                required
+                                            />
+                                        </Col>
+                                    </p>
+                                </Form.Group>
+                                <Form.Group as={Row} className="my-0" controlId="projectName">
+                                    <Form.Label className='project-view-label-1' column sm="6" md="6">
+                                        Project Name
+                                    </Form.Label>
+                                    <p>
+                                        <Col style={{width:'300px'}} sm="9" md="8" lg="6">
+                                            <Form.Control
+                                                type="text"
+                                                value={projectName}
+                                                placeholder="name"
+                                                style={{width:'300px'}}
+                                                disabled
+                                            />
+                                        </Col>
+                                    </p>
+                                </Form.Group>
                             </div>
-                            <div className='row'>
-                                <div className='col-6'>
-                                    <Form.Group as={Row} className="my-0" controlId="developer">
-                                        <Form.Label className='project-view-label-1' column sm="6" md="6">
-                                            Assigned Developer
-                                        </Form.Label>
-                                        <p>
-                                            <Col style={{width:'300px'}} sm="9" md="8" lg="6">
-                                                <Select
-                                                    placeholder="Select developer"
-                                                    options={developersLabel}
-                                                    value={selectedDeveloper ? selectedDeveloper : currentDeveloper ? currentDeveloperLabel : ""}
-                                                    isSearchable={true}
-                                                    onChange={handleDeveloperSelect}
-                                                />
-                                            </Col>
-                                        </p>
-                                    </Form.Group>
-                                </div>
-                                <div className='col-6'>
-                                    <Form.Group as={Row} className="my-0" controlId="priority">
-                                        <Form.Label className='project-view-label-1' column sm="6" md="6">
-                                            Ticket Priority
-                                        </Form.Label>
-                                        <p>
-                                            <Col style={{width:'300px'}} sm="9" md="8" lg="6">
-                                                <Select
-                                                    placeholder="Select priority"
-                                                    options={prioritiesLabel}
-                                                    value={selectedPriority ? selectedPriority : priorityLabel ? priorityLabel : ""}
-                                                    onChange={handlePrioritySelect}
-                                                />
-                                            </Col>
-                                        </p>
-                                    </Form.Group>
-                                </div>
-                            </div>
-                            <div className='row'>
-                                <div className='col-6'>
-                                    <Form.Group as={Row} className="my-0" controlId="type">
-                                        <Form.Label className='project-view-label-1' column sm="6" md="6">
-                                            Ticket type
-                                        </Form.Label>
-                                        <p>
-                                            <Col style={{width:'300px'}} sm="9" md="8" lg="6">
-                                                <Select
-                                                    placeholder="Select type"
-                                                    options={typesLabel}
-                                                    value={selectedType ? selectedType : typeLabel ? typeLabel : ""}
-                                                    onChange={handleTypeSelect}
-                                                />
-                                            </Col>
-                                        </p>
-                                    </Form.Group>
-                                </div>
-                                <div className='col-6 mb-5'>
-                                    <Form.Group as={Row} className="my-0" controlId="status">
-                                        <Form.Label className='project-view-label-1' column sm="6" md="6">
-                                            Ticket Status
-                                        </Form.Label>
-                                        <p>
-                                            <Col style={{width:'300px'}} sm="9" md="8" lg="6">
-                                                <Select
-                                                    placeholder="Select status"
-                                                    options={statusesLabel}
-                                                    value={selectedStatus ? selectedStatus : statusLabel ? statusLabel: ""}
-                                                    onChange={handleStatusSelect}
-                                                />
-                                            </Col>
-                                        </p>
-                                    </Form.Group>
-                                </div>
+                            <div className='col-sm'>
+                                <Form.Group as={Row} className="my-0" controlId="ticketDescription">
+                                    <Form.Label className='project-view-label-1' column sm="4" md="4">
+                                        Description
+                                    </Form.Label>
+                                    <p>
+                                        <Col sm="9" md="8" lg="6">
+                                            <textarea
+                                                onChange={(e) =>
+                                                    updateTicket("description", e.target.value)
+                                                }
+                                                type="text"
+                                                value={ticket.description}
+                                                placeholder="description"
+                                                style={{width:'300px', height:'130px', resize:'none'}}
+                                                className='project-view-textarea-1'
+                                                required
+                                            />
+                                        </Col>
+                                    </p>
+                                </Form.Group>
                             </div>
                         </div>
-                    </form>
+                        <div className='row'>
+                            <div className='col-6'>
+                                <Form.Group as={Row} className="my-0" controlId="developer">
+                                    <Form.Label className='project-view-label-1' column sm="6" md="6">
+                                        Assigned Developer
+                                    </Form.Label>
+                                    <p>
+                                        <Col style={{width:'300px'}} sm="9" md="8" lg="6">
+                                            <Select
+                                                placeholder="Select developer"
+                                                options={developersLabel}
+                                                value={selectedDeveloper ? selectedDeveloper : currentDeveloper ? currentDeveloperLabel : ""}
+                                                isSearchable={true}
+                                                onChange={handleDeveloperSelect}
+                                            />
+                                        </Col>
+                                    </p>
+                                </Form.Group>
+                            </div>
+                            <div className='col-6'>
+                                <Form.Group as={Row} className="my-0" controlId="priority">
+                                    <Form.Label className='project-view-label-1' column sm="6" md="6">
+                                        Ticket Priority
+                                    </Form.Label>
+                                    <p>
+                                        <Col style={{width:'300px'}} sm="9" md="8" lg="6">
+                                            <Select
+                                                placeholder="Select priority"
+                                                options={prioritiesLabel}
+                                                value={selectedPriority ? selectedPriority : priorityLabel ? priorityLabel : ""}
+                                                onChange={handlePrioritySelect}
+                                            />
+                                        </Col>
+                                    </p>
+                                </Form.Group>
+                            </div>
+                        </div>
+                        <div className='row'>
+                            <div className='col-6'>
+                                <Form.Group as={Row} className="my-0" controlId="type">
+                                    <Form.Label className='project-view-label-1' column sm="6" md="6">
+                                        Ticket type
+                                    </Form.Label>
+                                    <p>
+                                        <Col style={{width:'300px'}} sm="9" md="8" lg="6">
+                                            <Select
+                                                placeholder="Select type"
+                                                options={typesLabel}
+                                                value={selectedType ? selectedType : typeLabel ? typeLabel : ""}
+                                                onChange={handleTypeSelect}
+                                            />
+                                        </Col>
+                                    </p>
+                                </Form.Group>
+                            </div>
+                            <div className='col-6 mb-5'>
+                                <Form.Group as={Row} className="my-0" controlId="status">
+                                    <Form.Label className='project-view-label-1' column sm="6" md="6">
+                                        Ticket Status
+                                    </Form.Label>
+                                    <p>
+                                        <Col style={{width:'300px'}} sm="9" md="8" lg="6">
+                                            <Select
+                                                placeholder="Select status"
+                                                options={statusesLabel}
+                                                value={selectedStatus ? selectedStatus : statusLabel ? statusLabel: ""}
+                                                onChange={handleStatusSelect}
+                                            />
+                                        </Col>
+                                    </p>
+                                </Form.Group>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

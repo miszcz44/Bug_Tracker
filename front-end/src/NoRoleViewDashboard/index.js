@@ -6,7 +6,6 @@ import {useUser} from "../UserProvider";
 import SideBar from "../SideBar";
 import DefaultSidebar from "../SideBar";
 import {Container} from "react-bootstrap";
-import './dashboard.css'
 import jwt_decode from "jwt-decode";
 
 

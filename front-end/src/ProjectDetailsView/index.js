@@ -8,12 +8,14 @@ import {InputText} from "primereact/inputtext";
 import {FilterMatchMode} from "primereact/api";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
+import jwt_decode from "jwt-decode";
 
 const ProjectDetailsView = () => {
 
     const user = useUser();
     const projectId = window.location.href.split("/projects/details/")[1]
     const [project, setProject] = useState({});
+    const [projectManagerEmail, setProjectManagerEmail] = useState("");
     const [projectPersonnel, setProjectPersonnel] = useState([]);
     const [projectTickets, setProjectTickets] = useState([]);
     const [personnelFilters, setPersonnelFilters] = useState({
@@ -28,11 +30,21 @@ const ProjectDetailsView = () => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/project/details/${projectId}`, "GET", user.jwt)
             .then((response) => {
                 setProject(response.project);
+                setProjectManagerEmail(response.projectManagerEmail);
                 setProjectPersonnel(response.projectPersonnel);
                 setProjectTickets(response.tickets);
                 console.log(response);
             });
     }, []);
+
+    function getEmailFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.sub;
+        }
+        return "null";
+    }
 
     const actionBodyTemplate = (rowData) => {
         let url = "/tickets/details/"
@@ -40,6 +52,15 @@ const ProjectDetailsView = () => {
             <Link to={url.concat(rowData.id)}>Details</Link>
         </div>
     };
+
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role.authority;
+        }
+        return "null";
+    }
 
     function createNewTicket() {
         grabAndAuthorizeRequestFromTheServer("/api/v1/ticket", "POST", user.jwt, {
@@ -64,13 +85,34 @@ const ProjectDetailsView = () => {
                     <h2 className="pt-2 px-2" style={{marginBottom: '4px', width: '80%'}}>
                         Details for project - {project.name}
                     </h2>
-                    <button className='project-details-button-1' onClick={() => deleteProject()}>
-                        Delete Project
-                    </button>
+                    {
+                        getEmailFromJWT() === projectManagerEmail ?
+                            <button className='project-details-button-1' onClick={() => deleteProject()}>
+                                Delete Project
+                            </button>
+                        :
+                            <></>
+                    }
+
                 </div>
                 <div className='d-inline py-1'>
-                    <Link className="px-3" to={editUrl.concat(projectId)}>Edit</Link>
-                    <Link onClick={() => createNewTicket()}>Create New Ticket</Link>
+                    {
+                        getEmailFromJWT() === projectManagerEmail ?
+                            <>
+                                <Link className="px-3" to={editUrl.concat(projectId)}>Edit</Link>
+                                <Link onClick={() => createNewTicket()}>Create New Ticket</Link>
+                            </>
+                        :
+                            <></>
+                    }
+                    {
+                        (getRoleFromJWT() === "PROJECT_MANAGER" && getEmailFromJWT() !== projectManagerEmail)
+                        || (getRoleFromJWT() === "SUBMITTER") ?
+                            <Link className="px-3" onClick={() => createNewTicket()}>Create New Ticket</Link>
+                        :
+                            <></>
+                    }
+
                 </div>
                 <div className="container">
                     <div className="row project-details-row-1 d-inline">
@@ -137,7 +179,12 @@ const ProjectDetailsView = () => {
                                     <Column field="developer" header="Developer" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
                                     <Column field="status" header="Status" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
                                     <Column field="created" header="Created" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
-                                    <Column field="id" style={{padding: '2px', fontSize: '12px', paddingRight: '5px' }} body={actionBodyTemplate} />
+                                    {
+                                        getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ?
+                                        <Column field="id" style={{padding: '2px', fontSize: '12px', paddingRight: '5px' }} body={actionBodyTemplate} />
+                                        :
+                                        <></>
+                                    }
                                 </DataTable>
                             </div>
                         </div>

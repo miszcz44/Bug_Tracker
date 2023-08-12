@@ -18,6 +18,9 @@ const TicketDetails = () => {
     const [ticket, setTicket] = useState({});
     const [developerName, setDeveloperName] = useState("");
     const [submitterName, setSubmitterName] = useState("");
+    const [submitterEmail, setSubmitterEmail] = useState("");
+    const [projectManagerEmail, setProjectManagerEmail] = useState("");
+    const [projectId, setProjectId] = useState();
     const [projectName, setProjectName] = useState("");
     const [comments, setComments] = useState([]);
     const [emptyComment, setEmptyComment] = useState({
@@ -39,6 +42,16 @@ const TicketDetails = () => {
     });
 
     let editUrl = '/tickets/';
+    let projectsEditUrl = '/projects/details/';
+
+    function getEmailFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.sub;
+        }
+        return "null";
+    }
 
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}`, "GET", user.jwt)
@@ -46,8 +59,11 @@ const TicketDetails = () => {
                 setTicket(response.ticket);
                 setDeveloperName(response.developerName);
                 setSubmitterName(response.submitterName);
+                setSubmitterEmail(response.submitterEmail);
+                setProjectManagerEmail(response.projectManagerEmail);
+                setProjectId(response.projectId);
                 setProjectName(response.projectName);
-                setComments(response.comments)
+                setComments(response.comments);
                 setHistoryFields(response.ticketHistoryField);
                 console.log(response);
             });
@@ -93,16 +109,34 @@ const TicketDetails = () => {
                 <div className="row">
                     <div className="col card ticket-details-card-1">
                         <div className='d-flex'>
-                            <h3 className="pt-2 px-2" style={{marginBottom: '4px'}}>
+                            <h3 className="pt-2 px-2" style={{marginBottom: '4px', width: '300px'}}>
                                 Details for ticket
                             </h3>
-                            <button className='ticket-details-button-2' onClick={() => deleteTicket()}>
-                                Delete Ticket
-                            </button>
+                            {
+                                getEmailFromJWT() === projectManagerEmail || getEmailFromJWT() === submitterEmail ?
+                                    <>
+                                        <button className='ticket-details-button-2' onClick={() => deleteTicket()}>
+                                            Go To Project
+                                        </button>
+                                        <button className='ticket-details-button-3' onClick={() => window.location.href = projectsEditUrl.concat(projectId)}>
+                                            Delete Ticket
+                                        </button>
+                                    </>
+                                :
+                                    <button className='ticket-details-button-4' onClick={() => window.location.href = projectsEditUrl.concat(projectId)}>
+                                        Go To Project
+                                    </button>
+                            }
                         </div>
                         <div className='d-inline py-0'>
                             <Link className="px-3" to="/tickets">To Ticket List</Link>
-                            <Link to={editUrl.concat(ticketId)}>Edit Ticket</Link>
+                            {
+                                getEmailFromJWT() === projectManagerEmail || getEmailFromJWT() === submitterEmail ?
+                                <Link to={editUrl.concat(ticketId)}>Edit Ticket</Link>
+                                :
+                                <></>
+                            }
+
                         </div>
                         <div className="row mt-4">
                             <div className="col-6">

@@ -4,10 +4,8 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
-import com.mcr.bugtracker.BugTrackerApplication.project.ProjectService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentaryService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTicketDetailsViewDto;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldService;
 import lombok.AllArgsConstructor;
@@ -17,10 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +30,7 @@ public class TicketService {
     private final CommentaryService commentaryService;
     private final AppUserService appUserService;
     private final TicketHistoryFieldService ticketHistoryFieldService;
+    private final AllTicketsViewMapper allTicketsViewMapper;
 
 
     public void saveTicket(TicketRequest request) {
@@ -95,20 +94,12 @@ public class TicketService {
 
     public List<AllTicketsViewDto> getAllTicketsConnectedToUser() {
         AppUser user = getUserFromContext().orElseThrow();
-        List<AllTicketsViewDto> allTickets = new ArrayList<>();
-        List<Ticket> tickets = user.getAssignedTicket();
+        List<Ticket> tickets = Stream.concat(user.getAssignedTickets().stream(), user.getSubmittedTickets().stream()).toList();
+        List<AllTicketsViewDto> ticketsForAllTicketsView = new ArrayList<>();
         for(Ticket ticket : tickets) {
-            allTickets.add(new AllTicketsViewDto(ticket.getId(),
-                    ticket.getTitle(),
-                    ticket.getProject().getName(),
-                    ticket.getAssignedDeveloper().getWholeName(),
-                    ticket.getPriority(),
-                    ticket.getStatus(),
-                    ticket.getType(),
-                    ticket.getCreatedAt().truncatedTo(ChronoUnit.SECONDS)
-                    ));
+            ticketsForAllTicketsView.add(allTicketsViewMapper.apply(ticket));
         }
-        return allTickets;
+        return ticketsForAllTicketsView;
     }
 
     public TicketDetailsViewDto getDemandedDataForProjectDetailsView(Long ticketId) {
@@ -129,7 +120,10 @@ public class TicketService {
         return new TicketDetailsViewDto(ticketWithDemandedData,
                 developerName,
                 ticket.getSubmitter().getWholeName(),
+                ticket.getSubmitter().getEmail(),
+                ticket.getProject().getId(),
                 ticket.getProject().getName(),
+                ticket.getProject().getProjectManager().getEmail(),
                 comments,
                 ticket.getTicketHistoryFields());
     }

@@ -62,7 +62,8 @@ public class RegistrationService {
                 request.getLastName(),
                 request.getEmail(),
                 request.getPassword(),
-                assignedRole);
+                assignedRole,
+                request.getRole());
         return user;
     }
 

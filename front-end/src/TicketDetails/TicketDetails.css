@@ -51,15 +51,43 @@
 }
 
 .ticket-details-button-2 {
-    margin-left: 180px!important;
+    margin-left: 50px!important;
     margin-top: 10px;
-    background-color: #ef3205;
+    background-color: #0dcaf0;
     border: none;
     border-radius: 5px;
-    width: 150px;
+    width: 120px;
     height: 40px;
 }
 
 .ticket-details-button-2:hover {
+    background-color: #31d2f2;
+}
+
+.ticket-details-button-3 {
+    margin-left: 10px!important;
+    margin-top: 10px;
+    background-color: #ef3205;
+    border: none;
+    border-radius: 5px;
+    width: 120px;
+    height: 40px;
+}
+
+.ticket-details-button-3:hover {
     background-color: #cc2122;
+}
+
+.ticket-details-button-4 {
+    margin-left: 140px!important;
+    margin-top: 10px;
+    background-color: #0dcaf0;
+    border: none;
+    border-radius: 5px;
+    width: 120px;
+    height: 40px;
+}
+
+.ticket-details-button-4:hover {
+    background-color: #31d2f2;
 }

@@ -9,15 +9,21 @@ public class TicketDetailsViewDto {
     private Ticket ticket;
     private String developerName;
     private String submitterName;
+    private String submitterEmail;
+    private Long projectId;
     private String projectName;
+    private String projectManagerEmail;
     private List<CommentsForTicketDetailsViewDto> comments;
     private List<TicketHistoryField> ticketHistoryField;
 
-    public TicketDetailsViewDto(Ticket ticket, String developerName, String submitterName, String projectName, List<CommentsForTicketDetailsViewDto> comments, List<TicketHistoryField> ticketHistoryField) {
+    public TicketDetailsViewDto(Ticket ticket, String developerName, String submitterName, String submitterEmail, Long projectId, String projectName, String projectManagerEmail, List<CommentsForTicketDetailsViewDto> comments, List<TicketHistoryField> ticketHistoryField) {
         this.ticket = ticket;
         this.developerName = developerName;
         this.submitterName = submitterName;
+        this.submitterEmail = submitterEmail;
+        this.projectId = projectId;
         this.projectName = projectName;
+        this.projectManagerEmail = projectManagerEmail;
         this.comments = comments;
         this.ticketHistoryField = ticketHistoryField;
     }
@@ -46,12 +52,36 @@ public class TicketDetailsViewDto {
         this.submitterName = submitterName;
     }
 
+    public String getSubmitterEmail() {
+        return submitterEmail;
+    }
+
+    public void setSubmitterEmail(String submitterEmail) {
+        this.submitterEmail = submitterEmail;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
     public String getProjectName() {
         return projectName;
     }
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getProjectManagerEmail() {
+        return projectManagerEmail;
+    }
+
+    public void setProjectManagerEmail(String projectManagerEmail) {
+        this.projectManagerEmail = projectManagerEmail;
     }
 
     public List<CommentsForTicketDetailsViewDto> getComments() {

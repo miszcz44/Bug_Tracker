@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +23,7 @@ public class ProjectService {
     private final AppUserRepository appUserRepository;
     private final AppUserService appUserService;
     private final TicketService ticketService;
+    private final AllProjectsViewMapper allProjectsViewMapper;
 
     public Project saveProject(Project project) {
         return projectRepository.save(project);
@@ -38,19 +40,15 @@ public class ProjectService {
         return appUserRepository.findById(user.getId());
     } // TODO sa 3 takie same klasy w 3 serwisach
 
-    public List<Project> findAllProjectsAssignedToUser() {
+    public List<AllProjectsViewDto> findAllProjectsAssignedToUser() {
         AppUser user = getUserFromContext().orElseThrow();
-        List<Project> projects = new ArrayList<>();
-        if(user.getAssignedProjects() != null) {
-            projects = user.getAssignedProjects();
+        List<Project> projects = Stream.concat(user.getAssignedProjects().stream(),
+                user.getManagedProjects().stream()).toList();
+        List<AllProjectsViewDto> projectsForAllProjectsView = new ArrayList<>();
+        for(Project project : projects) {
+            projectsForAllProjectsView.add(allProjectsViewMapper.apply(project));
         }
-        if(user.getManagedProject() != null) {
-            projects.addAll(user.getManagedProject());
-        }
-        if(projects.isEmpty()) {
-            return List.of();
-        }
-        return projects;
+        return projectsForAllProjectsView;
     }
 
     public Optional<Project> findById(Long id) {
@@ -80,7 +78,8 @@ public class ProjectService {
         List<TicketForProjectViewDto> tickets = ticketService.getDemandedTicketDataForProjectView(project.getTickets());
         List<AppUser> projectPersonnelWithDemandedData =
                 appUserService.getDemandedPersonnelDataForProjectView(project.getProjectPersonnel());
-        return(new ProjectDetailsViewDto(projectWithDemandedFields, projectPersonnelWithDemandedData, tickets));
+        return(new ProjectDetailsViewDto(
+                projectWithDemandedFields, project.getProjectManager().getEmail(), projectPersonnelWithDemandedData, tickets));
     }
 
     public ProjectResponseDto getDataForProjectResponse(Long projectId) {
