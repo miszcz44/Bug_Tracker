@@ -28,13 +28,23 @@ const AllTicketsView = () => {
     //     grabAndAuthorizeRequestFromTheServer(`/api/v1/project`, "DELETE", user.jwt, id);
     // }
 
+    function getEmailFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.sub;
+        }
+        return "null";
+    }
+
     const actionBodyTemplate = (rowData) => {
         let detailsUrl = "/tickets/details/"
         let editUrl = "/tickets/"
         return <div>
             <Link style={{textDecoration: 'none'}} className='px-4' to={detailsUrl.concat(rowData.id)}>Details </Link>
             {
-                getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "SUBMITTER" ?
+                getEmailFromJWT() === rowData.projectManagerEmail || getEmailFromJWT() === rowData.submitterEmail ||
+                    getRoleFromJWT() === "ADMIN" ?
                 <Link style={{textDecoration: 'none'}} className='all-projects-span-1' to={editUrl.concat(rowData.id)}>Edit</Link>
                 :
                 <></>

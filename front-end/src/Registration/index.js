@@ -109,10 +109,9 @@ const Registration = () => {
     };
 
     useEffect(() => {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/user`, "GET", user.jwt)
-            .then((userResponse) => {
-                setUserRoles(userResponse.userRoles);
-                console.log(userRoles);
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/roles`, "GET", user.jwt)
+            .then((roles) => {
+                setUserRoles(roles);
             });
     }, []);
 

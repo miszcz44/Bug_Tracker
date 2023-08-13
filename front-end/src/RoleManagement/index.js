@@ -50,7 +50,7 @@ const RoleManagement = () => {
     }
 
     useEffect(() => {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/user`, "GET", user.jwt)
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/role-management`, "GET", user.jwt)
             .then((userResponse) => {
                 setAllUsers(userResponse.users);
                 setUserRoles(userResponse.userRoles);
@@ -58,7 +58,7 @@ const RoleManagement = () => {
     }, []);
 
     useEffect(() => {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/non-admin`, "GET", user.jwt)
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/role-management/non-admin`, "GET", user.jwt)
             .then((data) => {
                 setNonAdminUsers(data);
             });
@@ -90,7 +90,7 @@ const RoleManagement = () => {
         if(changeRoleResponse.role === 'Admin') {
             setNonAdminUsers(nonSelectedUsers);
         }
-        grabAndAuthorizeRequestFromTheServer(`api/v1/user/change-role`, "PUT", user.jwt, changeRoleResponse)
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/role-management/change-role`, "PUT", user.jwt, changeRoleResponse)
     }
 
     return (

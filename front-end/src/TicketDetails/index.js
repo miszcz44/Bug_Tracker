@@ -53,6 +53,15 @@ const TicketDetails = () => {
         return "null";
     }
 
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role.authority;
+        }
+        return "null";
+    }
+
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}`, "GET", user.jwt)
             .then((response) => {
@@ -113,7 +122,8 @@ const TicketDetails = () => {
                                 Details for ticket
                             </h3>
                             {
-                                getEmailFromJWT() === projectManagerEmail || getEmailFromJWT() === submitterEmail ?
+                                getEmailFromJWT() === projectManagerEmail || getEmailFromJWT() === submitterEmail ||
+                                    getRoleFromJWT() === "ADMIN" ?
                                     <>
                                         <button className='ticket-details-button-2' onClick={() => deleteTicket()}>
                                             Go To Project
@@ -131,7 +141,8 @@ const TicketDetails = () => {
                         <div className='d-inline py-0'>
                             <Link className="px-3" to="/tickets">To Ticket List</Link>
                             {
-                                getEmailFromJWT() === projectManagerEmail || getEmailFromJWT() === submitterEmail ?
+                                getEmailFromJWT() === projectManagerEmail || getEmailFromJWT() === submitterEmail  ||
+                                    getRoleFromJWT() === "ADMIN" ?
                                 <Link to={editUrl.concat(ticketId)}>Edit Ticket</Link>
                                 :
                                 <></>

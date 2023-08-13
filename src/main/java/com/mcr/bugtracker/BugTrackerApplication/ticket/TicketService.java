@@ -229,8 +229,8 @@ public class TicketService {
     public Ticket createNewTicket(Project project) {
         Ticket ticket = new Ticket();
         ticket.setProject(project);
-        ticket.setCreatedAt(LocalDateTime.now());
-        ticket.setSubmitter(appUserRepository.findById(getUserFromContext().orElseThrow().getId()).orElseThrow());
+        //ticket.setCreatedAt(LocalDateTime.now());
+        //ticket.setSubmitter(appUserRepository.findById(getUserFromContext().orElseThrow().getId()).orElseThrow());
         return ticketRepository.save(ticket);
     }
 }

@@ -36,6 +36,14 @@ const AllProjectsView = () => {
         }
         grabAndAuthorizeRequestFromTheServer(`/api/v1/project`, "DELETE", user.jwt, id);
     }
+    function getEmailFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.sub;
+        }
+        return "null";
+    }
 
     const actionBodyTemplate = (rowData) => {
         let detailsUrl = "/projects/details/"
@@ -43,7 +51,7 @@ const AllProjectsView = () => {
         return <div>
             <Link style={{textDecoration: 'none'}} className='px-4' to={detailsUrl.concat(rowData.id)}>Details </Link>
             {
-                getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ?
+                getEmailFromJWT() === rowData.projectManagerEmail || getRoleFromJWT() === "ADMIN" ?
                 <Link className='d-block all-projects-span-1'to={editUrl.concat(rowData.id)}>Edit</Link>
                 :
                 <></>

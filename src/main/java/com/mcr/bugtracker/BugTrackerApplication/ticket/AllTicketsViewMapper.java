@@ -12,6 +12,8 @@ public class AllTicketsViewMapper implements Function<Ticket, AllTicketsViewDto>
         return new AllTicketsViewDto(ticket.getId(),
                 ticket.getTitle(),
                 ticket.getProject().getName(),
+                ticket.getProject().getProjectManager().getEmail(),
+                ticket.getSubmitter().getEmail(),
                 ticket.getAssignedDeveloper().getWholeName(),
                 ticket.getPriority(),
                 ticket.getStatus(),

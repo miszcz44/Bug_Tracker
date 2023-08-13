@@ -21,11 +21,17 @@ import {useUser} from "../UserProvider";
 
 
 
-export const SidebarData = [
+export const AdminSidebarData = [
     {
         title: 'Dashboard home',
         path: '/dashboard',
         icon: <AiIcons.AiFillHome />,
+        cname: 'nav-text'
+    },
+    {
+        title: 'Manage role assignment',
+        path: '/user-management',
+        icon: <BsIcons.BsFillPeopleFill />,
         cname: 'nav-text'
     },
     {

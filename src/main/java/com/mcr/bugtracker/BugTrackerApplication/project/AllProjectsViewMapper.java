@@ -8,6 +8,7 @@ import java.util.function.Function;
 public class AllProjectsViewMapper implements Function<Project, AllProjectsViewDto> {
     @Override
     public AllProjectsViewDto apply(Project project) {
-        return new AllProjectsViewDto(project.getId(), project.getName(), project.getDescription());
+        return new AllProjectsViewDto(
+                project.getId(), project.getName(), project.getDescription(), project.getProjectManager().getEmail());
     }
 }

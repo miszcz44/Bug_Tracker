@@ -4,11 +4,13 @@ public class AllProjectsViewDto {
     private Long id;
     private String name;
     private String description;
+    private String projectManagerEmail;
 
-    public AllProjectsViewDto(Long id, String name, String description) {
+    public AllProjectsViewDto(Long id, String name, String description, String projectManagerEmail) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.projectManagerEmail = projectManagerEmail;
     }
 
     public Long getId() {
@@ -33,5 +35,13 @@ public class AllProjectsViewDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getProjectManagerEmail() {
+        return projectManagerEmail;
+    }
+
+    public void setProjectManagerEmail(String projectManagerEmail) {
+        this.projectManagerEmail = projectManagerEmail;
     }
 }

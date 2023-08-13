@@ -20,17 +20,21 @@ public class AppUserController {
         userService.deleteUser(userId);
         return "Deleted";
     }
-    @GetMapping("non-admin")
+    @GetMapping("/role-management/non-admin")
     public List<AppUser> getAllUsersExceptAdmins() {
         return userService.getAllUsersExceptAdmins();
     }
 
-    @GetMapping
+    @GetMapping("/role-management")
     public AppUsersResponseDto getAllUsersAndAllRoles() {
         List<AppUser> allUsers = userService.getAllUsers();
         return new AppUsersResponseDto(allUsers);
     }
 
+    @GetMapping("/roles")
+    public AppUserRole[] getRoles() {
+        return userService.getRoles();
+    }
     @GetMapping("/user-profile")
     public UserProfileDto getDataForUserProfile() {
         return userService.getDataForUserProfile();
@@ -44,16 +48,9 @@ public class AppUserController {
         return appUser;
     }
 
-    @PutMapping("change-role")
+    @PutMapping("/role-management/change-role")
     public void changeUsersRole(@RequestBody AppUserRoleAssignmentRequest request) {
-        AppUserRole assignedRole = null;
-        for (AppUserRole role : AppUserRole.values()) {
-            if(role.getName().equals(request.role)) {
-                assignedRole = role;
-                break;
-            }
-        }
-        userService.changeUsersRole(request.usersEmails, assignedRole);
+        userService.changeUsersRole(request);
     }
     @PutMapping
     public void saveUser(@RequestBody AppUser user) {

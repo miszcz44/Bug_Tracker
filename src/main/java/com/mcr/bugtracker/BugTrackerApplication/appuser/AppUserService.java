@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -134,13 +135,24 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.findAll();
     }
 
-    public void changeUsersRole(List<String> usersEmails, AppUserRole assignedRole) {
-        for(String email : usersEmails) {
+    public void changeUsersRole(AppUserRoleAssignmentRequest request) {
+        AppUserRole role = findRoleObject(request.getRole());
+        for(String email : request.getUsersEmails()) {
             AppUser user = appUserRepository.findByEmail(email).get();
-            user.setAppUserRole(assignedRole);
-            user.setSRole(assignedRole.name());
+            user.setAppUserRole(role);
+            user.setSRole(request.getRole());
             appUserRepository.save(user);
         }
+    }
+
+    public AppUserRole findRoleObject(String roleName) {
+        AppUserRole assignedRole = null;
+        for(AppUserRole role : AppUserRole.values()) {
+            if(role.getName().equals(roleName)) {
+                assignedRole = role;
+            }
+        }
+        return assignedRole;
     }
 
     public String getRoleByEmail(String email) {
@@ -184,7 +196,7 @@ public class AppUserService implements UserDetailsService {
     public List<AppUser> findProjectManagersParticipatingInProject(List<AppUser> projectPersonnel) {
         List<AppUser> projectManagers = new ArrayList<>();
         for(AppUser appUser : projectPersonnel) {
-            if(appUser.getSRole().equals("PROJECT_MANAGER")) {
+            if(appUser.getSRole().equals("Project manager")) {
                 AppUser projectManagerWithDemandedData = new AppUser.Builder()
                         .id(appUser.getId())
                         .email(appUser.getEmail())
@@ -211,7 +223,7 @@ public class AppUserService implements UserDetailsService {
     public List<AppUser> getProjectDevelopers(Project project) {
         List<AppUser> developersWithDemandedData = new ArrayList<>();
         for (AppUser user : project.getProjectPersonnel()) {
-            if(user.getSRole().equals("DEVELOPER")) {
+            if(user.getSRole().equals("Developer")) {
                 developersWithDemandedData.add(new AppUser.Builder()
                         .id(user.getId())
                         .wholeName(user.getWholeName())
@@ -261,16 +273,16 @@ public class AppUserService implements UserDetailsService {
 
     public DashboardViewDto getDataForDashboardView() {
         AppUser currentUser = getUserFromContext().get();
-        if(currentUser.getSRole().equals("PROJECT_MANAGER")) {
+        if(currentUser.getSRole().equals("Project manager")) {
             return getDataForProjectManagerDashboardView(currentUser);
         }
-        else if(currentUser.getSRole().equals("DEVELOPER")) {
+        else if(currentUser.getSRole().equals("Developer")) {
             return getDataForDeveloperDashboardView(currentUser);
         }
-        else if(currentUser.getSRole().equals("SUBMITTER")) {
+        else if(currentUser.getSRole().equals("Submitter")) {
             return getDataForSubmitterDashboardView(currentUser);
         }
-        else if(currentUser.getSRole().equals("NONE")) {
+        else if(currentUser.getSRole().equals("None")) {
             return getDataForNoRoleDashboardView(currentUser);
         }
         return null;
@@ -303,17 +315,16 @@ public class AppUserService implements UserDetailsService {
 
     private DashboardViewDto getDataForProjectManagerDashboardView(AppUser currentUser) {
         DashboardViewDto dashboardViewDto = new DashboardViewDto();
-        List<Project> managedProjects = currentUser.getManagedProjects();
-        dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, managedProjects);
-        List<Project> belongingProjects = currentUser.getAssignedProjects();
-        dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, belongingProjects);
+        List<Project> allProjects = Stream.concat(currentUser.getManagedProjects().stream(),
+                currentUser.getAssignedProjects().stream()).toList();
+        dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, allProjects);
         List<Ticket> submittedTickets = currentUser.getSubmittedTickets();
         if (dashboardViewDto != setValuesFromRandomTicket(dashboardViewDto, submittedTickets)) {
             dashboardViewDto = setValuesFromRandomTicket(dashboardViewDto, submittedTickets);
         }
         else {
-            Collections.shuffle(managedProjects);
-            for(Project project : managedProjects) {
+            Collections.shuffle(allProjects);
+            for(Project project : allProjects) {
                 List<Ticket> ticketsInProject = project.getTickets();
                 if(ticketsInProject.size() > 0) {
                     Ticket ticket = ticketsInProject.get(RANDOM.nextInt(ticketsInProject.size()));
@@ -346,5 +357,10 @@ public class AppUserService implements UserDetailsService {
             return dashboardViewDto;
         }
         return dashboardViewDto;
+    }
+
+    public AppUserRole[] getRoles() {
+        AppUserRole[] userRoles = AppUserRole.values();
+        return userRoles;
     }
 }

@@ -7,6 +7,7 @@ import './Sidebar.css';
 import { IconContext } from 'react-icons';
 import {useUser} from "../UserProvider";
 import jwt_decode from "jwt-decode";
+import {AdminSidebarData} from "./AdminSidebarData";
 
 function Sidebar() {
 
@@ -19,6 +20,8 @@ function Sidebar() {
             return decodedJwt.role.authority;
         }
     }
+
+    const roleCorrectSidebar = getRoleFromJWT() === "ADMIN" ? SidebarData : AdminSidebarData;
 
 
     return (
