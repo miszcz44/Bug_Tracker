@@ -42,8 +42,14 @@ public class ProjectService {
 
     public List<AllProjectsViewDto> findAllProjectsAssignedToUser() {
         AppUser user = getUserFromContext().orElseThrow();
-        List<Project> projects = Stream.concat(user.getAssignedProjects().stream(),
+        List<Project> projects;
+        if(user.getSRole().equals("Admin")) {
+            projects = projectRepository.findAll();
+        }
+        else {
+            projects = Stream.concat(user.getAssignedProjects().stream(),
                 user.getManagedProjects().stream()).toList();
+        }
         List<AllProjectsViewDto> projectsForAllProjectsView = new ArrayList<>();
         for(Project project : projects) {
             projectsForAllProjectsView.add(allProjectsViewMapper.apply(project));
@@ -78,8 +84,8 @@ public class ProjectService {
         List<TicketForProjectViewDto> tickets = ticketService.getDemandedTicketDataForProjectView(project.getTickets());
         List<AppUser> projectPersonnelWithDemandedData =
                 appUserService.getDemandedPersonnelDataForProjectView(project.getProjectPersonnel());
-        return(new ProjectDetailsViewDto(
-                projectWithDemandedFields, project.getProjectManager().getEmail(), projectPersonnelWithDemandedData, tickets));
+        return new ProjectDetailsViewDto(
+                projectWithDemandedFields, project.getProjectManager().getWholeName(), project.getProjectManager().getEmail(), projectPersonnelWithDemandedData, tickets);
     }
 
     public ProjectResponseDto getDataForProjectResponse(Long projectId) {

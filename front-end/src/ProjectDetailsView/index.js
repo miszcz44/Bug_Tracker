@@ -16,6 +16,7 @@ const ProjectDetailsView = () => {
     const projectId = window.location.href.split("/projects/details/")[1]
     const [project, setProject] = useState({});
     const [projectManagerEmail, setProjectManagerEmail] = useState("");
+    const [projectManagerName, setProjectManagerName] = useState("");
     const [projectPersonnel, setProjectPersonnel] = useState([]);
     const [projectTickets, setProjectTickets] = useState([]);
     const [personnelFilters, setPersonnelFilters] = useState({
@@ -31,6 +32,7 @@ const ProjectDetailsView = () => {
             .then((response) => {
                 setProject(response.project);
                 setProjectManagerEmail(response.projectManagerEmail);
+                setProjectManagerName(response.projectManagerName);
                 setProjectPersonnel(response.projectPersonnel);
                 setProjectTickets(response.tickets);
                 console.log(response);
@@ -86,7 +88,7 @@ const ProjectDetailsView = () => {
                         Details for project - {project.name}
                     </h2>
                     {
-                        getEmailFromJWT() === projectManagerEmail ?
+                        getEmailFromJWT() === projectManagerEmail || getRoleFromJWT() === "ADMIN" ?
                             <button className='project-details-button-1' onClick={() => deleteProject()}>
                                 Delete Project
                             </button>
@@ -97,7 +99,7 @@ const ProjectDetailsView = () => {
                 </div>
                 <div className='d-inline py-1'>
                     {
-                        getEmailFromJWT() === projectManagerEmail ?
+                        getEmailFromJWT() === projectManagerEmail || getRoleFromJWT() === "ADMIN" ?
                             <>
                                 <Link className="px-3" to={editUrl.concat(projectId)}>Edit</Link>
                                 <Link onClick={() => createNewTicket()}>Create New Ticket</Link>
@@ -115,12 +117,18 @@ const ProjectDetailsView = () => {
 
                 </div>
                 <div className="container">
-                    <div className="row project-details-row-1 d-inline">
-                        <div className="col-sm">
+                    <div className="row project-details-row-1 d-flex">
+                        <div className="col-9">
                             <label className="project-details-label-1">
                                 Project Description
                             </label>
                             <p className="project-details-p-1">{project.description}</p>
+                        </div>
+                        <div className="col-3">
+                            <label className="project-details-label-1">
+                                Project Manager
+                            </label>
+                            <p className="project-details-p-1">{projectManagerName}</p>
                         </div>
                     </div>
                 </div>
@@ -192,6 +200,7 @@ const ProjectDetailsView = () => {
                 </div>
             </div>
         </div>
+
     );
 };
 

@@ -7,12 +7,14 @@ import java.util.List;
 
 public class ProjectDetailsViewDto {
     private Project project;
+    private String projectManagerName;
     private String projectManagerEmail;
     private List<AppUser> projectPersonnel;
     private List<TicketForProjectViewDto> tickets;
 
-    public ProjectDetailsViewDto(Project project, String projectManagerEmail, List<AppUser> projectPersonnel, List<TicketForProjectViewDto> tickets) {
+    public ProjectDetailsViewDto(Project project, String projectManagerName, String projectManagerEmail, List<AppUser> projectPersonnel, List<TicketForProjectViewDto> tickets) {
         this.project = project;
+        this.projectManagerName = projectManagerName;
         this.projectManagerEmail = projectManagerEmail;
         this.projectPersonnel = projectPersonnel;
         this.tickets = tickets;
@@ -24,6 +26,14 @@ public class ProjectDetailsViewDto {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public String getProjectManagerName() {
+        return projectManagerName;
+    }
+
+    public void setProjectManagerName(String projectManagerName) {
+        this.projectManagerName = projectManagerName;
     }
 
     public String getProjectManagerEmail() {

@@ -88,7 +88,7 @@ const TicketDetails = () => {
     function deleteTicket() {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket`, "DELETE", user.jwt, ticketId)
             .then(response => {
-                window.history.back();
+                window.location.href = "/tickets";
             })
     }
 
@@ -125,10 +125,10 @@ const TicketDetails = () => {
                                 getEmailFromJWT() === projectManagerEmail || getEmailFromJWT() === submitterEmail ||
                                     getRoleFromJWT() === "ADMIN" ?
                                     <>
-                                        <button className='ticket-details-button-2' onClick={() => deleteTicket()}>
+                                        <button className='ticket-details-button-2' onClick={() => window.location.href = projectsEditUrl.concat(projectId)}>
                                             Go To Project
                                         </button>
-                                        <button className='ticket-details-button-3' onClick={() => window.location.href = projectsEditUrl.concat(projectId)}>
+                                        <button className='ticket-details-button-3' onClick={() => deleteTicket()}>
                                             Delete Ticket
                                         </button>
                                     </>
@@ -236,7 +236,7 @@ const TicketDetails = () => {
                             </div>
                             <DataTable value={comments} stripedRows sortMode="multiple" filters={commentsFilters} tableStyle={{ minWidth: '30rem' }}
                                        paginator rows={6} style={{backgroundColor: '#111111'}} className='ticket-details-table-1'>
-                                <Column field="commentatorEmail" header="Email" sortable style={{fontSize: '12px', width: '35%', padding: '2px' }}/>
+                                <Column field="commentatorEmail" header="Sender" sortable style={{fontSize: '12px', width: '35%', padding: '2px' }}/>
                                 <Column field="message" header="Message" sortable style={{fontSize: '12px', width: '45%', padding: '2px' }}/>
                                 <Column field={"created" ? "created" : "just now"} header="Created" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
                             </DataTable>
@@ -272,10 +272,10 @@ const TicketDetails = () => {
                         </div>
                         <DataTable value={historyFields} stripedRows sortMode="multiple" filters={historyFilters} tableStyle={{ minWidth: '30rem' }}
                                    paginator rows={6} style={{backgroundColor: '#111111'}} className='ticket-details-table-1'>
-                            <Column field="property" header="Property" sortable style={{fontSize: '12px', width: '35%', padding: '2px' }}/>
-                            <Column field="oldValue" header="Old Value" sortable style={{fontSize: '12px', width: '45%', padding: '2px' }}/>
-                            <Column field="newValue" header="New Value" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
-                            <Column field="dateChanged" header="Changed" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
+                            <Column field="property" header="Property" sortable style={{fontSize: '12px', width: '25%', padding: '2px' }}/>
+                            <Column field="oldValue" header="Old Value" sortable style={{fontSize: '12px', width: '25%', padding: '2px' }}/>
+                            <Column field="newValue" header="New Value" sortable style={{fontSize: '12px', width: '25%', padding: '2px' }} />
+                            <Column field="dateChanged" header="Changed" sortable style={{fontSize: '12px', width: '25%', padding: '2px' }} />
                         </DataTable>
                     </div>
                     <div className='col card ticket-details-card-2'>

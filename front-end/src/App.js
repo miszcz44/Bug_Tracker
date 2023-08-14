@@ -44,19 +44,9 @@ function App() {
     return (
         <Routes>
             <Route path="dashboard" element={
-                role.authority === "PROJECT_MANAGER" ? (
-                    <PrivateRoute>
-                        <ProjectManagerViewDashboard/>
-                    </PrivateRoute>
-                    ) :
-                    role.authority === "DEVELOPER" || role.authority === "SUBMITTER" ? (
-                        <PrivateRoute>
-                            <DeveloperViewDashboard/>
-                        </PrivateRoute>
-                        ) :
-                        <PrivateRoute>
-                            <NoRoleViewDashboard/>
-                        </PrivateRoute>
+                <PrivateRoute>
+                    <Dashboard/>
+                </PrivateRoute>
             }/>
             {/*<Route*/}
             {/*    path="/tickets/:id"*/}

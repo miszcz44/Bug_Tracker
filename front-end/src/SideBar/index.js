@@ -21,7 +21,7 @@ function Sidebar() {
         }
     }
 
-    const roleCorrectSidebar = getRoleFromJWT() === "ADMIN" ? SidebarData : AdminSidebarData;
+    const roleCorrectSidebar = getRoleFromJWT() === "ADMIN" ? AdminSidebarData : SidebarData;
 
 
     return (
@@ -33,7 +33,7 @@ function Sidebar() {
                 <nav className='nav-menu active' >
                     <ul className='nav-menu-items'>
                         <h1 className='sidebar-h1'>Bug Tracker</h1>
-                        {SidebarData.map((item, index) => {
+                        {roleCorrectSidebar.map((item, index) => {
                             return (
                                 <div className='list-element'>
                                     <ul key={index} className={item.cName}>

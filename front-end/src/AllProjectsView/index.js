@@ -77,7 +77,7 @@ const AllProjectsView = () => {
         <div className='all-projects-div-1'>
             <SideBar/>
             {
-                getRoleFromJWT() === "PROJECT_MANAGER" ?
+                getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ?
                 <button className="all-projects-button-1" onClick={() => createNewProject()}>Create new project</button>
                 :
                 <></>

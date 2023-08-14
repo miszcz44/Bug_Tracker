@@ -70,14 +70,6 @@ const ProjectView = () => {
             })
         window.location.href = `/projects/${project.id}`;
     }
-
-    function createTicket() {
-        grabAndAuthorizeRequestFromTheServer("/api/v1/ticket/to-project", "POST", jwt, projectId)
-            .then((ticket) => {
-                window.location.href = `/projects/${projectId}/tickets/${ticket.id}`;
-            });
-    }
-
     function addUserToProject() {
         for(let i=0; i<selectedUsers.length; i++) {
             projectPersonnel.push(selectedUsers[i].value);

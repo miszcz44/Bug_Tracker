@@ -94,7 +94,13 @@ public class TicketService {
 
     public List<AllTicketsViewDto> getAllTicketsConnectedToUser() {
         AppUser user = getUserFromContext().orElseThrow();
-        List<Ticket> tickets = Stream.concat(user.getAssignedTickets().stream(), user.getSubmittedTickets().stream()).toList();
+        List<Ticket> tickets;
+        if(user.getSRole().equals("Admin")) {
+            tickets = ticketRepository.findAll();
+        }
+        else {
+            tickets = Stream.concat(user.getAssignedTickets().stream(), user.getSubmittedTickets().stream()).toList();
+        }
         List<AllTicketsViewDto> ticketsForAllTicketsView = new ArrayList<>();
         for(Ticket ticket : tickets) {
             ticketsForAllTicketsView.add(allTicketsViewMapper.apply(ticket));
@@ -229,8 +235,8 @@ public class TicketService {
     public Ticket createNewTicket(Project project) {
         Ticket ticket = new Ticket();
         ticket.setProject(project);
-        //ticket.setCreatedAt(LocalDateTime.now());
-        //ticket.setSubmitter(appUserRepository.findById(getUserFromContext().orElseThrow().getId()).orElseThrow());
+        ticket.setCreatedAt(LocalDateTime.now());
+        ticket.setSubmitter(appUserRepository.findById(getUserFromContext().orElseThrow().getId()).orElseThrow());
         return ticketRepository.save(ticket);
     }
 }

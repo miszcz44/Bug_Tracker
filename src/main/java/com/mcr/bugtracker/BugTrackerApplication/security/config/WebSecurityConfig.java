@@ -10,6 +10,7 @@ import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,6 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             "PROJECT_MANAGER", "ADMIN", "DEVELOPER", "SUBMITTER", "NONE"
                 )
                     .antMatchers("/api/v1/user/role-management/**").hasAuthority("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/v1/project").hasAnyAuthority(
+                            "ADMIN", "PROJECT_MANAGER")
 //                    .antMatchers("/api/v1/userx").hasAuthority("USER")
                     .antMatchers("/api/v1/registration/login").permitAll()
                     .antMatchers("/api/v1/registration").permitAll()
