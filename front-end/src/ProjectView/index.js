@@ -21,6 +21,7 @@ import {Link} from "react-router-dom";
 const ProjectView = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const projectId = window.location.href.split("/projects/")[1];
+    let errorCode = 0;
     const [project, setProject] = useState({});
     const [currentManager, setCurrentManager] = useState({});
     const currentManagerLabel = {value: currentManager, label: currentManager.wholeName + ' | ' + currentManager.email}
@@ -58,7 +59,7 @@ const ProjectView = () => {
     // }
 
     function save() {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}`, "PUT", jwt, {
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/edit/${projectId}`, "PUT", jwt, {
             "project": project,
             "currentManager": selectedProjectManager ? selectedProjectManager.value : currentManager,
             "projectPersonnel": projectPersonnel,
@@ -118,14 +119,26 @@ const ProjectView = () => {
     }
 
     useEffect(() => {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}`, "GET", jwt)
-            .then((response) => {
-                setProject(response.project);
-                setCurrentManager(response.currentManager);
-                setProjectManagers(response.projectManagers);
-                setProjectPersonnel(response.projectPersonnel);
-                setAllNotParticipatingUsers(response.allUsersNotInProject);
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/edit/${projectId}`, "GET", jwt)
+            .then(response => {
                 console.log(response);
+                if(!response.status) {
+                    setProject(response.project);
+                    setCurrentManager(response.currentManager);
+                    setProjectManagers(response.projectManagers);
+                    setProjectPersonnel(response.projectPersonnel);
+                    setAllNotParticipatingUsers(response.allUsersNotInProject);
+                }
+                else if(!response.ok) {
+                    errorCode = response.status;
+                    throw Error(response.status);
+                }
+
+            })
+            .catch(err => {
+                errorCode === 403 ? window.location.href = "/403" :
+                    errorCode === 404 ? window.location.href = "/404" :
+                        window.location.href = "/otherError";
             });
     }, []);
 

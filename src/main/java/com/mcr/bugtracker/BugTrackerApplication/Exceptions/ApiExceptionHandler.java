@@ -17,4 +17,25 @@ public class ApiExceptionHandler {
         );
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ApiForbiddenException.class)
+    public ResponseEntity<Object> handleNotAuthorizedException(ApiForbiddenException e) {
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                e,
+                HttpStatus.FORBIDDEN
+        );
+        return new ResponseEntity<>(apiException, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ApiNotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(ApiNotFoundException e) {
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                e,
+                HttpStatus.NOT_FOUND
+        );
+        return new ResponseEntity<>(apiException, HttpStatus.NOT_FOUND);
+    }
+
 }

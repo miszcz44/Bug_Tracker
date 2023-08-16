@@ -26,6 +26,9 @@ import TicketCreateView from "./TicketCreateView";
 import ProjectManagerViewDashboard from "./ProjectManagerViewDashboard";
 import DeveloperViewDashboard from "./DeveloperViewDashboard";
 import NoRoleViewDashboard from "./NoRoleViewDashboard";
+import Response403Template from "./Response403Template";
+import OtherErrorTemplate from "./OtherErrorTemplate";
+import Response404Template from "./Response404Template";
 
 function App() {
 
@@ -153,6 +156,9 @@ function App() {
             />
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Registration/>}/>
+            <Route path="/403" element={<Response403Template/>}/>
+            <Route path="/404" element={<Response404Template/>}/>
+            <Route path="/otherError" element={<OtherErrorTemplate/>}/>
             <Route path="/" element={() => {
                 return <div>home</div>
             }

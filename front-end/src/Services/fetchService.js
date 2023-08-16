@@ -24,6 +24,9 @@ function grabAndAuthorizeRequestFromTheServer(url, requestMethod, jwt, requestBo
                 return response.text();
             }
         }
+        else {
+            return response;
+        }
     });
 }
 

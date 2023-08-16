@@ -2,6 +2,9 @@ package com.mcr.bugtracker.BugTrackerApplication.project;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiForbiddenException;
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiNotFoundException;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
@@ -76,6 +79,7 @@ public class ProjectService {
 
     public ProjectDetailsViewDto getDataForProjectDetailsView(Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow();
+        validateUserPermissionForProjectDetails(project);
         Project projectWithDemandedFields = new Project.Builder()
                 .id(projectId)
                 .name(project.getName())
@@ -89,7 +93,8 @@ public class ProjectService {
     }
 
     public ProjectResponseDto getDataForProjectResponse(Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow();
+        validateProjectExistence(projectId);
+        Project project = projectRepository.findById(projectId).get();
         Project projectWithDemandedFields = new Project.Builder()
                 .id(projectId)
                 .name(project.getName())
@@ -101,6 +106,7 @@ public class ProjectService {
                 .email(project.getProjectManager().getEmail())
                 .sRole(project.getProjectManager().getSRole())
                 .build();
+        validateUserPermissionForProjectEdit(currentManagerWithDemandedData.getId());
         List<AppUser> projectManagersWithDemandedData =
                 appUserService.findProjectManagersParticipatingInProject(project.getProjectPersonnel());
         projectManagersWithDemandedData.add(currentManagerWithDemandedData);
@@ -115,6 +121,26 @@ public class ProjectService {
                 projectManagersWithDemandedData,
                 projectPersonnelWithDemandedData,
                 allUsersNotInProjectWithDemandedData);
+    }
+
+    private void validateUserPermissionForProjectEdit(Long managerId) {
+        AppUser currentUser = getUserFromContext().orElseThrow();
+        if (!currentUser.getId().equals(managerId) && !currentUser.getSRole().equals("Admin")) {
+            throw new ApiForbiddenException("You do not have permission for this request");
+        }
+    }
+
+    private void validateProjectExistence(Long projectId) {
+        if(!projectRepository.findById(projectId).isPresent()) {
+            throw new ApiNotFoundException("There is no such resource");
+        }
+    }
+
+    private void validateUserPermissionForProjectDetails(Project project) {
+        AppUser currentUser = getUserFromContext().orElseThrow();
+        if(!project.getProjectPersonnel().contains(currentUser) && !project.getProjectManager().equals(currentUser)) {
+            throw new ApiForbiddenException("You do not have permission for this request");
+        }
     }
 
     private List<AppUser> retrieveDemandedDataFromUsersForProjectView(List<AppUser> projectPersonnel) {
@@ -133,12 +159,16 @@ public class ProjectService {
 
     public void saveResponseElements(ProjectResponseDto projectResponse) {
         Project project = projectResponse.getProject();
+        validateProjectExistence(project.getId());
+        validateUserPermissionForProjectEdit(projectResponse.getCurrentManager().getId());
         project.setProjectManager(appUserService.findById(projectResponse.getCurrentManager().getId()));
         project.setProjectPersonnel(projectResponse.getProjectPersonnel());
         projectRepository.save(project);
     }
 
     public void deleteProjectById(Long projectId) {
+        Project project = projectRepository.findById(projectId).orElseThrow();
+        validateUserPermissionForProjectDetails(project);
         projectRepository.deleteById(projectId);
     }
 

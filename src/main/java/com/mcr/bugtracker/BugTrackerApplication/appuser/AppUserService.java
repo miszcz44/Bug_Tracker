@@ -319,7 +319,7 @@ public class AppUserService implements UserDetailsService {
                 currentUser.getAssignedProjects().stream()).toList();
         dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, allProjects);
         List<Ticket> submittedTickets = currentUser.getSubmittedTickets();
-        if (dashboardViewDto != setValuesFromRandomTicket(dashboardViewDto, submittedTickets)) {
+        if (submittedTickets.size() > 0) {
             dashboardViewDto = setValuesFromRandomTicket(dashboardViewDto, submittedTickets);
         }
         else {

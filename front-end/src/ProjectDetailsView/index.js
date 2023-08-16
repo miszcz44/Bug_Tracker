@@ -14,6 +14,7 @@ const ProjectDetailsView = () => {
 
     const user = useUser();
     const projectId = window.location.href.split("/projects/details/")[1]
+    const [errorCode, setErrorCode] = useState(0);
     const [project, setProject] = useState({});
     const [projectManagerEmail, setProjectManagerEmail] = useState("");
     const [projectManagerName, setProjectManagerName] = useState("");
@@ -30,12 +31,21 @@ const ProjectDetailsView = () => {
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/project/details/${projectId}`, "GET", user.jwt)
             .then((response) => {
-                setProject(response.project);
-                setProjectManagerEmail(response.projectManagerEmail);
-                setProjectManagerName(response.projectManagerName);
-                setProjectPersonnel(response.projectPersonnel);
-                setProjectTickets(response.tickets);
-                console.log(response);
+                if(!response.status) {
+                    setProject(response.project);
+                    setProjectManagerEmail(response.projectManagerEmail);
+                    setProjectManagerName(response.projectManagerName);
+                    setProjectPersonnel(response.projectPersonnel);
+                    setProjectTickets(response.tickets);
+                    console.log(response);
+                }
+                else if(!response.ok) {
+                    setErrorCode(response.status);
+                    throw Error(response.status);
+                }
+            })
+            .catch(err => {
+                //errorCode === 403 ? window.location.href = "/403" : window.location.href = "/otherError";
             });
     }, []);
 

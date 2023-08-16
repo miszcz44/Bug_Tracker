@@ -1,9 +1,11 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiForbiddenException;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,15 +30,13 @@ public class ProjectController {
     public List<AllProjectsViewDto> getAllProjectsConnectedToUser() {
         return projectService.findAllProjectsAssignedToUser();
     }
-    @GetMapping("{projectId}")
+    @GetMapping("/edit/{projectId}")
     public ProjectResponseDto getProjectDataById(@PathVariable Long projectId) {
-        ProjectResponseDto projectResponseDto = projectService.getDataForProjectResponse(projectId);
-        return projectResponseDto;
+        return projectService.getDataForProjectResponse(projectId);
     }
-    @PutMapping("{projectId}")
-    public ResponseEntity<?> updateProjectData(@RequestBody ProjectResponseDto projectResponse, @PathVariable Long projectId) {
+    @PutMapping("/edit/{projectId}")
+    public void updateProjectData(@RequestBody ProjectResponseDto projectResponse, @PathVariable Long projectId) {
         projectService.saveResponseElements(projectResponse);
-        return ResponseEntity.ok("updatedProject");
     }
     @DeleteMapping
     public void deleteProject(@RequestBody Long projectId) {

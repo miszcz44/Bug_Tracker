@@ -2,6 +2,8 @@ package com.mcr.bugtracker.BugTrackerApplication.Exceptions;
 
 import org.springframework.http.HttpStatus;
 
+import java.util.Objects;
+
 public class ApiException {
     private final String message;
     private final Throwable throwable;
