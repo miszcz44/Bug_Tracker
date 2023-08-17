@@ -107,19 +107,19 @@ public class AppUserService implements UserDetailsService {
         Long projectManagerId = getUserFromContext().orElseThrow().getId();
         log.info(projectManagerId.toString());
         if(idList.isEmpty()) {
-            return appUserRepository.getAllUsersButProjectManager(projectManagerId);
+            return appUserRepository.getAllUsersButAdminsAndProjectManager(projectManagerId);
         }
-        return appUserRepository.getAllUsersButProjectManagerAndPersonnel(projectManagerId, idList);
+        return appUserRepository.getAllUsersButAdminsProjectManagerAndPersonnel(projectManagerId, idList);
     }
 
-    public List<AppUser> getAllUsersNotParticipatingInProject(List<AppUser> projectPersonnel, AppUser manager) {
+    public List<AppUser> getAllNonAdminUsersNotParticipatingInProject(List<AppUser> projectPersonnel, AppUser manager) {
         List<Long> idList = projectPersonnel.stream()
                 .map(AppUser::getId)
                 .collect(Collectors.toList());
         if(idList.isEmpty()) {
-            return appUserRepository.getAllUsersButProjectManager(manager.getId());
+            return appUserRepository.getAllUsersButAdminsAndProjectManager(manager.getId());
         }
-        return appUserRepository.getAllUsersButProjectManagerAndPersonnel(manager.getId(), idList);
+        return appUserRepository.getAllUsersButAdminsProjectManagerAndPersonnel(manager.getId(), idList);
     }
 
 

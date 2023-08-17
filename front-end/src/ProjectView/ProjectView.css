@@ -74,6 +74,20 @@ body {
     background-color: #31d2f2;
 }
 
+.project-view-button-4 {
+    margin-left: 280px!important;
+    margin-top: 10px;
+    background-color: #0dcaf0;
+    border: none;
+    border-radius: 5px;
+    width: 130px;
+    height: 35px;
+}
+
+.project-view-button-4:hover {
+    background-color: #31d2f2;
+}
+
 .project-view-table-1 {
     background-color: #FFFFFF!important;
 }

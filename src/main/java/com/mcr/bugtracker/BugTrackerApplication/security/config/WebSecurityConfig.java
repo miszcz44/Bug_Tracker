@@ -52,7 +52,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/v1/user/role-management/**").hasAuthority("ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/v1/project").hasAnyAuthority(
                             "ADMIN", "PROJECT_MANAGER")
+                    .antMatchers(HttpMethod.DELETE, "/api/v1/project").hasAnyAuthority(
+                        "ADMIN", "PROJECT_MANAGER")
                     .antMatchers("/api/v1/project/edit/**").hasAnyAuthority("ADMIN", "PROJECT_MANAGER")
+                    .antMatchers(HttpMethod.POST, "/api/v1/ticket").hasAnyAuthority(
+                        "ADMIN", "PROJECT_MANAGER", "SUBMITTER")
+                    .antMatchers(HttpMethod.DELETE, "/api/v1/ticket").hasAnyAuthority(
+                        "ADMIN", "PROJECT_MANAGER")
+                    .antMatchers("/api/v1/ticket/details/**").hasAnyAuthority(
+                            "ADMIN", "PROJECT_MANAGER", "DEVELOPER", "SUBMITTER")
+                    .antMatchers("/api/v1/ticket/edit/**").hasAnyAuthority(
+                            "ADMIN", "PROJECT_MANAGER", "SUBMITTER")
 //                    .antMatchers("/api/v1/userx").hasAuthority("USER")
                     .antMatchers("/api/v1/registration/login").permitAll()
                     .antMatchers("/api/v1/registration").permitAll()

@@ -36,26 +36,21 @@ public class TicketController {
         return ticketService.createNewTicket(project);
     }
 
-    @PostMapping("/to-project")
-    public ResponseEntity<?> createEmptyTicketInProject(@RequestBody Long projectId) {
-        Project project = projectService.findById(projectId).orElseThrow();
-        Ticket ticket = new Ticket(project);
-        ticket.setCreatedAt(LocalDateTime.now());
-        ticketService.saveTicket(ticket);
-        return ResponseEntity.ok(ticket);
-
-    }
-
+//    @PostMapping("/to-project")
+//    public ResponseEntity<?> createEmptyTicketInProject(@RequestBody Long projectId) {
+//        Project project = projectService.findById(projectId).orElseThrow();
+//        Ticket ticket = new Ticket(project);
+//        ticket.setCreatedAt(LocalDateTime.now());
+//        ticketService.saveTicket(ticket);
+//        return ResponseEntity.ok(ticket);
+//    }
     @GetMapping
     public List<AllTicketsViewDto> getAllTicketsConnectedToUser() {
         return ticketService.getAllTicketsConnectedToUser();
     }
-
-
-
-    @GetMapping("{ticketId}")
+    @GetMapping("/details/{ticketId}")
     public TicketDetailsViewDto getTicketDataById(@PathVariable Long ticketId) {
-        return ticketService.getDemandedDataForProjectDetailsView(ticketId);
+        return ticketService.getDemandedDataForTicketDetailsView(ticketId);
     }
 
     @GetMapping("/edit/{ticketId}")
@@ -63,27 +58,26 @@ public class TicketController {
         return ticketService.getDataForTicketEditView(ticketId);
     }
 
-    @PutMapping("{ticketId}")
+    @PutMapping("/edit/{ticketId}")
     public void updateTicketData(@RequestBody TicketEditViewDto ticket) {
         ticketService.updateTicketData(ticket);
     }
 
-    @PutMapping("{ticketId}/add-developer-to-ticket")
-    public ResponseEntity<?> addDeveloperToTicket(@RequestBody String developerEmail, @PathVariable Long ticketId) {
-        Ticket ticket = ticketService.findById(ticketId).orElseThrow();
-        if(ticket.getAssignedDeveloper() != null) {
-            AppUser currentDeveloper = ticket.getAssignedDeveloper();
-            ticketService.assignDeveloperToTicketByEmail(ticket, developerEmail);
-            ticketHistoryFieldService.saveChangeOfDeveloper(ticket, currentDeveloper);
-        }
-        ticketService.assignDeveloperToTicketByEmail(ticket, developerEmail);
-        return ResponseEntity.ok(ticketService.saveTicket(ticket));
-    }
+//    @PutMapping("{ticketId}/add-developer-to-ticket")
+//    public ResponseEntity<?> addDeveloperToTicket(@RequestBody String developerEmail, @PathVariable Long ticketId) {
+//        Ticket ticket = ticketService.findById(ticketId).orElseThrow();
+//        if(ticket.getAssignedDeveloper() != null) {
+//            AppUser currentDeveloper = ticket.getAssignedDeveloper();
+//            ticketService.assignDeveloperToTicketByEmail(ticket, developerEmail);
+//            ticketHistoryFieldService.saveChangeOfDeveloper(ticket, currentDeveloper);
+//        }
+//        ticketService.assignDeveloperToTicketByEmail(ticket, developerEmail);
+//        return ResponseEntity.ok(ticketService.saveTicket(ticket));
+//    }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteTicket(@RequestBody Long ticketId) {
+    public void deleteTicket(@RequestBody Long ticketId) {
         ticketService.deleteTicket(ticketId);
-        return ResponseEntity.ok("deleted");
     }
 
 }

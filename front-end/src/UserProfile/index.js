@@ -21,6 +21,18 @@ const UserProfile = () => {
     const [email, setEmail] = useState("");
     const [numberOfManagedProjects, setNumberOfManagedProjects] = useState(0);
     const [numberOfSubmittedTickets, setNumberOfSubmittedTickets] = useState(0);
+    const [numberOfAssignedTickets, setNumberOfAssignedTickets] = useState(0);
+    const [numberOfBelongingProjects, setNumberOfBelongingProjects] = useState(0);
+
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role.authority;
+        }
+        return "null";
+    }
+
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer("/api/v1/user/user-profile", "GET", user.jwt)
             .then((response) => {
@@ -30,6 +42,8 @@ const UserProfile = () => {
                 setEmail(response.email);
                 setNumberOfSubmittedTickets(response.numberOfSubmittedTickets);
                 setNumberOfManagedProjects(response.numberOfManagedProjects);
+                setNumberOfBelongingProjects(response.numberOfBelongingProjects);
+                setNumberOfAssignedTickets(response.numberOfAssignedTickets);
             });
     }, []);
     return (
@@ -77,20 +91,64 @@ const UserProfile = () => {
                                 <p className="ticket-details-p-1">{role}</p>
                             </div>
                         </div>
-                        <div className="row mt-4 mb-4 p-2">
-                            <div className="col-6">
-                                <label className="project-details-label-1">
-                                    Managed Projects Count
-                                </label>
-                                <p className="ticket-details-p-1">{numberOfManagedProjects}</p>
-                            </div>
-                            <div className="col-6">
-                                <label className="project-details-label-1">
-                                    Submitted Tickets Count
-                                </label>
-                                <p className="ticket-details-p-1">{numberOfSubmittedTickets}</p>
-                            </div>
-                        </div>
+                        {
+                            getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ?
+                                <div className="row mt-4 mb-4 p-2">
+                                    <div className="col-6">
+                                        <label className="project-details-label-1">
+                                            Managed Projects Count
+                                        </label>
+                                        <p className="ticket-details-p-1">{numberOfManagedProjects}</p>
+                                    </div>
+                                    <div className="col-6">
+                                        <label className="project-details-label-1">
+                                            Submitted Tickets Count
+                                        </label>
+                                        <p className="ticket-details-p-1">{numberOfSubmittedTickets}</p>
+                                    </div>
+                                </div> :
+                                getRoleFromJWT() === "DEVELOPER" ?
+                                    <div className="row mt-4 mb-4 p-2">
+                                        <div className="col-6">
+                                            <label className="project-details-label-1">
+                                                Assigned Projects Count
+                                            </label>
+                                            <p className="ticket-details-p-1">{numberOfBelongingProjects}</p>
+                                        </div>
+                                        <div className="col-6">
+                                            <label className="project-details-label-1">
+                                                Assigned Tickets Count
+                                            </label>
+                                            <p className="ticket-details-p-1">{numberOfAssignedTickets}</p>
+                                        </div>
+                                    </div> :
+                                    getRoleFromJWT() === "SUBMITTER" ?
+                                        <div className="row mt-4 mb-4 p-2">
+                                            <div className="col-6">
+                                                <label className="project-details-label-1">
+                                                    Assigned Projects Count
+                                                </label>
+                                                <p className="ticket-details-p-1">{numberOfBelongingProjects}</p>
+                                            </div>
+                                            <div className="col-6">
+                                                <label className="project-details-label-1">
+                                                    Submitted Tickets Count
+                                                </label>
+                                                <p className="ticket-details-p-1">{numberOfSubmittedTickets}</p>
+                                            </div>
+                                        </div> :
+                                        getRoleFromJWT() === "NONE" ?
+                                            <div className="row mt-4 mb-4 p-2">
+                                                <div className="col-6">
+                                                    <label className="project-details-label-1">
+                                                        Assigned Projects Count
+                                                    </label>
+                                                    <p className="ticket-details-p-1">{numberOfBelongingProjects}</p>
+                                                </div>
+                                            </div> :
+                                            <></>
+                        }
+
                     </div>
                 </div>
             </div>

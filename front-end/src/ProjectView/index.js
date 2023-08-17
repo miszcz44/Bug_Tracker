@@ -149,8 +149,8 @@ const ProjectView = () => {
                 <div className='card project-view-card-1'>
                     <div className='d-flex'>
                         <h2 className="pt-1 px-2 d-inline" style={{marginBottom: '4px'}}>Edit Project</h2>
-                        <button className='project-view-button-3' onClick={() => window.location.href = `/projects/details/${projectId}`}>
-                            See Details
+                        <button className='project-view-button-4' onClick={() => window.location.href = `/projects/details/${projectId}`}>
+                            To details
                         </button>
                         <button className='project-view-button-2' onClick={() => save()}>
                             Save Changes

@@ -9,12 +9,16 @@ public class AllTicketsViewMapper implements Function<Ticket, AllTicketsViewDto>
 
     @Override
     public AllTicketsViewDto apply(Ticket ticket) {
+        String developerName = null;
+        if(ticket.getAssignedDeveloper() != null) {
+            developerName = ticket.getAssignedDeveloper().getWholeName();
+        }
         return new AllTicketsViewDto(ticket.getId(),
                 ticket.getTitle(),
                 ticket.getProject().getName(),
                 ticket.getProject().getProjectManager().getEmail(),
                 ticket.getSubmitter().getEmail(),
-                ticket.getAssignedDeveloper().getWholeName(),
+                developerName,
                 ticket.getPriority(),
                 ticket.getStatus(),
                 ticket.getType(),

@@ -20,6 +20,7 @@ import {Link} from "react-router-dom";
 const TicketCreateView = () => {
     const [jwt, setJwt] = useLocalState("", "jwt");
     const ticketId = window.location.href.split("tickets/")[1];
+    let errorCode = 0;
     const projectId = window.location.href.split("/")[4];
     const [ticket, setTicket] = useState("");
     const [projectName, setProjectName] = useState("");
@@ -60,7 +61,7 @@ const TicketCreateView = () => {
             "ticket": ticket,
             "developer": selectedDeveloper ? selectedDeveloper.value : currentDeveloper
         })
-        window.location.href = `/tickets/${ticket.id}`;
+        window.location.reload();
     }
 
     function handleDeveloperSelect(data) {
@@ -86,14 +87,25 @@ const TicketCreateView = () => {
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/edit/${ticketId}`, "GET", jwt)
             .then((response) => {
-                setTicket(response.ticket);
-                setProjectName(response.projectName);
-                setCurrentDeveloper(response.developer);
-                setDevelopers(response.possibleDevelopers);
-                setTypes(response.types);
-                setPriorities(response.priorities);
-                setStatuses(response.progressStatuses);
-                console.log(response);
+                if(!response.status) {
+                    setTicket(response.ticket);
+                    setProjectName(response.projectName);
+                    setCurrentDeveloper(response.developer);
+                    setDevelopers(response.possibleDevelopers);
+                    setTypes(response.types);
+                    setPriorities(response.priorities);
+                    setStatuses(response.progressStatuses);
+                    console.log(response);
+                }
+                else if(!response.ok) {
+                    errorCode = response.status;
+                    throw Error(response.status);
+                }
+            })
+            .catch(err => {
+                errorCode === 403 ? window.location.href = "/403" :
+                    errorCode === 404 ? window.location.href = "/404" :
+                        window.location.href = "/otherError";
             });
     }, []);
 

@@ -14,25 +14,25 @@ import java.util.List;
 public class CommentaryController {
 
     private final CommentaryService commentaryService;
-    @GetMapping
-    public ResponseEntity<List<Commentary>> getCommentsByTicket(@RequestParam Long ticketId) {
-        List<Commentary> commentaries = commentaryService.findAllCommentsByTicketId(ticketId);
-        return ResponseEntity.ok(commentaries);
-    }
-
-    @PutMapping("{commentId}")
-    public ResponseEntity<Commentary> updateCommentMessage(@RequestBody String message, @PathVariable Long commentId) {
-        Commentary commentary = commentaryService.updateCommentMessageById(message, commentId);
-        return ResponseEntity.ok(commentary);
-    }
-
-    @DeleteMapping("{commentId}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
-        commentaryService.deleteCommentById(commentId);
-        return ResponseEntity.ok("");
-    }
-    @PostMapping("{ticketId}")
-    public void saveComment(@RequestBody CommentsForTicketDetailsViewDto comment, @PathVariable Long ticketId) {
-        commentaryService.saveComment(comment, ticketId);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<Commentary>> getCommentsByTicket(@RequestParam Long ticketId) {
+//        List<Commentary> commentaries = commentaryService.findAllCommentsByTicketId(ticketId);
+//        return ResponseEntity.ok(commentaries);
+//    }
+//
+//    @PutMapping("{commentId}")
+//    public ResponseEntity<Commentary> updateCommentMessage(@RequestBody String message, @PathVariable Long commentId) {
+//        Commentary commentary = commentaryService.updateCommentMessageById(message, commentId);
+//        return ResponseEntity.ok(commentary);
+//    }
+//
+//    @DeleteMapping("{commentId}")
+//    public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
+//        commentaryService.deleteCommentById(commentId);
+//        return ResponseEntity.ok("");
+//    }
+//    @PostMapping("{ticketId}")
+//    public void saveComment(@RequestBody CommentsForTicketDetailsViewDto comment, @PathVariable Long ticketId) {
+//        commentaryService.saveComment(comment, ticketId);
+//    }
 }

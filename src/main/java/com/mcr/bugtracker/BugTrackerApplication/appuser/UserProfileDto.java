@@ -9,7 +9,9 @@ public record UserProfileDto (
         String role,
         String email,
         int numberOfManagedProjects,
-        int numberOfSubmittedTickets
+        int numberOfSubmittedTickets,
+        int numberOfAssignedTickets,
+        int numberOfBelongingProjects
 ) {
 
 }

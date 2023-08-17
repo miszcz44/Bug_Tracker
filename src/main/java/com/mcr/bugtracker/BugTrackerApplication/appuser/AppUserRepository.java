@@ -1,6 +1,5 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
-import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -31,13 +30,13 @@ public interface AppUserRepository
             nativeQuery = true)
     List<AppUser> getProjectPersonnel(Long id);
 
-    @Query(value = "SELECT * FROM app_user WHERE id != ?1 AND id NOT IN ?2",
+    @Query(value = "SELECT * FROM app_user WHERE id != ?1 AND id NOT IN ?2 AND s_role != 'Admin'",
             nativeQuery = true)
-    List<AppUser> getAllUsersButProjectManagerAndPersonnel(Long id, List<Long> personnelIds);
+    List<AppUser> getAllUsersButAdminsProjectManagerAndPersonnel(Long id, List<Long> personnelIds);
 
-    @Query(value = "SELECT * FROM app_user WHERE id != ?1",
+    @Query(value = "SELECT * FROM app_user WHERE id != ?1 AND s_role != 'Admin'",
             nativeQuery = true)
-    List<AppUser> getAllUsersButProjectManager(Long projectManagerId);
+    List<AppUser> getAllUsersButAdminsAndProjectManager(Long projectManagerId);
 
 
     @Query(value = "SELECT * FROM app_user WHERE app_user_role != 'ADMIN'",

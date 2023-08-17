@@ -15,11 +15,11 @@ public class AppUserController {
 
     private final AppUserService userService;
 
-    @DeleteMapping("delete/id")
-    public String deleteUser(@RequestParam("userId") Long userId) {
-        userService.deleteUser(userId);
-        return "Deleted";
-    }
+//    @DeleteMapping("delete/id")
+//    public String deleteUser(@RequestParam("userId") Long userId) {
+//        userService.deleteUser(userId);
+//        return "Deleted";
+//    }
     @GetMapping("/role-management/non-admin")
     public List<AppUser> getAllUsersExceptAdmins() {
         return userService.getAllUsersExceptAdmins();

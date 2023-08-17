@@ -1,5 +1,7 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket;
 
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiForbiddenException;
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiNotFoundException;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
@@ -8,6 +10,7 @@ import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentaryServ
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTicketDetailsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldService;
+import javassist.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +21,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -68,6 +72,8 @@ public class TicketService {
     }
 
     public void deleteTicket(Long ticketId) {
+        validateTicketExistence(ticketId);
+        validateUserPermissionForTicketDelete(ticketRepository.findById(ticketId).get());
         ticketRepository.deleteById(ticketId);
     }
 
@@ -108,8 +114,10 @@ public class TicketService {
         return ticketsForAllTicketsView;
     }
 
-    public TicketDetailsViewDto getDemandedDataForProjectDetailsView(Long ticketId) {
-        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow();
+    public TicketDetailsViewDto getDemandedDataForTicketDetailsView(Long ticketId) {
+        validateTicketExistence(ticketId);
+        Ticket ticket = ticketRepository.findById(ticketId).get();
+        validateUserPermissionForTicketDetails(ticket);
         Ticket ticketWithDemandedData = new Ticket.Builder()
                 .title(ticket.getTitle())
                 .description(ticket.getDescription())
@@ -134,8 +142,28 @@ public class TicketService {
                 ticket.getTicketHistoryFields());
     }
 
+    private void validateUserPermissionForTicketDetails(Ticket ticket) {
+        AppUser currentUser = getUserFromContext().orElseThrow();
+        List<AppUser> otherProjectManagers = ticket.getProject().getProjectPersonnel().stream()
+                .filter(obj -> obj.getSRole().equals("Project manager"))
+                .collect(Collectors.toList());
+        if(!currentUser.equals(ticket.getSubmitter()) && !currentUser.equals(ticket.getProject().getProjectManager()) &&
+            !otherProjectManagers.contains(currentUser) && !currentUser.equals(ticket.getAssignedDeveloper()) &&
+            !currentUser.getSRole().equals("Admin")) {
+            throw new ApiForbiddenException("You do not have permission for this resource");
+        }
+    }
+
+    private void validateTicketExistence(Long ticketId) {
+        if(!ticketRepository.findById(ticketId).isPresent()) {
+            throw new ApiNotFoundException("There is no such resource");
+        }
+    }
+
     public TicketEditViewDto getDataForTicketEditView(Long ticketId) {
+        validateTicketExistence(ticketId);
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow();
+        validateUserPermissionForTicketEdit(ticket);
         Ticket ticketWithDemandedData = new Ticket.Builder()
                 .id(ticket.getId())
                 .title(ticket.getTitle())
@@ -153,10 +181,28 @@ public class TicketService {
                 developerWithDemandedData, possibleDevelopersWithDemandedData);
     }
 
+    private void validateUserPermissionForTicketEdit(Ticket ticket) {
+        AppUser currentUser = getUserFromContext().orElseThrow();
+        if(!currentUser.equals(ticket.getProject().getProjectManager()) && !currentUser.equals(ticket.getSubmitter()) &&
+            !currentUser.getSRole().equals("Admin")) {
+            throw new ApiForbiddenException("You do not have permission for this resource");
+        }
+    }
+
+    private void validateUserPermissionForTicketDelete(Ticket ticket) {
+        AppUser currentUser = getUserFromContext().orElseThrow();
+        if(!currentUser.equals(ticket.getProject().getProjectManager()) && !currentUser.getSRole().equals("Admin") &&
+            !currentUser.equals(ticket.getSubmitter())) {
+            throw new ApiForbiddenException("You do not have permission for this resource");
+        }
+    }
+
     // this needs refactoring XD TODO
     public void updateTicketData(TicketEditViewDto ticketDto) {
         Ticket ticketWithUpdatedData = ticketDto.getTicket();
+        validateTicketExistence(ticketWithUpdatedData.getId());
         Ticket ticket = ticketRepository.findById(ticketWithUpdatedData.getId()).orElseThrow();
+        validateUserPermissionForTicketEdit(ticket);
         if(ticket.getTitle() != null && !ticket.getTitle().equals(ticketWithUpdatedData.getTitle())) {
             ticketHistoryFieldService.save(new TicketHistoryField("Title",
                     ticket.getTitle(),

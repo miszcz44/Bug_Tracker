@@ -15,6 +15,7 @@ const TicketDetails = () => {
     const user = useUser();
     const decodedJwt = jwt_decode(user.jwt);
     const ticketId = window.location.href.split("/tickets/details/")[1]
+    let errorCode = 0;
     const [ticket, setTicket] = useState({});
     const [developerName, setDeveloperName] = useState("");
     const [submitterName, setSubmitterName] = useState("");
@@ -63,18 +64,28 @@ const TicketDetails = () => {
     }
 
     useEffect(() => {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}`, "GET", user.jwt)
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/details/${ticketId}`, "GET", user.jwt)
             .then((response) => {
-                setTicket(response.ticket);
-                setDeveloperName(response.developerName);
-                setSubmitterName(response.submitterName);
-                setSubmitterEmail(response.submitterEmail);
-                setProjectManagerEmail(response.projectManagerEmail);
-                setProjectId(response.projectId);
-                setProjectName(response.projectName);
-                setComments(response.comments);
-                setHistoryFields(response.ticketHistoryField);
-                console.log(response);
+                if(!response.status) {
+                    setTicket(response.ticket);
+                    setDeveloperName(response.developerName);
+                    setSubmitterName(response.submitterName);
+                    setSubmitterEmail(response.submitterEmail);
+                    setProjectManagerEmail(response.projectManagerEmail);
+                    setProjectId(response.projectId);
+                    setProjectName(response.projectName);
+                    setComments(response.comments);
+                    setHistoryFields(response.ticketHistoryField);
+                }
+                else if(!response.ok) {
+                    errorCode = response.status;
+                    throw Error(response.status);
+                }
+            })
+            .catch(err => {
+                errorCode === 403 ? window.location.href = "/403" :
+                    errorCode === 404 ? window.location.href = "/404" :
+                        window.location.href = "/otherError";
             });
     }, []);
 

@@ -14,7 +14,7 @@ const ProjectDetailsView = () => {
 
     const user = useUser();
     const projectId = window.location.href.split("/projects/details/")[1]
-    const [errorCode, setErrorCode] = useState(0);
+    let errorCode = 0;
     const [project, setProject] = useState({});
     const [projectManagerEmail, setProjectManagerEmail] = useState("");
     const [projectManagerName, setProjectManagerName] = useState("");
@@ -40,12 +40,14 @@ const ProjectDetailsView = () => {
                     console.log(response);
                 }
                 else if(!response.ok) {
-                    setErrorCode(response.status);
+                    errorCode = response.status;
                     throw Error(response.status);
                 }
             })
             .catch(err => {
-                //errorCode === 403 ? window.location.href = "/403" : window.location.href = "/otherError";
+                errorCode === 403 ? window.location.href = "/403" :
+                    errorCode === 404 ? window.location.href = "/404" :
+                        window.location.href = "/otherError";
             });
     }, []);
 

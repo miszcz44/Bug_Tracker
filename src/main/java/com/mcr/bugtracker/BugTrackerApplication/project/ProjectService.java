@@ -78,7 +78,8 @@ public class ProjectService {
     }
 
     public ProjectDetailsViewDto getDataForProjectDetailsView(Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow();
+        validateProjectExistence(projectId);
+        Project project = projectRepository.findById(projectId).get();
         validateUserPermissionForProjectDetails(project);
         Project projectWithDemandedFields = new Project.Builder()
                 .id(projectId)
@@ -113,7 +114,7 @@ public class ProjectService {
         List<AppUser> projectPersonnelWithDemandedData =
                 retrieveDemandedDataFromUsersForProjectView(project.getProjectPersonnel());
         List<AppUser> allUsersNotInProject =
-                appUserService.getAllUsersNotParticipatingInProject(project.getProjectPersonnel(), project.getProjectManager());
+                appUserService.getAllNonAdminUsersNotParticipatingInProject(project.getProjectPersonnel(), project.getProjectManager());
         List<AppUser> allUsersNotInProjectWithDemandedData =
                 retrieveDemandedDataFromUsersForProjectView(allUsersNotInProject);
         return new ProjectResponseDto(projectWithDemandedFields,
@@ -138,7 +139,8 @@ public class ProjectService {
 
     private void validateUserPermissionForProjectDetails(Project project) {
         AppUser currentUser = getUserFromContext().orElseThrow();
-        if(!project.getProjectPersonnel().contains(currentUser) && !project.getProjectManager().equals(currentUser)) {
+        if(!project.getProjectPersonnel().contains(currentUser) && !currentUser.equals(project.getProjectManager()) &&
+            !currentUser.getSRole().equals("Admin")) {
             throw new ApiForbiddenException("You do not have permission for this request");
         }
     }
@@ -167,6 +169,7 @@ public class ProjectService {
     }
 
     public void deleteProjectById(Long projectId) {
+        validateProjectExistence(projectId);
         Project project = projectRepository.findById(projectId).orElseThrow();
         validateUserPermissionForProjectDetails(project);
         projectRepository.deleteById(projectId);
