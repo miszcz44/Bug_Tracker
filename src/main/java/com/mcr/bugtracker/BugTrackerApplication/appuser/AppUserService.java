@@ -131,10 +131,6 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.getAllUsersExceptAdmins();
     }
 
-    public List<AppUser> getAllUsers() {
-        return appUserRepository.findAll();
-    }
-
     public void changeUsersRole(AppUserRoleAssignmentRequest request) {
         AppUserRole role = findRoleObject(request.getRole());
         for(String email : request.getUsersEmails()) {
@@ -359,8 +355,41 @@ public class AppUserService implements UserDetailsService {
         return dashboardViewDto;
     }
 
-    public AppUserRole[] getRoles() {
-        AppUserRole[] userRoles = AppUserRole.values();
+    public AppUserRole[] getNonAdminAndNonDemoRoles() {
+        AppUserRole[] userRoles = {
+                AppUserRole.PROJECT_MANAGER, AppUserRole.DEVELOPER, AppUserRole.SUBMITTER, AppUserRole.NONE};
         return userRoles;
+    }
+
+    public AppUsersResponseDto getDataForRoleManagement() {
+        AppUser user = getUserFromContext().orElseThrow();
+        List<AppUser> allUsers = appUserRepository.findAll();
+        if(user.isDemo()) {
+            return getDemoDataForRoleManagement(allUsers);
+        }
+        else {
+            return getRegularDataForRoleManagement(allUsers);
+        }
+    }
+    private AppUsersResponseDto getRegularDataForRoleManagement(List<AppUser> allUsers) {
+        return new AppUsersResponseDto(
+                allUsers,
+                allUsers.stream()
+                        .filter(user -> !user.getSRole().equals("Admin"))
+                        .collect(Collectors.toList()),
+                getNonAdminAndNonDemoRoles()
+        );
+    }
+    private AppUsersResponseDto getDemoDataForRoleManagement(List<AppUser> allUsers) {
+        return new AppUsersResponseDto(
+                allUsers.stream()
+                        .filter(user -> user.isDemo())
+                        .collect(Collectors.toList()),
+                allUsers.stream()
+                        .filter(user -> user.isDemo())
+                        .filter(user -> !user.getSRole().equals("Admin"))
+                        .collect(Collectors.toList()),
+                getNonAdminAndNonDemoRoles()
+        );
     }
 }

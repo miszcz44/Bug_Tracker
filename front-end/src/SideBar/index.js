@@ -21,13 +21,21 @@ function Sidebar() {
         }
     }
 
-    const roleCorrectSidebar = getRoleFromJWT() === "ADMIN" ? AdminSidebarData : SidebarData;
+    const roleCorrectSidebar =
+        getRoleFromJWT() === "ADMIN" || getRoleFromJWT() == "DEMO_ADMIN" ? AdminSidebarData : SidebarData;
 
 
     return (
         <>
             <div className='navbar'>
-                <p className='sidebar-p'>Logged in as: {getRoleFromJWT().toLowerCase()}</p>
+                <p className='sidebar-p'>Logged in as: {getRoleFromJWT().toLowerCase().concat(" ")}
+                    {
+                        getRoleFromJWT().startsWith("DEMO") ?
+                    <>
+                        (certain actions are not allowed)
+                    </> :
+                    <></>}
+                </p>
                 <Link className='navbar-link' to={'/login'} onClick={() => user.jwt = ""}>Log out</Link>
             </div>
                 <nav className='nav-menu active' >

@@ -61,7 +61,7 @@ const Dashboard = () => {
             <DefaultSidebar/>
             <Container style={{marginRight: 0 + 'em', padding: 0}}>
                 {
-                    getRoleFromJWT() === "PROJECT_MANAGER" ?
+                    getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "DEMO_PROJECT_MANAGER" ?
                     <div className="row dashboard-row-1">
                         <div className="col dashboard-col-1">
                             <div className="card dashboard-card-1">
@@ -104,7 +104,8 @@ const Dashboard = () => {
                         </div>
                     </div>
                     :
-                    getRoleFromJWT() === "DEVELOPER" || getRoleFromJWT() === "SUBMITTER" ?
+                    getRoleFromJWT() === "DEVELOPER" || getRoleFromJWT() === "SUBMITTER" ||
+                        getRoleFromJWT() === "DEMO_DEVELOPER" || getRoleFromJWT() === "DEMO_SUBMITTER" ?
                     <div className="row dashboard-row-1">
                         <div className="col dashboard-col-1">
                             {projectId ?
@@ -192,7 +193,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                         :
-                        getRoleFromJWT() === "ADMIN" ?
+                        getRoleFromJWT() === "ADMIN" || getRoleFromJWT() === "DEMO_ADMIN" ?
                             <div className="row dashboard-row-1">
                                 <div className="col dashboard-col-1">
                                     <div className="card dashboard-card-1">

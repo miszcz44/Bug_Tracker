@@ -19,8 +19,8 @@ const RoleManagement = () => {
         usersEmails: [],
         role: " "
     }
-
-    const [nonAdminUsers, setNonAdminUsers] = useState([]);
+    let errorCode = 0;
+    const [nonAdminUsersEmails, setNonAdminUsersEmails] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [userRoles, setUserRoles] = useState([]);
     const [selectedEmails, setSelectedEmails] = useState([]);
@@ -28,10 +28,19 @@ const RoleManagement = () => {
     const [filters, setFilters] = useState({
         global: {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
-    let nonAdminUsersEmails = nonAdminUsers.map(appUser => ({value:appUser.email, label:appUser.email}));
+    let nonAdminUsersEmailsLabel = nonAdminUsersEmails.map(appUser => ({value:appUser.email, label:appUser.email}));
 
     function handleSelect(data) {
         setSelectedEmails(data);
+    }
+
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role.authority;
+        }
+        return "null";
     }
 
     function getRolesFromJWT() {
@@ -51,22 +60,26 @@ const RoleManagement = () => {
 
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/user/role-management`, "GET", user.jwt)
-            .then((userResponse) => {
-                setAllUsers(userResponse.users);
-                setUserRoles(userResponse.userRoles);
+            .then((response) => {
+                if(!response.status) {
+                    setAllUsers(response.allUsers);
+                    setUserRoles(response.userRoles);
+                    setNonAdminUsersEmails(response.nonAdminUsersEmails);
+                }
+                else if(!response.ok) {
+                    errorCode = response.status;
+                    throw Error(response.status);
+                }
+
+            })
+            .catch(err => {
+                errorCode === 403 ? window.location.href = "/403" :
+                    errorCode === 404 ? window.location.href = "/404" :
+                        window.location.href = "/otherError";
             });
     }, []);
-
-    useEffect(() => {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/role-management/non-admin`, "GET", user.jwt)
-            .then((data) => {
-                setNonAdminUsers(data);
-            });
-    }, []);
-
-
     function getDifference() {
-        nonAdminUsersEmails = nonAdminUsersEmails.filter(object1 => {
+        nonAdminUsersEmailsLabel = nonAdminUsersEmailsLabel.filter(object1 => {
             return !selectedEmails.some(object2 => {
                 return object1.value === object2.value;
             });
@@ -88,7 +101,7 @@ const RoleManagement = () => {
         }
         setAllUsers(selectedUsers.concat(nonSelectedUsers));
         if(changeRoleResponse.role === 'Admin') {
-            setNonAdminUsers(nonSelectedUsers);
+            setNonAdminUsersEmails(nonSelectedUsers);
         }
         grabAndAuthorizeRequestFromTheServer(`/api/v1/user/role-management/change-role`, "PUT", user.jwt, changeRoleResponse)
     }
@@ -105,7 +118,7 @@ const RoleManagement = () => {
                 <Col className='role-management-label-1 role-management-select-1' sm="3" md="8" lg="8">
                     <Select
                     placeholder="Select user(s)"
-                    options={nonAdminUsersEmails}
+                    options={nonAdminUsersEmailsLabel}
                     value={selectedEmails}
                     onChange={handleSelect}
                     isSearchable={true}
@@ -139,7 +152,13 @@ const RoleManagement = () => {
                         </DropdownButton>
                     </Col>
                 {/*</Form.Group>*/}
-            <button className="role-management-button-1" onClick={() => assignRoleToUsers()}>Assign role</button>
+                {
+                    getRoleFromJWT() === "DEMO_ADMIN" ?
+                    <button disabled className="role-management-button-1" onClick={() => assignRoleToUsers()}>Assign role</button>
+                :
+                    <button className="role-management-button-1" onClick={() => assignRoleToUsers()}>Assign role</button>
+                }
+
             </Form.Group>
             <div className='role-management-container-2'>
 
@@ -160,7 +179,7 @@ const RoleManagement = () => {
                 </div>
                 <DataTable value={allUsers} stripedRows showGridlines sortMode="multiple" filters={filters} tableStyle={{ minWidth: '50rem' }}
                 paginator rows={10} style={{backgroundColor: '#111111'}}>
-                    <Column field="email" header="email" sortable style={{ width: '33%', fontSize: '12px', padding: '6px' }}/>
+                    <Column field="email" header="Email" sortable style={{ width: '33%', fontSize: '12px', padding: '6px' }}/>
                     <Column field="wholeName" header="Name" sortable style={{ width: '33%', fontSize: '12px', padding: '6px' }}/>
                     <Column field="srole" header="Role" sortable style={{ width: '33%', fontSize: '12px', padding: '6px' }}/>
                 </DataTable>

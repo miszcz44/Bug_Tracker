@@ -20,20 +20,14 @@ public class AppUserController {
 //        userService.deleteUser(userId);
 //        return "Deleted";
 //    }
-    @GetMapping("/role-management/non-admin")
-    public List<AppUser> getAllUsersExceptAdmins() {
-        return userService.getAllUsersExceptAdmins();
-    }
-
     @GetMapping("/role-management")
     public AppUsersResponseDto getAllUsersAndAllRoles() {
-        List<AppUser> allUsers = userService.getAllUsers();
-        return new AppUsersResponseDto(allUsers);
+        return userService.getDataForRoleManagement();
     }
 
     @GetMapping("/roles")
     public AppUserRole[] getRoles() {
-        return userService.getRoles();
+        return userService.getNonAdminAndNonDemoRoles();
     }
     @GetMapping("/user-profile")
     public UserProfileDto getDataForUserProfile() {

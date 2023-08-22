@@ -48,8 +48,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable().cors().disable()
                 .authorizeRequests()
                     .antMatchers("/api/v1/user/dashboard").hasAnyAuthority(
-                            "PROJECT_MANAGER", "ADMIN", "DEVELOPER", "SUBMITTER", "NONE")
-                    .antMatchers("/api/v1/user/role-management/**").hasAuthority("ADMIN")
+                            "PROJECT_MANAGER", "ADMIN", "DEVELOPER", "SUBMITTER", "NONE",
+                                        "DEMO_PROJECT_MANAGER", "DEMO_ADMIN", "DEMO_DEVELOPER", "DEMO_SUBMITTER")
+                .antMatchers(HttpMethod.GET, "/api/v1/user/role-management/**").hasAuthority("DEMO_ADMIN")
+                .antMatchers("/api/v1/user/role-management/**").hasAuthority("ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/v1/project").hasAnyAuthority(
                             "ADMIN", "PROJECT_MANAGER")
                     .antMatchers(HttpMethod.DELETE, "/api/v1/project").hasAnyAuthority(

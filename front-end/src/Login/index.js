@@ -76,6 +76,11 @@ const Login = () => {
                                 Register
                             </button>
                         </div>
+                        <div>
+                            <button type="button" className='btn btn-warning w-100 mt-2' onClick={() => window.location.href="/demo-user"}>
+                                Log in as demo user
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

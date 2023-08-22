@@ -53,6 +53,7 @@ public class AppUser implements UserDetails {
     private String sRole;
     private Boolean locked = false;
     private Boolean enabled = false;
+    private Boolean demo = false;
 
     public AppUser(String firstName,
                    String lastName,
@@ -140,7 +141,9 @@ public class AppUser implements UserDetails {
         return enabled;
     }
 
-
+    public Boolean isDemo() {
+        return demo;
+    }
 
     public Collection<ConfirmationToken> getConfirmationToken() {
         return confirmationToken;

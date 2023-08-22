@@ -47,4 +47,5 @@ public interface AppUserRepository
             nativeQuery = true)
     AppUserRole findRoleByEmail(String email);
     boolean existsByEmail(String email);
+
 }
