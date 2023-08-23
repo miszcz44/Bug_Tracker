@@ -57,7 +57,7 @@ const TicketCreateView = () => {
     // }
 
     function save() {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/${ticketId}`, "PUT", jwt, {
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/edit/${ticketId}`, "PUT", jwt, {
             "ticket": ticket,
             "developer": selectedDeveloper ? selectedDeveloper.value : currentDeveloper
         })

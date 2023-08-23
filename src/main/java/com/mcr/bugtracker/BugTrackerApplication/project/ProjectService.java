@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -46,7 +47,13 @@ public class ProjectService {
     public List<AllProjectsViewDto> findAllProjectsAssignedToUser() {
         AppUser user = getUserFromContext().orElseThrow();
         List<Project> projects;
-        if(user.getSRole().equals("Admin")) {
+        if(user.getSRole().equals("Admin") && user.isDemo()) {
+            projects = projectRepository.findAll()
+                    .stream()
+                    .filter(project -> project.getProjectManager().isDemo())
+                    .collect(Collectors.toList());
+        }
+        else if(user.getSRole().equals("Admin")) {
             projects = projectRepository.findAll();
         }
         else {
@@ -113,8 +120,17 @@ public class ProjectService {
         projectManagersWithDemandedData.add(currentManagerWithDemandedData);
         List<AppUser> projectPersonnelWithDemandedData =
                 retrieveDemandedDataFromUsersForProjectView(project.getProjectPersonnel());
-        List<AppUser> allUsersNotInProject =
-                appUserService.getAllNonAdminUsersNotParticipatingInProject(project.getProjectPersonnel(), project.getProjectManager());
+        List<AppUser> allUsersNotInProject;
+        if(project.getProjectManager().isDemo()) {
+            allUsersNotInProject =
+                    appUserService.getAllNonAdminDemoUsersNotParticipatingInProject(
+                            project.getProjectPersonnel(), project.getProjectManager());
+        }
+        else {
+            allUsersNotInProject =
+                    appUserService.getAllNonAdminUsersNotParticipatingInProject(
+                            project.getProjectPersonnel(), project.getProjectManager());
+        }
         List<AppUser> allUsersNotInProjectWithDemandedData =
                 retrieveDemandedDataFromUsersForProjectView(allUsersNotInProject);
         return new ProjectResponseDto(projectWithDemandedFields,

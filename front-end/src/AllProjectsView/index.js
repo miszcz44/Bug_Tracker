@@ -51,7 +51,8 @@ const AllProjectsView = () => {
         return <div>
             <Link style={{textDecoration: 'none'}} className='px-4' to={detailsUrl.concat(rowData.id)}>Details </Link>
             {
-                getEmailFromJWT() === rowData.projectManagerEmail || getRoleFromJWT() === "ADMIN" ?
+                getEmailFromJWT() === rowData.projectManagerEmail || getRoleFromJWT() === "ADMIN"
+                    || getRoleFromJWT() === "DEMO_ADMIN" ?
                 <Link className='d-block all-projects-span-1'to={editUrl.concat(rowData.id)}>Edit</Link>
                 :
                 <></>
@@ -79,6 +80,8 @@ const AllProjectsView = () => {
             {
                 getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ?
                 <button className="all-projects-button-1" onClick={() => createNewProject()}>Create new project</button>
+                    : getRoleFromJWT() === "DEMO_PROJECT_MANAGER" || getRoleFromJWT() === "DEMO_ADMIN" ?
+                        <button disabled className="all-projects-button-1" onClick={() => createNewProject()}>Create new project</button>
                 :
                 <></>
             }

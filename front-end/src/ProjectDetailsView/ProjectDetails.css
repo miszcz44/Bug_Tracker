@@ -51,3 +51,7 @@
 .project-details-button-1:hover {
     background-color: #cc2122;
 }
+
+.project-details-link-1:hover {
+    cursor: default;
+}

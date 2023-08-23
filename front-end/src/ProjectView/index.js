@@ -18,7 +18,10 @@ import {FilterMatchMode} from "primereact/api";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {Link} from "react-router-dom";
+import jwt_decode from "jwt-decode";
+import {useUser} from "../UserProvider";
 const ProjectView = () => {
+    const user = useUser();
     const [jwt, setJwt] = useLocalState("", "jwt");
     const projectId = window.location.href.split("/projects/")[1];
     let errorCode = 0;
@@ -38,6 +41,15 @@ const ProjectView = () => {
     //const usersEmails = allUsers.map(user => ({value:user.email, label:user.email}));
     let selectedUserCount = 0;
 
+
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role.authority;
+        }
+        return "null";
+    }
     const actionBodyTemplate = (rowData) => {
 
         return <div>
@@ -152,9 +164,17 @@ const ProjectView = () => {
                         <button className='project-view-button-4' onClick={() => window.location.href = `/projects/details/${projectId}`}>
                             To details
                         </button>
-                        <button className='project-view-button-2' onClick={() => save()}>
-                            Save Changes
-                        </button>
+                        {
+                            getRoleFromJWT() === "DEMO_ADMIN" || getRoleFromJWT() === "DEMO_PROJECT_MANAGER" ?
+                                <button disabled className='project-view-button-2' onClick={() => save()}>
+                                    Save Changes
+                                </button>
+                                :
+                                <button className='project-view-button-2' onClick={() => save()}>
+                                    Save Changes
+                                </button>
+                        }
+
                     </div>
                     <p className="px-4">Change project properties and personnel</p>
                     {project ? (

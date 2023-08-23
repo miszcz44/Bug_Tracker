@@ -122,6 +122,22 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.getAllUsersButAdminsProjectManagerAndPersonnel(manager.getId(), idList);
     }
 
+    public List<AppUser> getAllNonAdminDemoUsersNotParticipatingInProject(List<AppUser> projectPersonnel, AppUser manager) {
+        List<Long> idList = projectPersonnel.stream()
+                .map(AppUser::getId)
+                .collect(Collectors.toList());
+        if(idList.isEmpty()) {
+            return appUserRepository.getAllUsersButAdminsAndProjectManager(manager.getId())
+                    .stream()
+                    .filter(appUser -> appUser.isDemo())
+                    .collect(Collectors.toList());
+        }
+        return appUserRepository.getAllUsersButAdminsProjectManagerAndPersonnel(manager.getId(), idList)
+                .stream()
+                .filter(appUser -> appUser.isDemo())
+                .collect(Collectors.toList());
+    }
+
 
     public List<AppUser> findAllUsersAssignedToProject(Long id) {
         return appUserRepository.getProjectPersonnel(id);

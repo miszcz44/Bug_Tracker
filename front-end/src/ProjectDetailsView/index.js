@@ -107,7 +107,15 @@ const ProjectDetailsView = () => {
                         :
                             <></>
                     }
-
+                    {
+                        (getEmailFromJWT() === projectManagerEmail && getRoleFromJWT() === "DEMO_PROJECT_MANAGER") ||
+                            getRoleFromJWT() === "DEMO_ADMIN" ?
+                            <button disabled className='project-details-button-1' onClick={() => deleteProject()}>
+                                Delete Project
+                            </button>
+                            :
+                            <></>
+                    }
                 </div>
                 <div className='d-inline py-1'>
                     {
@@ -124,6 +132,23 @@ const ProjectDetailsView = () => {
                         || (getRoleFromJWT() === "SUBMITTER") ?
                             <Link className="px-3" onClick={() => createNewTicket()}>Create New Ticket</Link>
                         :
+                            <></>
+                    }
+                    {
+                        (getRoleFromJWT() === "DEMO_PROJECT_MANAGER" && getEmailFromJWT() !== projectManagerEmail)
+                        || (getRoleFromJWT() === "DEMO_SUBMITTER") ?
+                            <Link style={{color: "#777"}} className="project-details-link-1" className="px-3" onClick={() => createNewTicket()}>Create New Ticket</Link>
+                            :
+                            <></>
+                    }
+                    {
+                        (getRoleFromJWT() === "DEMO_PROJECT_MANAGER" && getEmailFromJWT() === projectManagerEmail) ||
+                        getRoleFromJWT() === "DEMO_ADMIN" ?
+                            <>
+                                <Link className="px-3" to={editUrl.concat(projectId)}>Edit</Link>
+                                <Link style={{color: "#777"}} className="project-details-link-1">Create New Ticket</Link>
+                            </>
+                            :
                             <></>
                     }
 
@@ -200,7 +225,8 @@ const ProjectDetailsView = () => {
                                     <Column field="status" header="Status" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
                                     <Column field="created" header="Created" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
                                     {
-                                        getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ?
+                                        getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ||
+                                            getRoleFromJWT() === "DEMO_PROJECT_MANAGER" || getRoleFromJWT() === "DEMO_ADMIN" ?
                                         <Column field="id" style={{padding: '2px', fontSize: '12px', paddingRight: '5px' }} body={actionBodyTemplate} />
                                         :
                                         <></>
