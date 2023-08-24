@@ -63,6 +63,15 @@ const EmailChange = () => {
         setError(newError);
     }
 
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role.authority;
+        }
+        return "null";
+    }
+
     const validateInput = e => {
         let {name, value} = e.target;
         console.log(error);
@@ -196,7 +205,13 @@ const EmailChange = () => {
                             </Col>
                         </p>
                     </Form.Group>
-                    <button className='password-change-button-1'>Submit</button>
+                    {
+                        getRoleFromJWT().startsWith("DEMO") ?
+                            <button disabled className='password-change-button-2'>Submit</button>
+                            :
+                            <button className='password-change-button-1'>Submit</button>
+                    }
+
                 </form>
             </div>
         </>

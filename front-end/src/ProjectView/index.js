@@ -166,7 +166,7 @@ const ProjectView = () => {
                         </button>
                         {
                             getRoleFromJWT() === "DEMO_ADMIN" || getRoleFromJWT() === "DEMO_PROJECT_MANAGER" ?
-                                <button disabled className='project-view-button-2' onClick={() => save()}>
+                                <button disabled className='project-view-button-5' onClick={() => save()}>
                                     Save Changes
                                 </button>
                                 :

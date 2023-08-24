@@ -53,29 +53,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.GET, "/api/v1/user/role-management/**").hasAuthority("DEMO_ADMIN")
                     .antMatchers("/api/v1/user/role-management/**").hasAuthority("ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/v1/project").hasAnyAuthority(
-                            "ADMIN", "PROJECT_MANAGER", "DEMO_PROJECT_MANAGER")
+                            "ADMIN", "PROJECT_MANAGER")
                     .antMatchers(HttpMethod.DELETE, "/api/v1/project").hasAnyAuthority(
                         "ADMIN", "PROJECT_MANAGER")
-                    .antMatchers("/api/v1/project/edit/**").hasAnyAuthority("ADMIN", "PROJECT_MANAGER", "DEMO_PROJECT_MANAGER", "DEMO_ADMIN")
+                    .antMatchers(HttpMethod.GET,"/api/v1/project/edit/**").hasAnyAuthority("DEMO_PROJECT_MANAGER", "DEMO_ADMIN")
+                    .antMatchers("/api/v1/project/edit/**").hasAnyAuthority("ADMIN", "PROJECT_MANAGER")
                     .antMatchers(HttpMethod.POST, "/api/v1/ticket").hasAnyAuthority(
-                        "ADMIN", "PROJECT_MANAGER", "SUBMITTER", "DEMO_PROJECT_MANAGER", "DEMO_SUBMITTER")
+                        "ADMIN", "PROJECT_MANAGER", "SUBMITTER")
                     .antMatchers(HttpMethod.DELETE, "/api/v1/ticket").hasAnyAuthority(
                         "ADMIN", "PROJECT_MANAGER")
                     .antMatchers("/api/v1/ticket/details/**").hasAnyAuthority(
-                            "ADMIN", "PROJECT_MANAGER", "DEVELOPER", "SUBMITTER", "DEMO_PROJECT_MANAGER", "DEMO_SUBMITTER", "DEMO_ADMIN")
+                            "ADMIN", "PROJECT_MANAGER", "DEVELOPER", "SUBMITTER",
+                                        "DEMO_PROJECT_MANAGER", "DEMO_SUBMITTER", "DEMO_ADMIN", "DEMO_DEVELOPER")
+                    .antMatchers(HttpMethod.GET,"/api/v1/ticket/edit/**").hasAnyAuthority(
+                            "DEMO_PROJECT_MANAGER", "DEMO_SUBMITTER", "DEMO_ADMIN")
                     .antMatchers("/api/v1/ticket/edit/**").hasAnyAuthority(
-                            "ADMIN", "PROJECT_MANAGER", "SUBMITTER", "DEMO_PROJECT_MANAGER", "DEMO_SUBMITTER", "DEMO_ADMIN")
-//                    .antMatchers("/api/v1/userx").hasAuthority("USER")
+                            "ADMIN", "PROJECT_MANAGER", "SUBMITTER")
+                    .antMatchers("/api/v1/comments/**").hasAnyAuthority(
+                            "ADMIN", "PROJECT_MANAGER", "SUBMITTER", "DEVELOPER")
+                    .antMatchers("/api/v1/user/email-change").hasAnyAuthority(
+                            "ADMIN", "PROJECT_MANAGER", "DEVELOPER", "SUBMITTER", "NONE")
+                    .antMatchers("/api/v1/user/password-change").hasAnyAuthority(
+                            "ADMIN", "PROJECT_MANAGER", "DEVELOPER", "SUBMITTER", "NONE")
                     .antMatchers("/api/v1/registration/login").permitAll()
                     .antMatchers("/api/v1/registration").permitAll()
                     .antMatchers("/api/v1/registration/confirm").permitAll()
                     .antMatchers("/api/v1/registration/validate").permitAll()
-//                    //.antMatchers("/api/v1/ticket").permitAll()
-//                    //.antMatchers("/api/v1/ticket/*").permitAll()
-//                    .antMatchers("/api/v1/project/*").permitAll()
-//                    .antMatchers("/api/v1/project").permitAll()
-//                    .antMatchers("/api/v1/**").permitAll()
-//                    .antMatchers("/api/v1/user/role/*").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

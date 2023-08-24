@@ -100,7 +100,8 @@ const ProjectDetailsView = () => {
                         Details for project - {project.name}
                     </h2>
                     {
-                        getEmailFromJWT() === projectManagerEmail || getRoleFromJWT() === "ADMIN" ?
+                        (getEmailFromJWT() === projectManagerEmail || getRoleFromJWT() === "ADMIN") &&
+                        !getRoleFromJWT().startsWith("DEMO") ?
                             <button className='project-details-button-1' onClick={() => deleteProject()}>
                                 Delete Project
                             </button>
@@ -110,7 +111,7 @@ const ProjectDetailsView = () => {
                     {
                         (getEmailFromJWT() === projectManagerEmail && getRoleFromJWT() === "DEMO_PROJECT_MANAGER") ||
                             getRoleFromJWT() === "DEMO_ADMIN" ?
-                            <button disabled className='project-details-button-1' onClick={() => deleteProject()}>
+                            <button disabled className='project-details-button-2' onClick={() => deleteProject()}>
                                 Delete Project
                             </button>
                             :
@@ -119,7 +120,8 @@ const ProjectDetailsView = () => {
                 </div>
                 <div className='d-inline py-1'>
                     {
-                        getEmailFromJWT() === projectManagerEmail || getRoleFromJWT() === "ADMIN" ?
+                        (getEmailFromJWT() === projectManagerEmail || getRoleFromJWT() === "ADMIN") &&
+                            !getRoleFromJWT().startsWith("DEMO") ?
                             <>
                                 <Link className="px-3" to={editUrl.concat(projectId)}>Edit</Link>
                                 <Link onClick={() => createNewTicket()}>Create New Ticket</Link>
@@ -137,7 +139,7 @@ const ProjectDetailsView = () => {
                     {
                         (getRoleFromJWT() === "DEMO_PROJECT_MANAGER" && getEmailFromJWT() !== projectManagerEmail)
                         || (getRoleFromJWT() === "DEMO_SUBMITTER") ?
-                            <Link style={{color: "#777"}} className="project-details-link-1" className="px-3" onClick={() => createNewTicket()}>Create New Ticket</Link>
+                            <Link style={{color: "#777"}} className="project-details-link-1 px-3">Create New Ticket</Link>
                             :
                             <></>
                     }

@@ -81,7 +81,7 @@ const AllProjectsView = () => {
                 getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ?
                 <button className="all-projects-button-1" onClick={() => createNewProject()}>Create new project</button>
                     : getRoleFromJWT() === "DEMO_PROJECT_MANAGER" || getRoleFromJWT() === "DEMO_ADMIN" ?
-                        <button disabled className="all-projects-button-1" onClick={() => createNewProject()}>Create new project</button>
+                        <button disabled className="all-projects-button-2" onClick={() => createNewProject()}>Create new project</button>
                 :
                 <></>
             }

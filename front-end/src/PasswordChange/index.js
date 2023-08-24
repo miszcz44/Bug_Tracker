@@ -5,6 +5,7 @@ import {useUser} from "../UserProvider";
 import {focus} from "@testing-library/user-event/dist/focus";
 import Sidebar from "../SideBar";
 import "./PasswordChange.css";
+import jwt_decode from "jwt-decode";
 
 const PasswordChange = () => {
     const user = useUser();
@@ -32,6 +33,14 @@ const PasswordChange = () => {
                     alert("Password changed succesfully!")
                 }
             });
+    }
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role.authority;
+        }
+        return "null";
     }
     function updateResponse(prop, value) {
         const newResponse = { ...response }
@@ -166,7 +175,13 @@ const PasswordChange = () => {
                         </Col>
                     </p>
                 </Form.Group>
-                <button className='password-change-button-1'>Submit</button>
+                {
+                    getRoleFromJWT().startsWith("DEMO") ?
+                        <button disabled className='password-change-button-2'>Submit</button>
+                    :
+                        <button className='password-change-button-1'>Submit</button>
+                }
+
             </form>
         </div>
         </>

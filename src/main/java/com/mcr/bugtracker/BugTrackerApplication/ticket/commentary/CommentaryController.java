@@ -31,8 +31,8 @@ public class CommentaryController {
 //        commentaryService.deleteCommentById(commentId);
 //        return ResponseEntity.ok("");
 //    }
-//    @PostMapping("{ticketId}")
-//    public void saveComment(@RequestBody CommentsForTicketDetailsViewDto comment, @PathVariable Long ticketId) {
-//        commentaryService.saveComment(comment, ticketId);
-//    }
+    @PostMapping("{ticketId}")
+    public void saveComment(@RequestBody CommentsForTicketDetailsViewDto comment, @PathVariable Long ticketId) {
+        commentaryService.saveComment(comment, ticketId);
+    }
 }

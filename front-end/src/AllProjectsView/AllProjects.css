@@ -12,6 +12,17 @@
     background-color: #31d2f2;
 }
 
+.all-projects-button-2 {
+    margin-left: 300px;
+    width:12%;
+    height:35px;
+    background-color: #ccc;
+    color: #111;
+    border: none;
+    border-radius: 3px;
+    margin-top: 20px;
+}
+
 .all-projects-card-1 {
     width: 70%;
     margin-top: 25px;

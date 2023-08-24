@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -101,7 +102,13 @@ public class TicketService {
     public List<AllTicketsViewDto> getAllTicketsConnectedToUser() {
         AppUser user = getUserFromContext().orElseThrow();
         List<Ticket> tickets;
-        if(user.getSRole().equals("Admin")) {
+        if(user.getSRole().equals("Admin") && user.isDemo()) {
+            tickets = ticketRepository.findAll()
+                    .stream()
+                    .filter(ticket -> ticket.getSubmitter().isDemo())
+                    .collect(Collectors.toList());
+        }
+        else if(user.getSRole().equals("Admin")) {
             tickets = ticketRepository.findAll();
         }
         else {
@@ -130,7 +137,10 @@ public class TicketService {
         if(ticket.getAssignedDeveloper() != null) {
             developerName = ticket.getAssignedDeveloper().getWholeName();
         }
-        List<CommentsForTicketDetailsViewDto> comments = commentaryService.getCommentsWithDemandedData(ticket.getComments());
+        List<CommentsForTicketDetailsViewDto> commentsSortedByDate = commentaryService.getCommentsWithDemandedData(ticket.getComments())
+                .stream()
+                .sorted(Comparator.comparing(CommentsForTicketDetailsViewDto::getCreated).reversed())
+                .collect(Collectors.toList());
         return new TicketDetailsViewDto(ticketWithDemandedData,
                 developerName,
                 ticket.getSubmitter().getWholeName(),
@@ -138,8 +148,12 @@ public class TicketService {
                 ticket.getProject().getId(),
                 ticket.getProject().getName(),
                 ticket.getProject().getProjectManager().getEmail(),
-                comments,
-                ticket.getTicketHistoryFields());
+                commentsSortedByDate,
+                ticket.getTicketHistoryFields()
+                        .stream()
+                        .sorted(Comparator.comparing(TicketHistoryField::getDateChanged).reversed())
+                        .collect(Collectors.toList()));
+
     }
 
     private void validateUserPermissionForTicketDetails(Ticket ticket) {

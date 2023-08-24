@@ -92,7 +92,8 @@ const UserProfile = () => {
                             </div>
                         </div>
                         {
-                            getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ?
+                            getRoleFromJWT() === "PROJECT_MANAGER" || getRoleFromJWT() === "ADMIN" ||
+                                getRoleFromJWT() === "DEMO_PROJECT_MANAGER" || getRoleFromJWT() === "DEMO_ADMIN" ?
                                 <div className="row mt-4 mb-4 p-2">
                                     <div className="col-6">
                                         <label className="project-details-label-1">
@@ -107,7 +108,7 @@ const UserProfile = () => {
                                         <p className="ticket-details-p-1">{numberOfSubmittedTickets}</p>
                                     </div>
                                 </div> :
-                                getRoleFromJWT() === "DEVELOPER" ?
+                                getRoleFromJWT() === "DEVELOPER" || getRoleFromJWT() === "DEMO_DEVELOPER" ?
                                     <div className="row mt-4 mb-4 p-2">
                                         <div className="col-6">
                                             <label className="project-details-label-1">
@@ -122,7 +123,7 @@ const UserProfile = () => {
                                             <p className="ticket-details-p-1">{numberOfAssignedTickets}</p>
                                         </div>
                                     </div> :
-                                    getRoleFromJWT() === "SUBMITTER" ?
+                                    getRoleFromJWT() === "SUBMITTER" || getRoleFromJWT() === "DEMO_SUBMITTER" ?
                                         <div className="row mt-4 mb-4 p-2">
                                             <div className="col-6">
                                                 <label className="project-details-label-1">

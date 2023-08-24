@@ -133,8 +133,20 @@ const TicketDetails = () => {
                                 Details for ticket
                             </h3>
                             {
-                                getEmailFromJWT() === projectManagerEmail || getEmailFromJWT() === submitterEmail ||
-                                    getRoleFromJWT() === "ADMIN" ?
+                                (getEmailFromJWT() === projectManagerEmail && getRoleFromJWT() === "DEMO_PROJECT_MANAGER") ||
+                                (getEmailFromJWT() === submitterEmail && getRoleFromJWT() === "DEMO_SUBMITTER") ||
+                                getRoleFromJWT() === "DEMO_ADMIN" ?
+                                    <>
+                                        <button className='ticket-details-button-2' onClick={() => window.location.href = projectsEditUrl.concat(projectId)}>
+                                            Go To Project
+                                        </button>
+                                        <button disabled className='ticket-details-button-5' onClick={() => deleteTicket()}>
+                                            Delete Ticket
+                                        </button>
+                                    </>
+                                    :
+                                        getEmailFromJWT() === projectManagerEmail || getEmailFromJWT() === submitterEmail ||
+                                        getRoleFromJWT() === "ADMIN" ?
                                     <>
                                         <button className='ticket-details-button-2' onClick={() => window.location.href = projectsEditUrl.concat(projectId)}>
                                             Go To Project
@@ -153,7 +165,7 @@ const TicketDetails = () => {
                             <Link className="px-3" to="/tickets">To Ticket List</Link>
                             {
                                 getEmailFromJWT() === projectManagerEmail || getEmailFromJWT() === submitterEmail  ||
-                                    getRoleFromJWT() === "ADMIN" ?
+                                    getRoleFromJWT() === "ADMIN"  || getRoleFromJWT() === "DEMO_ADMIN" ?
                                 <Link to={editUrl.concat(ticketId)}>Edit Ticket</Link>
                                 :
                                 <></>
@@ -257,7 +269,13 @@ const TicketDetails = () => {
                         </label>
                         <div className='d-flex'>
                             <textarea className='ticket-details-textarea-1' value={comment.message ? comment.message : ""} onChange={(e) => updateComment(e.target.value)}/>
-                            <button className="ticket-details-button-1" onClick={() => addComment()}>Add Comment</button>
+                            {
+                                !getRoleFromJWT().startsWith("DEMO") ?
+                                    <button className="ticket-details-button-1" onClick={() => addComment()}>Add Comment</button>
+                                    :
+                                    <button disabled className="ticket-details-button-6" onClick={() => addComment()}>Add Comment</button>
+                            }
+
                         </div>
                     </div>
                 </div>

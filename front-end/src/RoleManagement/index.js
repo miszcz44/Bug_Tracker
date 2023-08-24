@@ -154,7 +154,7 @@ const RoleManagement = () => {
                 {/*</Form.Group>*/}
                 {
                     getRoleFromJWT() === "DEMO_ADMIN" ?
-                    <button disabled className="role-management-button-1" onClick={() => assignRoleToUsers()}>Assign role</button>
+                    <button disabled className="role-management-button-2" onClick={() => assignRoleToUsers()}>Assign role</button>
                 :
                     <button className="role-management-button-1" onClick={() => assignRoleToUsers()}>Assign role</button>
                 }

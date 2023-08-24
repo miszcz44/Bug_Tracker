@@ -134,7 +134,8 @@ const Dashboard = () => {
                                     <img src={require("./img/DashboardTicketTemplate2.png")} className="card-img-top" alt="..."/>
                                     <div className="card-body" style={{backgroundColor: '#ddd'}}>
                                         <h5 className="card-title">One of your
-                                            {getRoleFromJWT() === "DEVELOPER" ? " assigned" : " submitted"} tickets - {ticketTitle}</h5>
+                                            {getRoleFromJWT() === "DEVELOPER" || getRoleFromJWT() === "DEMO_DEVELOPER" ?
+                                                " assigned" : " submitted"} tickets - {ticketTitle}</h5>
                                         <p className="card-text">{ticketDescription}</p>
                                         <a href={ticketDetailsUrl.concat(ticketId)} className="btn btn-primary">See More</a>
                                     </div>

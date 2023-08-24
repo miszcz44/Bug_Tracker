@@ -44,7 +44,7 @@ const AllTicketsView = () => {
             <Link style={{textDecoration: 'none'}} className='px-4' to={detailsUrl.concat(rowData.id)}>Details </Link>
             {
                 getEmailFromJWT() === rowData.projectManagerEmail || getEmailFromJWT() === rowData.submitterEmail ||
-                    getRoleFromJWT() === "ADMIN" ?
+                    getRoleFromJWT() === "ADMIN" || getRoleFromJWT() === "DEMO_ADMIN" ?
                 <Link style={{textDecoration: 'none'}} className='all-projects-span-1' to={editUrl.concat(rowData.id)}>Edit</Link>
                 :
                 <></>

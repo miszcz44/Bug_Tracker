@@ -17,7 +17,10 @@ import {FilterMatchMode} from "primereact/api";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {Link} from "react-router-dom";
+import jwt_decode from "jwt-decode";
+import {useUser} from "../UserProvider";
 const TicketEditView = () => {
+    const user = useUser();
     const [jwt, setJwt] = useLocalState("", "jwt");
     const ticketId = window.location.href.split("tickets/")[1];
     let errorCode = 0;
@@ -82,6 +85,15 @@ const TicketEditView = () => {
         ticket["type"] = data.value;
     }
 
+    function getRoleFromJWT() {
+        if (user.jwt) {
+            const decodedJwt = jwt_decode(user.jwt);
+            console.log(decodedJwt);
+            return decodedJwt.role.authority;
+        }
+        return "null";
+    }
+
 
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/edit/${ticketId}`, "GET", jwt)
@@ -119,9 +131,17 @@ const TicketEditView = () => {
                         <button className='project-view-button-3' onClick={() => window.location.href = `/tickets/details/${ticketId}`}>
                             Back To Details
                         </button>
-                        <button className='project-view-button-2' onClick={() => save()}>
-                            Save Changes
-                        </button>
+                        {
+                            getRoleFromJWT().startsWith("DEMO") ?
+                                <button disabled className='project-view-button-6' onClick={() => save()}>
+                                    Save Changes
+                                </button>
+                                :
+                                <button className='project-view-button-2' onClick={() => save()}>
+                                    Save Changes
+                                </button>
+                        }
+
                     </div>
                     <p className="px-4">Change Ticket properties</p>
 
