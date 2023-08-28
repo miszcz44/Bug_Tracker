@@ -15,6 +15,7 @@ Everything I use in this project:
 - jpa;
 - rest api;
 - google cloud storage.
+
 Some screenshots from current state of project:
 ![doreadme2](https://github.com/miszcz44/Bug_Tracker/assets/104508423/cc2cfa51-b8e7-4109-98fe-ef6568594d13)
 ![doreadme3](https://github.com/miszcz44/Bug_Tracker/assets/104508423/adacd6af-c455-489b-b6bf-3939ed95a1c6)
