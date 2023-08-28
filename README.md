@@ -1,6 +1,20 @@
 # Bug_Tracker
 Spring Boot and React app to keep track of the bugs in the projects.
-Developing all features and functionalities shown in this video: https://www.youtube.com/watch?v=vG824vBdYY8
+Developing all features and functionalities shown in this video: https://www.youtube.com/watch?v=vG824vBdYY8.
+Everything I use in this project:
+- java;
+- spring boot;
+- javascript;
+- react;
+- css;
+- bootstrap;
+- authentication and authorization using jwt;
+- postgresql database;
+- spring boot;
+- hibernate;
+- jpa;
+- rest api;
+- google cloud storage;
 Some screenshots from current state of project:
 ![doreadme2](https://github.com/miszcz44/Bug_Tracker/assets/104508423/cc2cfa51-b8e7-4109-98fe-ef6568594d13)
 ![doreadme3](https://github.com/miszcz44/Bug_Tracker/assets/104508423/adacd6af-c455-489b-b6bf-3939ed95a1c6)
