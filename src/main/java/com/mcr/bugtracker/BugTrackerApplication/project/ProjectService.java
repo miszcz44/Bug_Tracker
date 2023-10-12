@@ -58,7 +58,7 @@ public class ProjectService {
         }
         else {
             projects = Stream.concat(user.getAssignedProjects().stream(),
-                user.getManagedProjects().stream()).toList();
+                user.getManagedProjects().stream()).collect(Collectors.toList());
         }
         List<AllProjectsViewDto> projectsForAllProjectsView = new ArrayList<>();
         for(Project project : projects) {

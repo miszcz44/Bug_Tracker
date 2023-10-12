@@ -8,9 +8,9 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentaryService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTicketDetailsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.PropertyEnum;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldService;
-import javassist.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -112,7 +112,7 @@ public class TicketService {
             tickets = ticketRepository.findAll();
         }
         else {
-            tickets = Stream.concat(user.getAssignedTickets().stream(), user.getSubmittedTickets().stream()).toList();
+            tickets = Stream.concat(user.getAssignedTickets().stream(), user.getSubmittedTickets().stream()).collect(Collectors.toList());
         }
         List<AllTicketsViewDto> ticketsForAllTicketsView = new ArrayList<>();
         for(Ticket ticket : tickets) {
@@ -215,80 +215,14 @@ public class TicketService {
     public void updateTicketData(TicketEditViewDto ticketDto) {
         Ticket ticketWithUpdatedData = ticketDto.getTicket();
         validateTicketExistence(ticketWithUpdatedData.getId());
-        Ticket ticket = ticketRepository.findById(ticketWithUpdatedData.getId()).orElseThrow();
+        Ticket ticket = ticketRepository.findById(ticketWithUpdatedData.getId()).get();
         validateUserPermissionForTicketEdit(ticket);
-        if(ticket.getTitle() != null && !ticket.getTitle().equals(ticketWithUpdatedData.getTitle())) {
-            ticketHistoryFieldService.save(new TicketHistoryField("Title",
-                    ticket.getTitle(),
-                    ticketWithUpdatedData.getTitle(),
-                    ticket,
-                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setTitle(ticketWithUpdatedData.getTitle());
-        }
-        else if(ticket.getTitle() == null) {
-            ticket.setTitle(ticketWithUpdatedData.getTitle());
-        }
-        if(ticket.getDescription() != null && !ticket.getDescription().equals(ticketWithUpdatedData.getDescription())) {
-            ticketHistoryFieldService.save(new TicketHistoryField("Description",
-                    ticket.getDescription(),
-                    ticketWithUpdatedData.getDescription(),
-                    ticket,
-                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setDescription(ticketWithUpdatedData.getDescription());
-        }
-        else if(ticket.getDescription() == null) {
-            ticket.setDescription(ticketWithUpdatedData.getDescription());
-        }
-        if(ticket.getAssignedDeveloper() != null &&
-                !ticket.getAssignedDeveloper().getId().equals(ticketDto.getDeveloper().getId())) {
-            ticketHistoryFieldService.save(new TicketHistoryField("Developer",
-                    ticket.getAssignedDeveloper().getWholeName(),
-                    ticketDto.getDeveloper().getWholeName(),
-                    ticket,
-                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            if(ticketDto.getDeveloper() == null) {
-                ticket.setAssignedDeveloper(null);
-            }
-            else {
-                ticket.setAssignedDeveloper(appUserService.findById(ticketDto.getDeveloper().getId()));
-            }
-        }
-        else if(ticket.getAssignedDeveloper() == null && ticketDto.getDeveloper() != null) {
-            ticket.setAssignedDeveloper(appUserService.findById(ticketDto.getDeveloper().getId()));
-        }
-        if(ticket.getPriority() != null && !ticket.getPriority().equals(ticketWithUpdatedData.getPriority())) {
-            ticketHistoryFieldService.save(new TicketHistoryField("Priority", // property should be enum !!! TODO
-                    ticket.getPriority(),
-                    ticketWithUpdatedData.getPriority(),
-                    ticket,
-                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setPriority(ticketWithUpdatedData.getPriority());
-        }
-        else if(ticket.getPriority() == null) {
-            ticket.setPriority(ticketWithUpdatedData.getPriority());
-        }
-        if(ticket.getType() != null && !ticket.getType().equals(ticketWithUpdatedData.getType())) {
-            ticketHistoryFieldService.save(new TicketHistoryField("Type", // property should be enum !!! TODO
-                    ticket.getType(),
-                    ticketWithUpdatedData.getType(),
-                    ticket,
-                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setType(ticketWithUpdatedData.getType());
-        }
-        else if(ticket.getType() == null) {
-            ticket.setType(ticketWithUpdatedData.getType());
-        }
-        if(ticket.getStatus() != null && !ticket.getStatus().equals(ticketWithUpdatedData.getStatus())) {
-            ticketHistoryFieldService.save(new TicketHistoryField("Status", // property should be enum !!! TODO
-                    ticket.getStatus(),
-                    ticketWithUpdatedData.getStatus(),
-                    ticket,
-                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-            ticket.setStatus(ticketWithUpdatedData.getStatus());
-        }
-        else if(ticket.getStatus() == null) {
-            ticket.setStatus(ticketWithUpdatedData.getStatus());
-        }
+        ticketHistoryFieldService.saveChangeOfTitle(ticket, ticketWithUpdatedData);
+        ticketHistoryFieldService.saveChangeOfDescription(ticket, ticketWithUpdatedData);
+        ticketHistoryFieldService.saveChangeOfDeveloper(ticket, ticketDto);
+        ticketHistoryFieldService.saveChangeOfPriority(ticket, ticketWithUpdatedData);
+        ticketHistoryFieldService.saveChangeOfType(ticket, ticketWithUpdatedData);
+        ticketHistoryFieldService.saveChangeOfStatus(ticket, ticketWithUpdatedData);
         ticketRepository.save(ticket);
     }
 

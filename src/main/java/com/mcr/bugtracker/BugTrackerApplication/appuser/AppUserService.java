@@ -328,7 +328,7 @@ public class AppUserService implements UserDetailsService {
     private DashboardViewDto getDataForProjectManagerDashboardView(AppUser currentUser) {
         DashboardViewDto dashboardViewDto = new DashboardViewDto();
         List<Project> allProjects = Stream.concat(currentUser.getManagedProjects().stream(),
-                currentUser.getAssignedProjects().stream()).toList();
+                currentUser.getAssignedProjects().stream()).collect(Collectors.toList());
         dashboardViewDto = setValuesFromRandomProject(dashboardViewDto, allProjects);
         List<Ticket> submittedTickets = currentUser.getSubmittedTickets();
         if (submittedTickets.size() > 0) {
@@ -391,7 +391,7 @@ public class AppUserService implements UserDetailsService {
         return new AppUsersResponseDto(
                 allUsers,
                 allUsers.stream()
-                        .filter(user -> !user.getSRole().equals("Admin"))
+                        .filter(user -> user.getSRole() != null && !user.getSRole().equals("Admin"))
                         .collect(Collectors.toList()),
                 getNonAdminAndNonDemoRoles()
         );
@@ -399,11 +399,11 @@ public class AppUserService implements UserDetailsService {
     private AppUsersResponseDto getDemoDataForRoleManagement(List<AppUser> allUsers) {
         return new AppUsersResponseDto(
                 allUsers.stream()
-                        .filter(user -> user.isDemo())
+                        .filter(user -> user.isDemo() != null && user.isDemo())
                         .collect(Collectors.toList()),
                 allUsers.stream()
-                        .filter(user -> user.isDemo())
-                        .filter(user -> !user.getSRole().equals("Admin"))
+                        .filter(user -> user.isDemo() != null && user.isDemo())
+                        .filter(user -> user.getSRole() != null && !user.getSRole().equals("Admin"))
                         .collect(Collectors.toList()),
                 getNonAdminAndNonDemoRoles()
         );
