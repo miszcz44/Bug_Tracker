@@ -63,13 +63,8 @@ public class TicketService {
         ticket.setAssignedDeveloper(appUserRepository.findByEmail(emailWithoutQuotationMarks).orElseThrow());
     }
 
-    public Optional<AppUser> getUserFromContext() {
-        AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return appUserRepository.findById(user.getId());
-    }
-
     public void setSubmitterToTicket(Ticket ticket) {
-        ticket.setSubmitter(getUserFromContext().orElseThrow());
+        ticket.setSubmitter(appUserService.getUserFromContext().orElseThrow());
     }
 
     public void deleteTicket(Long ticketId) {
@@ -100,7 +95,7 @@ public class TicketService {
 
 
     public List<AllTicketsViewDto> getAllTicketsConnectedToUser() {
-        AppUser user = getUserFromContext().orElseThrow();
+        AppUser user = appUserService.getUserFromContext().orElseThrow();
         List<Ticket> tickets;
         if(user.getSRole().equals("Admin") && user.isDemo()) {
             tickets = ticketRepository.findAll()
@@ -157,7 +152,7 @@ public class TicketService {
     }
 
     private void validateUserPermissionForTicketDetails(Ticket ticket) {
-        AppUser currentUser = getUserFromContext().orElseThrow();
+        AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         List<AppUser> otherProjectManagers = ticket.getProject().getProjectPersonnel().stream()
                 .filter(obj -> obj.getSRole().equals("Project manager"))
                 .collect(Collectors.toList());
@@ -196,7 +191,7 @@ public class TicketService {
     }
 
     private void validateUserPermissionForTicketEdit(Ticket ticket) {
-        AppUser currentUser = getUserFromContext().orElseThrow();
+        AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         if(!currentUser.equals(ticket.getProject().getProjectManager()) && !currentUser.equals(ticket.getSubmitter()) &&
             !currentUser.getSRole().equals("Admin")) {
             throw new ApiForbiddenException("You do not have permission for this resource");
@@ -204,7 +199,7 @@ public class TicketService {
     }
 
     private void validateUserPermissionForTicketDelete(Ticket ticket) {
-        AppUser currentUser = getUserFromContext().orElseThrow();
+        AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         if(!currentUser.equals(ticket.getProject().getProjectManager()) && !currentUser.getSRole().equals("Admin") &&
             !currentUser.equals(ticket.getSubmitter())) {
             throw new ApiForbiddenException("You do not have permission for this resource");
@@ -230,7 +225,7 @@ public class TicketService {
         Ticket ticket = new Ticket();
         ticket.setProject(project);
         ticket.setCreatedAt(LocalDateTime.now());
-        ticket.setSubmitter(appUserRepository.findById(getUserFromContext().orElseThrow().getId()).orElseThrow());
+        ticket.setSubmitter(appUserRepository.findById(appUserService.getUserFromContext().orElseThrow().getId()).orElseThrow());
         return ticketRepository.save(ticket);
     }
 }

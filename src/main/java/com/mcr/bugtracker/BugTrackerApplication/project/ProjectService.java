@@ -39,13 +39,8 @@ public class ProjectService {
         }
         projectRepository.save(project);
     }
-    public Optional<AppUser> getUserFromContext() {
-        AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return appUserRepository.findById(user.getId());
-    } // TODO sa 3 takie same klasy w 3 serwisach
-
     public List<AllProjectsViewDto> findAllProjectsAssignedToUser() {
-        AppUser user = getUserFromContext().orElseThrow();
+        AppUser user = appUserService.getUserFromContext().orElseThrow();
         List<Project> projects;
         if(user.getSRole().equals("Admin") && user.isDemo()) {
             projects = projectRepository.findAll()
@@ -141,7 +136,7 @@ public class ProjectService {
     }
 
     private void validateUserPermissionForProjectEdit(Long managerId) {
-        AppUser currentUser = getUserFromContext().orElseThrow();
+        AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         if (!currentUser.getId().equals(managerId) && !currentUser.getSRole().equals("Admin")) {
             throw new ApiForbiddenException("You do not have permission for this request");
         }
@@ -154,7 +149,7 @@ public class ProjectService {
     }
 
     private void validateUserPermissionForProjectDetails(Project project) {
-        AppUser currentUser = getUserFromContext().orElseThrow();
+        AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         if(!project.getProjectPersonnel().contains(currentUser) && !currentUser.equals(project.getProjectManager()) &&
             !currentUser.getSRole().equals("Admin")) {
             throw new ApiForbiddenException("You do not have permission for this request");

@@ -24,10 +24,6 @@ public class CommentaryService {
     private final CommentaryRepository commentaryRepository;
     private final TicketRepository ticketRepository;
     private final AppUserRepository appUserRepository;
-    public Optional<AppUser> getUserFromContext() {
-        AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return appUserRepository.findById(user.getId());
-    }
 
     public List<Commentary> findAllCommentsByTicketId(Long ticketId) {
         return commentaryRepository.findAllCommentsByTicketId(ticketId);
