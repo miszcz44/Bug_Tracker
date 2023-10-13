@@ -1,6 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
-public class PasswordChangeResponse {
+public class PasswordChangeRequest {
     private String oldPassword;
     private String newPassword;
     private String confirmPassword;

@@ -38,4 +38,14 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiException, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ApiPasswordDoesntMatchException.class)
+    public ResponseEntity<Object> handlePasswordDoesntMatchException(ApiPasswordDoesntMatchException e) {
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                e,
+                HttpStatus.FORBIDDEN
+        );
+        return new ResponseEntity<>(apiException, HttpStatus.FORBIDDEN);
+    }
+
 }

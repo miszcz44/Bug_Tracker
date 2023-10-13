@@ -1,11 +1,11 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
-public class EmailChangeResponse {
+public class EmailChangeRequest {
     private String oldEmail;
     private String newEmail;
     private String password;
 
-    public EmailChangeResponse(String oldEmail, String newEmail, String password) {
+    public EmailChangeRequest(String oldEmail, String newEmail, String password) {
         this.oldEmail = oldEmail;
         this.newEmail = newEmail;
         this.password = password;

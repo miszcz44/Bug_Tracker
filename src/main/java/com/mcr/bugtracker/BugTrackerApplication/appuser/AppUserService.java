@@ -1,5 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiPasswordDoesntMatchException;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiRequestException;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
@@ -150,7 +151,7 @@ public class AppUserService implements UserDetailsService {
     public void changeUsersRole(AppUserRoleAssignmentRequest request) {
         AppUserRole role = findRoleObject(request.getRole());
         for(String email : request.getUsersEmails()) {
-            AppUser user = appUserRepository.findByEmail(email).get();
+            AppUser user = appUserRepository.findByEmail(email).orElseThrow();
             user.setAppUserRole(role);
             user.setSRole(request.getRole());
             appUserRepository.save(user);
@@ -183,15 +184,15 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.findRoleByEmail(email);
     }
 
-    public Boolean validatePasswordAndSetNewPassword(String oldPassword, String newPassword) {
-        AppUser user = getUserFromContext().get();
-        log.info(user.getPassword());
+    public void validatePasswordMatchAndSetNewPassword(String oldPassword, String newPassword) {
+        AppUser user = getUserFromContext().orElseThrow();
         if(bCryptPasswordEncoder.matches(oldPassword.subSequence(0, oldPassword.length()), user.getPassword())) {
             user.setPassword(bCryptPasswordEncoder.encode(newPassword.subSequence(0, newPassword.length())));
             appUserRepository.save(user);
-            return true;
         }
-        return false;
+        else {
+            throw new ApiPasswordDoesntMatchException("Password does not match");
+        }
     }
 
     public List<AppUser> getDemandedPersonnelDataForProjectView(List<AppUser> projectPersonnel) {

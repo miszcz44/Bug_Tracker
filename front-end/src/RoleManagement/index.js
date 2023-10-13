@@ -17,7 +17,7 @@ const RoleManagement = () => {
     const user = useUser();
     const changeRoleResponse = {
         usersEmails: [],
-        role: " "
+        role: ""
     }
     let errorCode = 0;
     const [nonAdminUsersEmails, setNonAdminUsersEmails] = useState([]);
@@ -156,7 +156,8 @@ const RoleManagement = () => {
                     getRoleFromJWT() === "DEMO_ADMIN" ?
                     <button disabled className="role-management-button-2" onClick={() => assignRoleToUsers()}>Assign role</button>
                 :
-                    <button className="role-management-button-1" onClick={() => assignRoleToUsers()}>Assign role</button>
+                    <button className="role-management-button-1" onClick={() =>
+                        changeRoleResponse.role ? assignRoleToUsers() : <></>}>Assign role</button>
                 }
 
             </Form.Group>

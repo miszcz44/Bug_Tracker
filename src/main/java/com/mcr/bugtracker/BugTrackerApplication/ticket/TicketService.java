@@ -206,7 +206,6 @@ public class TicketService {
         }
     }
 
-    // this needs refactoring XD TODO
     public void updateTicketData(TicketEditViewDto ticketDto) {
         Ticket ticketWithUpdatedData = ticketDto.getTicket();
         validateTicketExistence(ticketWithUpdatedData.getId());

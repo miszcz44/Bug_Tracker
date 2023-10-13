@@ -51,7 +51,7 @@ public class RegistrationService {
     }
 
     public AppUser createUserWithRequest(RegistrationRequest request) {
-        AppUserRole assignedRole = null;
+        AppUserRole assignedRole = AppUserRole.NONE;
         for (AppUserRole role : AppUserRole.values()) {
             if(role.getName().equals(request.getRole())) {
                 assignedRole = role;

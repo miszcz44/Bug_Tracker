@@ -8,6 +8,7 @@ import "./PasswordChange.css";
 import jwt_decode from "jwt-decode";
 
 const PasswordChange = () => {
+    let errorCode = 0;
     const user = useUser();
     const emptyResponse = {
         oldPassword: "",
@@ -26,12 +27,16 @@ const PasswordChange = () => {
         e.preventDefault();
         grabAndAuthorizeRequestFromTheServer(`/api/v1/user/password-change`, "PUT", user.jwt, response)
             .then((response) => {
-                if (response === 0) {
-                    updateError("oldPassword", "old password is incorrect");
+                if (!response.status) {
+                    alert("Password changed successfully!")
                 }
-                else {
-                    alert("Password changed succesfully!")
+                else if(!response.ok) {
+                    errorCode = response.status;
+                    throw Error(response.status);
                 }
+            })
+            .catch(err => {
+                errorCode === 403 ? updateError("oldPassword", "Password doesn't match") : <></>
             });
     }
     function getRoleFromJWT() {
