@@ -13,13 +13,10 @@ public enum AppUserRole {
     DEMO_DEVELOPER("Demo developer"),
     DEMO_SUBMITTER("Demo submitter"),
     NONE("None");
-
-    private String name;
-
+    private final String name;
     AppUserRole(String name) {
         this.name = name;
     }
-
     public String getName() {
         return name;
     }

@@ -15,37 +15,23 @@ import java.util.List;
 @Repository
 public interface AppUserRepository
         extends JpaRepository<AppUser, Long> {
-
     Optional<AppUser> findByEmail(String email);
-
     @Transactional
     @Modifying
     @Query("UPDATE AppUser a " +
             "SET a.enabled = TRUE WHERE a.email = ?1")
-    int enableAppUser(String email);
-
+    void enableAppUser(String email);
     @Query(value = "SELECT * FROM app_user a " +
             "JOIN project_personnel p ON a.id = p.user_id " +
             "WHERE p.project_id = ?1",
             nativeQuery = true)
     List<AppUser> getProjectPersonnel(Long id);
-
     @Query(value = "SELECT * FROM app_user WHERE id != ?1 AND id NOT IN ?2 AND s_role != 'Admin'",
             nativeQuery = true)
     List<AppUser> getAllUsersButAdminsProjectManagerAndPersonnel(Long id, List<Long> personnelIds);
-
     @Query(value = "SELECT * FROM app_user WHERE id != ?1 AND s_role != 'Admin'",
             nativeQuery = true)
     List<AppUser> getAllUsersButAdminsAndProjectManager(Long projectManagerId);
-
-
-    @Query(value = "SELECT * FROM app_user WHERE app_user_role != 'ADMIN'",
-            nativeQuery = true)
-    List<AppUser> getAllUsersExceptAdmins();
-
-    @Query(value = "SELECT app_user_role FROM app_user WHERE email = ?1",
-            nativeQuery = true)
-    AppUserRole findRoleByEmail(String email);
     boolean existsByEmail(String email);
 
 }

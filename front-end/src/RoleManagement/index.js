@@ -28,7 +28,7 @@ const RoleManagement = () => {
     const [filters, setFilters] = useState({
         global: {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
-    let nonAdminUsersEmailsLabel = nonAdminUsersEmails.map(appUser => ({value:appUser.email, label:appUser.email}));
+    let nonAdminUsersEmailsLabel = nonAdminUsersEmails.map(email => ({value:email, label:email}));
 
     function handleSelect(data) {
         setSelectedEmails(data);
@@ -54,6 +54,8 @@ const RoleManagement = () => {
 
     function updateSelectedElement(element) {
         setSelectedRole(element);
+        console.log(selectedRole);
+        console.log(selectedEmails);
         console.log(userRoles);
         console.log(allUsers);
     }
@@ -157,7 +159,7 @@ const RoleManagement = () => {
                     <button disabled className="role-management-button-2" onClick={() => assignRoleToUsers()}>Assign role</button>
                 :
                     <button className="role-management-button-1" onClick={() =>
-                        changeRoleResponse.role ? assignRoleToUsers() : <></>}>Assign role</button>
+                        selectedRole ? assignRoleToUsers() : <></>}>Assign role</button>
                 }
 
             </Form.Group>

@@ -48,4 +48,14 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiException, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(ApiEmailTakenException.class)
+    public ResponseEntity<Object> handleEmailTakenException(ApiEmailTakenException e) {
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                e,
+                HttpStatus.CONFLICT
+        );
+        return new ResponseEntity<>(apiException, HttpStatus.CONFLICT);
+    }
+
 }

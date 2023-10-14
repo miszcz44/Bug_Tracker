@@ -9,6 +9,7 @@ import axios from "axios";
 
 const EmailChange = () => {
     const user = useUser();
+    let errorCode = 0;
     const emptyResponse = {
         oldEmail: "",
         newEmail: "",
@@ -20,7 +21,7 @@ const EmailChange = () => {
         newEmail: "",
         password: ""
     })
-    let regex = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+    let regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
     // const handleSubmit = (e) => {
     //     e.preventDefault();
     //     grabAndAuthorizeRequestFromTheServer(`/api/v1/user/email-change`, "PUT", user.jwt, response)
@@ -112,17 +113,17 @@ const EmailChange = () => {
         e.preventDefault();
         grabAndAuthorizeRequestFromTheServer(`/api/v1/user/email-change`, "PUT", user.jwt, response)
             .then((response) => {
-                if (response === 0) {
-                    updateError("newEmail", "This email address is taken");
+                if (!response.status) {
+                    alert("Email changed successfully!")
                 }
-                else if (response === -1) {
-                    updateError("password", "Password is not correct");
+                else if(!response.ok) {
+                    errorCode = response.status;
+                    throw Error(response.status);
                 }
-                else {
-                    user.jwt = "";
-                    window.location.href = "/login";
-                    alert("Email changed successfully. Please use your new email to log in");
-                }
+            })
+            .catch(err => {
+                errorCode === 409 ? updateError("newEmail", "Email already taken") :
+                    errorCode === 403 ? updateError("password", "Password doesn't match") : <></>
             });
     }
     // function submit() {
