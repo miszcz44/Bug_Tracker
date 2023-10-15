@@ -4,21 +4,21 @@ import java.util.List;
 
 public class RoleManagementDto {
 
-    private List<AppUserForRoleManagementDto> allUsers;
+    private List<AppUserDto> allUsers;
     private List<String> nonAdminUsersEmails;
     private AppUserRole[] userRoles;
 
-    public RoleManagementDto(List<AppUserForRoleManagementDto> allUsers, List<String> nonAdminUsersEmails, AppUserRole[] userRoles) {
+    public RoleManagementDto(List<AppUserDto> allUsers, List<String> nonAdminUsersEmails, AppUserRole[] userRoles) {
         this.allUsers = allUsers;
         this.nonAdminUsersEmails = nonAdminUsersEmails;
         this.userRoles = userRoles;
     }
 
-    public List<AppUserForRoleManagementDto> getAllUsers() {
+    public List<AppUserDto> getAllUsers() {
         return allUsers;
     }
 
-    public void setAllUsers(List<AppUserForRoleManagementDto> allUsers) {
+    public void setAllUsers(List<AppUserDto> allUsers) {
         this.allUsers = allUsers;
     }
 

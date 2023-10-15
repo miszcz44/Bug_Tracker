@@ -1,18 +1,14 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiForbiddenException;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiNotFoundException;
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.*;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketForProjectViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,6 +24,8 @@ public class ProjectService {
     private final AppUserService appUserService;
     private final TicketService ticketService;
     private final AllProjectsViewMapper allProjectsViewMapper;
+    private final AppUserDtoMapper appUserDtoMapper;
+    private final ProjectDtoMapper projectDtoMapper;
 
     public Project saveProject(Project project) {
         return projectRepository.save(project);
@@ -41,25 +39,25 @@ public class ProjectService {
     }
     public List<AllProjectsViewDto> findAllProjectsAssignedToUser() {
         AppUser user = appUserService.getUserFromContext().orElseThrow();
-        List<Project> projects;
         if(user.getSRole().equals("Admin") && user.isDemo()) {
-            projects = projectRepository.findAll()
+            return projectRepository.findAll()
                     .stream()
                     .filter(project -> project.getProjectManager().isDemo())
+                    .map(allProjectsViewMapper)
                     .collect(Collectors.toList());
         }
         else if(user.getSRole().equals("Admin")) {
-            projects = projectRepository.findAll();
+            return projectRepository.findAll()
+                    .stream()
+                    .map(allProjectsViewMapper)
+                    .collect(Collectors.toList());
         }
         else {
-            projects = Stream.concat(user.getAssignedProjects().stream(),
-                user.getManagedProjects().stream()).collect(Collectors.toList());
+            return Stream.concat(user.getAssignedProjects().stream(),
+                user.getManagedProjects().stream())
+                    .map(allProjectsViewMapper)
+                    .collect(Collectors.toList());
         }
-        List<AllProjectsViewDto> projectsForAllProjectsView = new ArrayList<>();
-        for(Project project : projects) {
-            projectsForAllProjectsView.add(allProjectsViewMapper.apply(project));
-        }
-        return projectsForAllProjectsView;
     }
 
     public Optional<Project> findById(Long id) {
@@ -95,44 +93,20 @@ public class ProjectService {
                 projectWithDemandedFields, project.getProjectManager().getWholeName(), project.getProjectManager().getEmail(), projectPersonnelWithDemandedData, tickets);
     }
 
-    public ProjectResponseDto getDataForProjectResponse(Long projectId) {
+    public ProjectEditViewDto getDataForProjectEditView(Long projectId) {
         validateProjectExistence(projectId);
-        Project project = projectRepository.findById(projectId).get();
-        Project projectWithDemandedFields = new Project.Builder()
-                .id(projectId)
-                .name(project.getName())
-                .description(project.getDescription())
-                .build();
-        AppUser currentManagerWithDemandedData = new AppUser.Builder()
-                .id(project.getProjectManager().getId())
-                .wholeName(project.getProjectManager().getWholeName())
-                .email(project.getProjectManager().getEmail())
-                .sRole(project.getProjectManager().getSRole())
-                .build();
-        validateUserPermissionForProjectEdit(currentManagerWithDemandedData.getId());
-        List<AppUser> projectManagersWithDemandedData =
-                appUserService.findProjectManagersParticipatingInProject(project.getProjectPersonnel());
-        projectManagersWithDemandedData.add(currentManagerWithDemandedData);
-        List<AppUser> projectPersonnelWithDemandedData =
-                retrieveDemandedDataFromUsersForProjectView(project.getProjectPersonnel());
-        List<AppUser> allUsersNotInProject;
-        if(project.getProjectManager().isDemo()) {
-            allUsersNotInProject =
-                    appUserService.getAllNonAdminDemoUsersNotParticipatingInProject(
-                            project.getProjectPersonnel(), project.getProjectManager());
-        }
-        else {
-            allUsersNotInProject =
-                    appUserService.getAllNonAdminUsersNotParticipatingInProject(
-                            project.getProjectPersonnel(), project.getProjectManager());
-        }
-        List<AppUser> allUsersNotInProjectWithDemandedData =
-                retrieveDemandedDataFromUsersForProjectView(allUsersNotInProject);
-        return new ProjectResponseDto(projectWithDemandedFields,
-                currentManagerWithDemandedData,
-                projectManagersWithDemandedData,
-                projectPersonnelWithDemandedData,
-                allUsersNotInProjectWithDemandedData);
+        Project project = projectRepository.findById(projectId).orElseThrow();
+        validateUserPermissionForProjectEdit(project.getProjectManager().getId());
+        return new ProjectEditViewDto(projectDtoMapper.apply(project),
+                appUserDtoMapper.apply(project.getProjectManager()),
+                project.getProjectPersonnel().stream()
+                        .filter(user -> user.getSRole().equals("Project manager"))
+                        .map(appUserDtoMapper)
+                        .collect(Collectors.toList()),
+                project.getProjectPersonnel().stream()
+                        .map(appUserDtoMapper)
+                        .collect(Collectors.toList()),
+                appUserService.getAllUsersNotInProject(project));
     }
 
     private void validateUserPermissionForProjectEdit(Long managerId) {
@@ -156,24 +130,14 @@ public class ProjectService {
         }
     }
 
-    private List<AppUser> retrieveDemandedDataFromUsersForProjectView(List<AppUser> projectPersonnel) {
-        List<AppUser> projectPersonnelWithDemandedData = new ArrayList<>();
-        for(AppUser appUser : projectPersonnel) {
-            AppUser appUserWithDemandedData = new AppUser.Builder()
-                    .id(appUser.getId())
-                    .email(appUser.getEmail())
-                    .sRole(appUser.getSRole())
-                    .wholeName(appUser.getWholeName())
-                    .build();
-            projectPersonnelWithDemandedData.add(appUserWithDemandedData);
-        }
-        return projectPersonnelWithDemandedData;
-    }
 
-    public void saveResponseElements(ProjectResponseDto projectResponse) {
-        Project project = projectResponse.getProject();
+
+    public void saveResponseElements(ProjectEditViewDto projectResponse) {
+        Project project = projectRepository.findById(projectResponse.getProject().getId()).orElseThrow();
         validateProjectExistence(project.getId());
         validateUserPermissionForProjectEdit(projectResponse.getCurrentManager().getId());
+        project.setName(projectResponse.getProject().getName());
+        project.setDescription(projectResponse.getProject().getDescription());
         project.setProjectManager(appUserService.findById(projectResponse.getCurrentManager().getId()));
         project.setProjectPersonnel(projectResponse.getProjectPersonnel());
         projectRepository.save(project);

@@ -1,16 +1,11 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
-import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiForbiddenException;
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/project")
@@ -31,11 +26,11 @@ public class ProjectController {
         return projectService.findAllProjectsAssignedToUser();
     }
     @GetMapping("/edit/{projectId}")
-    public ProjectResponseDto getProjectDataById(@PathVariable Long projectId) {
-        return projectService.getDataForProjectResponse(projectId);
+    public ProjectEditViewDto getDataForProjectEditView(@PathVariable Long projectId) {
+        return projectService.getDataForProjectEditView(projectId);
     }
     @PutMapping("/edit/{projectId}")
-    public void updateProjectData(@RequestBody ProjectResponseDto projectResponse, @PathVariable Long projectId) {
+    public void updateProjectData(@RequestBody ProjectEditViewDto projectResponse, @PathVariable Long projectId) {
         projectService.saveResponseElements(projectResponse);
     }
     @DeleteMapping
@@ -44,7 +39,6 @@ public class ProjectController {
     }
     @GetMapping("/details/{projectId}")
     public ProjectDetailsViewDto getDataForProjectDetailsView(@PathVariable Long projectId) {
-        ProjectDetailsViewDto projectDetailsViewDto = projectService.getDataForProjectDetailsView(projectId);
-        return projectDetailsViewDto;
+        return projectService.getDataForProjectDetailsView(projectId);
     }
 }

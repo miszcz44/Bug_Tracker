@@ -3,13 +3,13 @@ package com.mcr.bugtracker.BugTrackerApplication.appuser;
 import lombok.Getter;
 
 @Getter
-public final class AppUserForRoleManagementDto {
+public final class AppUserDto {
     private Long id;
     private String email;
     private String wholeName;
     private String sRole;
 
-    public AppUserForRoleManagementDto(Long id, String email, String wholeName, String sRole) {
+    public AppUserDto(Long id, String email, String wholeName, String sRole) {
         this.id = id;
         this.email = email;
         this.wholeName = wholeName;

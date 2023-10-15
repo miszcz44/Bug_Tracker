@@ -30,7 +30,7 @@ public class AppUserService implements UserDetailsService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
     private final UserProfileDtoMapper userProfileDtoMapper;
-    private final AppUserForRoleManagementMapper appUserForRoleManagementMapper;
+    private final AppUserDtoMapper appUserDtoMapper;
     private static final Random RANDOM = new Random();
     @Override
     public AppUser loadUserByUsername(String email)
@@ -39,6 +39,10 @@ public class AppUserService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException(
                                 String.format(USER_NOT_FOUND_MSG, email)));
+    }
+
+    public List<AppUser> findAll() {
+        return appUserRepository.findAll();
     }
     public void checkIfEmailTakenOrNotConfirmed(AppUser appUser) {
         Optional<AppUser> potentialUser = appUserRepository
@@ -156,6 +160,20 @@ public class AppUserService implements UserDetailsService {
             }
         }
         return projectManagers;
+    }
+
+    public List<AppUser> retrieveDemandedDataFromUsersForProjectView(List<AppUser> projectPersonnel) {
+        List<AppUser> projectPersonnelWithDemandedData = new ArrayList<>();
+        for(AppUser appUser : projectPersonnel) {
+            AppUser appUserWithDemandedData = new AppUser.Builder()
+                    .id(appUser.getId())
+                    .email(appUser.getEmail())
+                    .sRole(appUser.getSRole())
+                    .wholeName(appUser.getWholeName())
+                    .build();
+            projectPersonnelWithDemandedData.add(appUserWithDemandedData);
+        }
+        return projectPersonnelWithDemandedData;
     }
     public AppUser findById(Long id) {
         return appUserRepository.findById(id).orElseThrow();
@@ -293,7 +311,7 @@ public class AppUserService implements UserDetailsService {
     private RoleManagementDto getRegularDataForRoleManagement(List<AppUser> allUsers) {
         return new RoleManagementDto(
                 allUsers.stream()
-                        .map(appUserForRoleManagementMapper)
+                        .map(appUserDtoMapper)
                         .collect(Collectors.toList()),
                 allUsers.stream()
                         .filter(user -> user.getSRole() != null && !user.getSRole().equals("Admin"))
@@ -306,7 +324,7 @@ public class AppUserService implements UserDetailsService {
         return new RoleManagementDto(
                 allUsers.stream()
                         .filter(user -> user.isDemo() != null && user.isDemo())
-                        .map(appUserForRoleManagementMapper)
+                        .map(appUserDtoMapper)
                         .collect(Collectors.toList()),
                 allUsers.stream()
                         .filter(user -> user.isDemo() != null && user.isDemo())
@@ -315,5 +333,25 @@ public class AppUserService implements UserDetailsService {
                         .collect(Collectors.toList()),
                 getNonAdminAndNonDemoRoles()
         );
+    }
+
+    public List<AppUserDto> getAllUsersNotInProject(Project project) {
+        if(project.getProjectManager().isDemo()) {
+            return findAll().stream()
+                    .filter(user -> user.isDemo())
+                    .filter(user -> !project.getProjectPersonnel().contains(user))
+                    .filter(user -> !user.equals(project.getProjectManager()))
+                    .filter(user -> !user.getSRole().equals("Admin"))
+                    .map(appUserDtoMapper)
+                    .collect(Collectors.toList());
+        }
+        else {
+            return findAll().stream()
+                    .filter(user -> !project.getProjectPersonnel().contains(user))
+                    .filter(user -> !user.equals(project.getProjectManager()))
+                    .filter(user -> !user.getSRole().equals("Admin"))
+                    .map(appUserDtoMapper)
+                    .collect(Collectors.toList());
+        }
     }
 }

@@ -5,10 +5,10 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-public class AppUserForRoleManagementMapper implements Function<AppUser, AppUserForRoleManagementDto> {
+public class AppUserDtoMapper implements Function<AppUser, AppUserDto> {
     @Override
-    public AppUserForRoleManagementDto apply(AppUser appUser) {
-        return new AppUserForRoleManagementDto(appUser.getId(),
+    public AppUserDto apply(AppUser appUser) {
+        return new AppUserDto(appUser.getId(),
                 appUser.getEmail(),
                 appUser.getWholeName(),
                 appUser.getSRole());
