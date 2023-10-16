@@ -62,38 +62,14 @@ public class TicketService {
         String emailWithoutQuotationMarks = developerEmail.substring(1, developerEmail.length() - 1);
         ticket.setAssignedDeveloper(appUserRepository.findByEmail(emailWithoutQuotationMarks).orElseThrow());
     }
-
     public void setSubmitterToTicket(Ticket ticket) {
         ticket.setSubmitter(appUserService.getUserFromContext().orElseThrow());
     }
-
     public void deleteTicket(Long ticketId) {
         validateTicketExistence(ticketId);
         validateUserPermissionForTicketDelete(ticketRepository.findById(ticketId).get());
         ticketRepository.deleteById(ticketId);
     }
-
-    public List<TicketForProjectViewDto> getDemandedTicketDataForProjectView(List<Ticket> tickets) {
-        List<TicketForProjectViewDto> demandedTickets = new ArrayList<>();
-        if(tickets != null) {
-            for (Ticket ticket : tickets) {
-                TicketForProjectViewDto demandedTicket = new TicketForProjectViewDto(ticket.getId(),
-                        ticket.getTitle(),
-                        ticket.getStatus(),
-                        ticket.getCreatedAt().truncatedTo(ChronoUnit.SECONDS));
-                if(ticket.getSubmitter() != null){
-                    demandedTicket.setSubmitter(ticket.getSubmitter().getWholeName());
-                }
-                if(ticket.getAssignedDeveloper() != null){
-                    demandedTicket.setDeveloper(ticket.getAssignedDeveloper().getWholeName());
-                }
-                demandedTickets.add(demandedTicket);
-            }
-        }
-        return demandedTickets;
-    }
-
-
     public List<AllTicketsViewDto> getAllTicketsConnectedToUser() {
         AppUser user = appUserService.getUserFromContext().orElseThrow();
         List<Ticket> tickets;

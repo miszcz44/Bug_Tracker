@@ -84,30 +84,6 @@ public class AppUserService implements UserDetailsService {
         AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return appUserRepository.findById(user.getId());
     }
-    public List<AppUser> getAllNonAdminUsersNotParticipatingInProject(List<AppUser> projectPersonnel, AppUser manager) {
-        List<Long> idList = projectPersonnel.stream()
-                .map(AppUser::getId)
-                .collect(Collectors.toList());
-        if(idList.isEmpty()) {
-            return appUserRepository.getAllUsersButAdminsAndProjectManager(manager.getId());
-        }
-        return appUserRepository.getAllUsersButAdminsProjectManagerAndPersonnel(manager.getId(), idList);
-    }
-    public List<AppUser> getAllNonAdminDemoUsersNotParticipatingInProject(List<AppUser> projectPersonnel, AppUser manager) {
-        List<Long> idList = projectPersonnel.stream()
-                .map(AppUser::getId)
-                .collect(Collectors.toList());
-        if(idList.isEmpty()) {
-            return appUserRepository.getAllUsersButAdminsAndProjectManager(manager.getId())
-                    .stream()
-                    .filter(AppUser::isDemo)
-                    .collect(Collectors.toList());
-        }
-        return appUserRepository.getAllUsersButAdminsProjectManagerAndPersonnel(manager.getId(), idList)
-                .stream()
-                .filter(AppUser::isDemo)
-                .collect(Collectors.toList());
-    }
     public void changeUsersRole(AppUserRoleAssignmentRequest request) {
         AppUserRole role = findRoleObject(request.getRole());
         for(String email : request.getUsersEmails()) {
@@ -136,45 +112,7 @@ public class AppUserService implements UserDetailsService {
             throw new ApiPasswordDoesntMatchException("Password does not match");
         }
     }
-    public List<AppUser> getDemandedPersonnelDataForProjectView(List<AppUser> projectPersonnel) {
-        List<AppUser> personnelWithDemandedData = new ArrayList<>();
-        for(AppUser user : projectPersonnel) {
-            personnelWithDemandedData.add(new AppUser.Builder().
-                    wholeName(user.getWholeName()).
-                    email(user.getEmail()).
-                    sRole(user.getSRole()).build());
-        }
-        return personnelWithDemandedData;
-    }
-    public List<AppUser> findProjectManagersParticipatingInProject(List<AppUser> projectPersonnel) {
-        List<AppUser> projectManagers = new ArrayList<>();
-        for(AppUser appUser : projectPersonnel) {
-            if(appUser.getSRole().equals("Project manager")) {
-                AppUser projectManagerWithDemandedData = new AppUser.Builder()
-                        .id(appUser.getId())
-                        .email(appUser.getEmail())
-                        .wholeName(appUser.getWholeName())
-                        .sRole(appUser.getSRole())
-                        .build();
-                projectManagers.add(projectManagerWithDemandedData);
-            }
-        }
-        return projectManagers;
-    }
 
-    public List<AppUser> retrieveDemandedDataFromUsersForProjectView(List<AppUser> projectPersonnel) {
-        List<AppUser> projectPersonnelWithDemandedData = new ArrayList<>();
-        for(AppUser appUser : projectPersonnel) {
-            AppUser appUserWithDemandedData = new AppUser.Builder()
-                    .id(appUser.getId())
-                    .email(appUser.getEmail())
-                    .sRole(appUser.getSRole())
-                    .wholeName(appUser.getWholeName())
-                    .build();
-            projectPersonnelWithDemandedData.add(appUserWithDemandedData);
-        }
-        return projectPersonnelWithDemandedData;
-    }
     public AppUser findById(Long id) {
         return appUserRepository.findById(id).orElseThrow();
     }
@@ -338,7 +276,7 @@ public class AppUserService implements UserDetailsService {
     public List<AppUserDto> getAllUsersNotInProject(Project project) {
         if(project.getProjectManager().isDemo()) {
             return findAll().stream()
-                    .filter(user -> user.isDemo())
+                    .filter(AppUser::isDemo)
                     .filter(user -> !project.getProjectPersonnel().contains(user))
                     .filter(user -> !user.equals(project.getProjectManager()))
                     .filter(user -> !user.getSRole().equals("Admin"))

@@ -12,9 +12,11 @@ public class TicketForProjectViewDto {
     private String status;
     private LocalDateTime created;
 
-    public TicketForProjectViewDto(Long id, String title, String status, LocalDateTime created) {
+    public TicketForProjectViewDto(Long id, String title, String submitter, String developer, String status, LocalDateTime created) {
         this.id = id;
         this.title = title;
+        this.submitter = submitter;
+        this.developer = developer;
         this.status = status;
         this.created = created;
     }

@@ -1,18 +1,18 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketForProjectViewDto;
 
 import java.util.List;
 
 public class ProjectDetailsViewDto {
-    private Project project;
+    private ProjectDto project;
     private String projectManagerName;
     private String projectManagerEmail;
-    private List<AppUser> projectPersonnel;
+    private List<AppUserDto> projectPersonnel;
     private List<TicketForProjectViewDto> tickets;
 
-    public ProjectDetailsViewDto(Project project, String projectManagerName, String projectManagerEmail, List<AppUser> projectPersonnel, List<TicketForProjectViewDto> tickets) {
+    public ProjectDetailsViewDto(ProjectDto project, String projectManagerName, String projectManagerEmail, List<AppUserDto> projectPersonnel, List<TicketForProjectViewDto> tickets) {
         this.project = project;
         this.projectManagerName = projectManagerName;
         this.projectManagerEmail = projectManagerEmail;
@@ -20,11 +20,11 @@ public class ProjectDetailsViewDto {
         this.tickets = tickets;
     }
 
-    public Project getProject() {
+    public ProjectDto getProject() {
         return project;
     }
 
-    public void setProject(Project project) {
+    public void setProject(ProjectDto project) {
         this.project = project;
     }
 
@@ -44,11 +44,11 @@ public class ProjectDetailsViewDto {
         this.projectManagerEmail = projectManagerEmail;
     }
 
-    public List<AppUser> getProjectPersonnel() {
+    public List<AppUserDto> getProjectPersonnel() {
         return projectPersonnel;
     }
 
-    public void setProjectPersonnel(List<AppUser> projectPersonnel) {
+    public void setProjectPersonnel(List<AppUserDto> projectPersonnel) {
         this.projectPersonnel = projectPersonnel;
     }
 

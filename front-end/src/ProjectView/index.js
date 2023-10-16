@@ -63,20 +63,18 @@ const ProjectView = () => {
         console.log(project);
         console.log(projectPersonnel);
         console.log(selectedProjectManager);
+        selectedProjectManager ? console.log(selectedProjectManager.value) : console.log(currentManager);
     }
 
     // function handleOptionChange(selectedOption) {
     //     setUserEmail(selectedOption);
     //     setSelectedOption(selectedOption);
     // }
-
     function save() {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/project/edit/${projectId}`, "PUT", jwt, {
             "project": project,
             "currentManager": selectedProjectManager ? selectedProjectManager.value : currentManager,
-            "projectPersonnel": projectPersonnel,
-            "allUsersNotInProject": null,
-            "projectManagers": null
+            "projectPersonnel": projectPersonnel
         })
             .then((projectData) => {
                 setProject(projectData);

@@ -18,6 +18,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -72,8 +73,12 @@ public class Ticket {
         this.type = type;
     }
 
-    public boolean isSubmitterNull() {
-        return submitter == null;
+    public Optional<AppUser> getOptionalSubmitter() {
+        return Optional.ofNullable(submitter);
+    }
+
+    public Optional<AppUser> getOptionalDeveloper() {
+        return Optional.ofNullable(assignedDeveloper);
     }
 
     public Ticket(Project project) {

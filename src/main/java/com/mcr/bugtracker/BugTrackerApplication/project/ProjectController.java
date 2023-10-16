@@ -30,7 +30,7 @@ public class ProjectController {
         return projectService.getDataForProjectEditView(projectId);
     }
     @PutMapping("/edit/{projectId}")
-    public void updateProjectData(@RequestBody ProjectEditViewDto projectResponse, @PathVariable Long projectId) {
+    public void updateProjectData(@RequestBody ProjectEditViewResponse projectResponse) {
         projectService.saveResponseElements(projectResponse);
     }
     @DeleteMapping

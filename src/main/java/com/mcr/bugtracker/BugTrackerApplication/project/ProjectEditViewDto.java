@@ -1,6 +1,5 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserDto;
 
 import java.util.List;

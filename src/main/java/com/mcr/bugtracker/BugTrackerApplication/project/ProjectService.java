@@ -5,36 +5,24 @@ import java.util.List;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiForbiddenException;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiNotFoundException;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.*;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketForProjectViewDto;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketService;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketForProjectViewDtoMapper;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 public class ProjectService {
     private final ProjectRepository projectRepository;
-    private final AppUserRepository appUserRepository;
     private final AppUserService appUserService;
-    private final TicketService ticketService;
     private final AllProjectsViewMapper allProjectsViewMapper;
     private final AppUserDtoMapper appUserDtoMapper;
     private final ProjectDtoMapper projectDtoMapper;
+    private final TicketForProjectViewDtoMapper ticketForProjectViewDtoMapper;
 
-    public Project saveProject(Project project) {
-        return projectRepository.save(project);
-    }
-    public void addUsersToProject(UsersToProjectRequest request) {
-        Project project = projectRepository.findById(request.getProjectId()).get();
-        for(Long id : request.getIds()) {
-            project.getProjectPersonnel().add(appUserRepository.findById(id).get());
-        }
+    public void saveProject(Project project) {
         projectRepository.save(project);
     }
     public List<AllProjectsViewDto> findAllProjectsAssignedToUser() {
@@ -59,40 +47,21 @@ public class ProjectService {
                     .collect(Collectors.toList());
         }
     }
-
-    public Optional<Project> findById(Long id) {
-        return projectRepository.findById(id);
-    }
-
-    public List<AppUser> getProjectPersonnel(Long id) {
-        return appUserRepository.getProjectPersonnel(id);
-    }
-
-
-    public void addUserToProjectByEmail(Project project, String email) {
-        project.getProjectPersonnel().add(appUserRepository.findByEmail(email).orElseThrow());
-    }
-
-    public void deleteUserFromProject(Long userId) {
-        projectRepository.deleteUserFromProject(userId);
-    }
-
     public ProjectDetailsViewDto getDataForProjectDetailsView(Long projectId) {
         validateProjectExistence(projectId);
-        Project project = projectRepository.findById(projectId).get();
+        Project project = projectRepository.findById(projectId).orElseThrow();
         validateUserPermissionForProjectDetails(project);
-        Project projectWithDemandedFields = new Project.Builder()
-                .id(projectId)
-                .name(project.getName())
-                .description(project.getDescription())
-                .build();
-        List<TicketForProjectViewDto> tickets = ticketService.getDemandedTicketDataForProjectView(project.getTickets());
-        List<AppUser> projectPersonnelWithDemandedData =
-                appUserService.getDemandedPersonnelDataForProjectView(project.getProjectPersonnel());
         return new ProjectDetailsViewDto(
-                projectWithDemandedFields, project.getProjectManager().getWholeName(), project.getProjectManager().getEmail(), projectPersonnelWithDemandedData, tickets);
+                projectDtoMapper.apply(project),
+                project.getProjectManager().getWholeName(),
+                project.getProjectManager().getEmail(),
+                project.getProjectPersonnel().stream()
+                        .map(appUserDtoMapper)
+                        .collect(Collectors.toList()),
+                project.getTickets().stream()
+                        .map(ticketForProjectViewDtoMapper)
+                        .collect(Collectors.toList()));
     }
-
     public ProjectEditViewDto getDataForProjectEditView(Long projectId) {
         validateProjectExistence(projectId);
         Project project = projectRepository.findById(projectId).orElseThrow();
@@ -108,20 +77,17 @@ public class ProjectService {
                         .collect(Collectors.toList()),
                 appUserService.getAllUsersNotInProject(project));
     }
-
     private void validateUserPermissionForProjectEdit(Long managerId) {
         AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         if (!currentUser.getId().equals(managerId) && !currentUser.getSRole().equals("Admin")) {
             throw new ApiForbiddenException("You do not have permission for this request");
         }
     }
-
     private void validateProjectExistence(Long projectId) {
-        if(!projectRepository.findById(projectId).isPresent()) {
+        if(projectRepository.findById(projectId).isEmpty()) {
             throw new ApiNotFoundException("There is no such resource");
         }
     }
-
     private void validateUserPermissionForProjectDetails(Project project) {
         AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         if(!project.getProjectPersonnel().contains(currentUser) && !currentUser.equals(project.getProjectManager()) &&
@@ -129,33 +95,24 @@ public class ProjectService {
             throw new ApiForbiddenException("You do not have permission for this request");
         }
     }
-
-
-
-    public void saveResponseElements(ProjectEditViewDto projectResponse) {
-        Project project = projectRepository.findById(projectResponse.getProject().getId()).orElseThrow();
+    private void validateUserPermissionForProjectDelete(Project project) {
+        AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
+        if(!currentUser.equals(project.getProjectManager()) && !currentUser.getSRole().equals("Admin")) {
+            throw new ApiForbiddenException("You do not have permission for this request");
+        }
+    }
+    public void saveResponseElements(ProjectEditViewResponse projectResponse) {
+        Project project = projectResponse.getProject();
         validateProjectExistence(project.getId());
         validateUserPermissionForProjectEdit(projectResponse.getCurrentManager().getId());
-        project.setName(projectResponse.getProject().getName());
-        project.setDescription(projectResponse.getProject().getDescription());
-        project.setProjectManager(appUserService.findById(projectResponse.getCurrentManager().getId()));
         project.setProjectPersonnel(projectResponse.getProjectPersonnel());
+        project.setProjectManager(projectResponse.getCurrentManager());
         projectRepository.save(project);
     }
-
     public void deleteProjectById(Long projectId) {
         validateProjectExistence(projectId);
         Project project = projectRepository.findById(projectId).orElseThrow();
-        validateUserPermissionForProjectDetails(project);
+        validateUserPermissionForProjectDelete(project);
         projectRepository.deleteById(projectId);
     }
-
-    public Project getProjectForTicketEditView(Project project) {
-        return new Project.Builder()
-                .id(project.getId())
-                .name(project.getName())
-                .build();
-    }
-
-
 }

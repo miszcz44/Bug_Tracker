@@ -21,17 +21,7 @@ public interface AppUserRepository
     @Query("UPDATE AppUser a " +
             "SET a.enabled = TRUE WHERE a.email = ?1")
     void enableAppUser(String email);
-    @Query(value = "SELECT * FROM app_user a " +
-            "JOIN project_personnel p ON a.id = p.user_id " +
-            "WHERE p.project_id = ?1",
-            nativeQuery = true)
-    List<AppUser> getProjectPersonnel(Long id);
-    @Query(value = "SELECT * FROM app_user WHERE id != ?1 AND id NOT IN ?2 AND s_role != 'Admin'",
-            nativeQuery = true)
-    List<AppUser> getAllUsersButAdminsProjectManagerAndPersonnel(Long id, List<Long> personnelIds);
-    @Query(value = "SELECT * FROM app_user WHERE id != ?1 AND s_role != 'Admin'",
-            nativeQuery = true)
-    List<AppUser> getAllUsersButAdminsAndProjectManager(Long projectManagerId);
+
     boolean existsByEmail(String email);
 
 }
