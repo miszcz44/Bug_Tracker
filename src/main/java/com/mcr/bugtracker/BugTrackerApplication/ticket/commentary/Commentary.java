@@ -35,11 +35,6 @@ public class Commentary {
     @ManyToOne
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
-
-    public Commentary(String message) {
-        this.message = message;
-    }
-
     public Commentary(AppUser commentator, String message, LocalDateTime createdAt, Ticket ticket) {
         this.commentator = commentator;
         this.message = message;

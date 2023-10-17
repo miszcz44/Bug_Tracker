@@ -33,9 +33,8 @@ public class RegistrationController {
     private final AppUserService appUserService;
     private final JwtUtil jwtUtil;
     @PostMapping
-    public ResponseEntity<?> register(@RequestBody RegistrationRequest request) {
+    public void register(@RequestBody RegistrationRequest request) {
         registrationService.register(request);
-        return ResponseEntity.ok(null);
     }
 
     @GetMapping(path = "confirm")

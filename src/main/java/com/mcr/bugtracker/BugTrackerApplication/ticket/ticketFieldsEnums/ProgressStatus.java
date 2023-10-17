@@ -10,7 +10,7 @@ public enum ProgressStatus {
     RESOLVED("Resolved"),
     ADDITIONAL_INFO_REQUIRED("Additional info required");
 
-    private String name;
+    private final String name;
 
     ProgressStatus(String name) {
         this.name = name;

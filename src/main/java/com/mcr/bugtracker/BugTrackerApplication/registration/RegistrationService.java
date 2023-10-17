@@ -7,7 +7,6 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.email.EmailSender;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
-import com.mcr.bugtracker.BugTrackerApplication.security.config.WebSecurityConfig;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,7 @@ public class RegistrationService {
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
-    private final WebSecurityConfig webSecurityConfig;
-
-    public String register(RegistrationRequest request) {
+    public void register(RegistrationRequest request) {
         validateEmail(request);
         AppUser user = createUserWithRequest(request);
         appUserService.signUpUser(user);
@@ -36,8 +33,6 @@ public class RegistrationService {
         emailSender.send(
                 request.getEmail(),
                 buildEmail(request.getFirstName(), link));
-
-        return token;
     }
 
     public void validateEmail(RegistrationRequest request) {
@@ -58,13 +53,12 @@ public class RegistrationService {
                 break;
             }
         }
-        AppUser user = new AppUser(request.getFirstName(),
+        return new AppUser(request.getFirstName(),
                 request.getLastName(),
                 request.getEmail(),
                 request.getPassword(),
                 assignedRole,
                 request.getRole());
-        return user;
     }
 
     @Transactional

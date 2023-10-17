@@ -1,10 +1,12 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
+import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 
+@Service
 public class TicketForProjectViewDtoMapper implements Function<Ticket, TicketForProjectViewDto> {
     @Override
     public TicketForProjectViewDto apply(Ticket ticket) {

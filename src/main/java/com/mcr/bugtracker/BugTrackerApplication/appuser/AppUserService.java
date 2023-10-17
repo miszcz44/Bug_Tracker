@@ -116,26 +116,6 @@ public class AppUserService implements UserDetailsService {
     public AppUser findById(Long id) {
         return appUserRepository.findById(id).orElseThrow();
     }
-    public AppUser getDeveloperForTicketEditView(AppUser assignedDeveloper) {
-        return new AppUser.Builder()
-                .id(assignedDeveloper.getId())
-                .wholeName(assignedDeveloper.getWholeName())
-                .email(assignedDeveloper.getEmail())
-                .build();
-    }
-    public List<AppUser> getProjectDevelopers(Project project) {
-        List<AppUser> developersWithDemandedData = new ArrayList<>();
-        for (AppUser user : project.getProjectPersonnel()) {
-            if(user.getSRole().equals("Developer")) {
-                developersWithDemandedData.add(new AppUser.Builder()
-                        .id(user.getId())
-                        .wholeName(user.getWholeName())
-                        .email(user.getEmail())
-                        .build());
-            }
-        }
-        return developersWithDemandedData;
-    }
     public UserProfileDto getDataForUserProfile() {
         AppUser user = getUserFromContext().orElseThrow();
         return userProfileDtoMapper.apply(user);

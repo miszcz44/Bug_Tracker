@@ -7,14 +7,11 @@ public enum Type {
     BUGS__ERRORS("Bugs/Errors"), // BUGS/ERRORS
     FEATURE_REQUESTS("Feature requests"),
     OTHER_COMMENTS("Other comments"),
-    TRAINING__DOCUMENT_REQUESTS("Training/Document requests"); // TRAINING/DOCUMENT REQUESTS 
-
-    private String name;
-
+    TRAINING__DOCUMENT_REQUESTS("Training/Document requests"); // TRAINING/DOCUMENT REQUESTS
+    private final String name;
     Type(String name) {
         this.name = name;
     }
-
     public String getName() {
         return name;
     }

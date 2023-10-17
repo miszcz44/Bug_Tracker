@@ -7,10 +7,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.List;
-
-
-
 @Transactional(readOnly = true)
 @Repository
 public interface AppUserRepository
@@ -21,7 +17,6 @@ public interface AppUserRepository
     @Query("UPDATE AppUser a " +
             "SET a.enabled = TRUE WHERE a.email = ?1")
     void enableAppUser(String email);
-
     boolean existsByEmail(String email);
 
 }

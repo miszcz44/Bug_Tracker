@@ -5,10 +5,6 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.attachment.Attachment;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.Commentary;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Priority;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.ProgressStatus;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;
-
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

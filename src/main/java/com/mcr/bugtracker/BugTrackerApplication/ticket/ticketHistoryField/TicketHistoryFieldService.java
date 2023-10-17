@@ -1,23 +1,21 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField;
 
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketEditViewDto;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketRepository;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketForTicketEditViewDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class TicketHistoryFieldService {
     private final TicketHistoryFieldRepository ticketHistoryFieldRepository;
     private final AppUserService appUserService;
-    public void saveChangeOfTitle(Ticket ticket, Ticket ticketWithUpdatedData) {
+    public void saveChangeOfTitle(Ticket ticket, TicketForTicketEditViewDto ticketWithUpdatedData) {
         if(ticket.getTitle() != null && !ticket.getTitle().equals(ticketWithUpdatedData.getTitle())) {
             save(new TicketHistoryField(PropertyEnum.TITLE.getName(),
                     ticket.getTitle(),
@@ -30,10 +28,9 @@ public class TicketHistoryFieldService {
             ticket.setTitle(ticketWithUpdatedData.getTitle());
         }
     }
-
-    public void saveChangeOfDescription(Ticket ticket, Ticket ticketWithUpdatedData) {
+    public void saveChangeOfDescription(Ticket ticket, TicketForTicketEditViewDto ticketWithUpdatedData) {
         if(ticket.getDescription() != null && !ticket.getDescription().equals(ticketWithUpdatedData.getDescription())) {
-            save(new TicketHistoryField(PropertyEnum.DESCRITPION.getName(),
+            save(new TicketHistoryField(PropertyEnum.DESCRIPTION.getName(),
                     ticket.getDescription(),
                     ticketWithUpdatedData.getDescription(),
                     ticket,
@@ -63,8 +60,7 @@ public class TicketHistoryFieldService {
             ticket.setAssignedDeveloper(appUserService.findById(ticketDto.getDeveloper().getId()));
         }
     }
-
-    public void saveChangeOfType(Ticket ticket, Ticket ticketWithUpdatedData) {
+    public void saveChangeOfType(Ticket ticket, TicketForTicketEditViewDto ticketWithUpdatedData) {
         if(ticket.getType() != null && !ticket.getType().equals(ticketWithUpdatedData.getType())) {
             save(new TicketHistoryField(PropertyEnum.TYPE.getName(),
                     ticket.getType(),
@@ -77,8 +73,7 @@ public class TicketHistoryFieldService {
             ticket.setType(ticketWithUpdatedData.getType());
         }
     }
-
-    public void saveChangeOfPriority(Ticket ticket, Ticket ticketWithUpdatedData) {
+    public void saveChangeOfPriority(Ticket ticket, TicketForTicketEditViewDto ticketWithUpdatedData) {
         if(ticket.getPriority() != null && !ticket.getPriority().equals(ticketWithUpdatedData.getPriority())) {
             save(new TicketHistoryField(PropertyEnum.PRIORITY.getName(),
                     ticket.getPriority(),
@@ -91,8 +86,7 @@ public class TicketHistoryFieldService {
             ticket.setPriority(ticketWithUpdatedData.getPriority());
         }
     }
-
-    public void saveChangeOfStatus(Ticket ticket, Ticket ticketWithUpdatedData) {
+    public void saveChangeOfStatus(Ticket ticket, TicketForTicketEditViewDto ticketWithUpdatedData) {
         if(ticket.getStatus() != null && !ticket.getStatus().equals(ticketWithUpdatedData.getStatus())) {
             save(new TicketHistoryField(PropertyEnum.STATUS.getName(),
                     ticket.getStatus(),
@@ -105,7 +99,6 @@ public class TicketHistoryFieldService {
             ticket.setStatus(ticketWithUpdatedData.getStatus());
         }
     }
-
     public void save(TicketHistoryField field) {
         ticketHistoryFieldRepository.save(field);
     }

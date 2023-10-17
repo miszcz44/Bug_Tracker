@@ -9,7 +9,7 @@ public enum Priority {
     LOW("Low"),
     NONE("None");
 
-    private String name;
+    private final String name;
 
     Priority(String name) {
         this.name = name;

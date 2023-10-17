@@ -5,18 +5,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum PropertyEnum {
     TITLE("Title"),
-    DESCRITPION("Description"),
+    DESCRIPTION("Description"),
     DEVELOPER("Developer"),
     PRIORITY("Priority"),
     TYPE("Type"),
     STATUS("Status");
-
-    private String name;
-
+    private final String name;
     PropertyEnum(String name) {
         this.name = name;
     }
-
     public String getName() {
         return name;
     }
