@@ -1,13 +1,8 @@
 package com.mcr.bugtracker.BugTrackerApplication.security.config;
 
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRole;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
-import com.mcr.bugtracker.BugTrackerApplication.registration.RegistrationService;
 import com.mcr.bugtracker.BugTrackerApplication.security.JwtFilter;
 import lombok.AllArgsConstructor;
-import org.apache.catalina.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -50,7 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/v1/user/dashboard").hasAnyAuthority(
                             "PROJECT_MANAGER", "ADMIN", "DEVELOPER", "SUBMITTER", "NONE",
                                         "DEMO_PROJECT_MANAGER", "DEMO_ADMIN", "DEMO_DEVELOPER", "DEMO_SUBMITTER")
-                    .antMatchers(HttpMethod.GET, "/api/v1/user/role-management/**").hasAnyAuthority("ADMIN", "DEMO_ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api/v1/user/role-management/**").hasAnyAuthority(
+                            "ADMIN", "DEMO_ADMIN")
                     .antMatchers("/api/v1/user/role-management/**").hasAuthority("ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/v1/project").hasAnyAuthority(
                             "ADMIN", "PROJECT_MANAGER")
@@ -87,27 +83,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
-                .accessDeniedHandler(new CustomAccessDeniedHandler());;
+                .accessDeniedHandler(new CustomAccessDeniedHandler());
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
-
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//
-//        auth
-//                .inMemoryAuthentication()
-//                .withUser("user").password("{noop}password").roles("USER")
-//                .and()
-//                .withUser("admin").password("{noop}password").roles("ADMIN")
-//                .and()
-//                .withUser("newuser").password("{noop}password").roles("USER");
-//    }
-
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider =
@@ -116,7 +98,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(appUserService);
         return provider;
     }
-
     private class CustomAccessDeniedHandler implements AccessDeniedHandler {
         @Override
         public void handle(HttpServletRequest request, HttpServletResponse response,

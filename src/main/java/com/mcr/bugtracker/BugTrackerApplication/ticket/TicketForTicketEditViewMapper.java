@@ -1,10 +1,10 @@
-package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField;
+package com.mcr.bugtracker.BugTrackerApplication.ticket;
 
-import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketForTicketEditViewDto;
+import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
+@Service
 public class TicketForTicketEditViewMapper implements Function<Ticket, TicketForTicketEditViewDto> {
     @Override
     public TicketForTicketEditViewDto apply(Ticket ticket) {

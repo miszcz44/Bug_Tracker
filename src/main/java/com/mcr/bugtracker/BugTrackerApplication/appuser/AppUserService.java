@@ -45,15 +45,11 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.findAll();
     }
     public void checkIfEmailTakenOrNotConfirmed(AppUser appUser) {
-        Optional<AppUser> potentialUser = appUserRepository
-                .findByEmail(appUser.getEmail());
-        if (!potentialUser.equals(Optional.empty())) {
-            AppUser existingUser = potentialUser.orElseThrow();
-            if(!existingUser.getEnabled()) {
-                throw new ApiRequestException("Confirm email");
-            }
-            throw new ApiRequestException("email already taken");
+        AppUser user = appUserRepository.findByEmail(appUser.getEmail()).orElseThrow();
+        if(!user.getEnabled()) {
+            throw new ApiRequestException("Confirm email");
         }
+        throw new ApiRequestException("Email already taken");
     }
     public String generateAndSaveConfirmationTokenForGivenUser(AppUser appUser) {
         String token = UUID.randomUUID().toString();

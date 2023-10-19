@@ -67,13 +67,14 @@ const TicketDetails = () => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/details/${ticketId}`, "GET", user.jwt)
             .then((response) => {
                 if(!response.status) {
+                    console.log(response)
                     setTicket(response.ticket);
-                    setDeveloperName(response.developerName);
-                    setSubmitterName(response.submitterName);
-                    setSubmitterEmail(response.submitterEmail);
-                    setProjectManagerEmail(response.projectManagerEmail);
-                    setProjectId(response.projectId);
-                    setProjectName(response.projectName);
+                    setDeveloperName(response.ticket.developerName);
+                    setSubmitterName(response.ticket.submitterName);
+                    setSubmitterEmail(response.ticket.submitterEmail);
+                    setProjectManagerEmail(response.ticket.projectManagerEmail);
+                    setProjectId(response.ticket.projectId);
+                    setProjectName(response.ticket.projectName);
                     setComments(response.comments);
                     setHistoryFields(response.ticketHistoryField);
                 }

@@ -34,17 +34,11 @@ public class RegistrationService {
                 request.getEmail(),
                 buildEmail(request.getFirstName(), link));
     }
-
     public void validateEmail(RegistrationRequest request) {
-        boolean isValidEmail = emailValidator.
-                test(request.getEmail());
-
-        if (!isValidEmail) {
-            log.info("533333333");
+        if (!emailValidator.test(request.getEmail())) {
             throw new ApiRequestException("email not valid");
         }
     }
-
     public AppUser createUserWithRequest(RegistrationRequest request) {
         AppUserRole assignedRole = AppUserRole.NONE;
         for (AppUserRole role : AppUserRole.values()) {
@@ -60,13 +54,11 @@ public class RegistrationService {
                 assignedRole,
                 request.getRole());
     }
-
     @Transactional
     public String confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getToken(token)
-                .orElseThrow(() ->
-                        new IllegalStateException("token not found"));
+                .orElseThrow(() -> new IllegalStateException("token not found"));
 
         if (confirmationToken.getConfirmedAt() != null) {
             throw new IllegalStateException("email already confirmed");
@@ -83,7 +75,6 @@ public class RegistrationService {
                 confirmationToken.getAppUser().getEmail());
         return "confirmed";
     }
-
     private String buildEmail(String name, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
