@@ -18,6 +18,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -77,22 +78,22 @@ public class AppUser implements UserDetails {
 
     @OneToMany(mappedBy = "assignedDeveloper")
     @JsonIgnore
-    private List<Ticket> assignedTickets;
+    private List<Ticket> assignedTickets = new ArrayList<>();
     @OneToMany(mappedBy = "submitter")
     @JsonIgnore
-    private List<Ticket> submittedTickets;
+    private List<Ticket> submittedTickets = new ArrayList<>();
     @OneToMany(mappedBy = "uploader")
     @JsonIgnore
-    private List<Attachment> uploadedFiles;
+    private List<Attachment> uploadedFiles = new ArrayList<>();
     @OneToMany(mappedBy = "commentator")
     @JsonIgnore
-    private List<Commentary> commentaries;
+    private List<Commentary> commentaries = new ArrayList<>();
     @OneToMany(mappedBy = "projectManager")
     @JsonIgnore
-    private List<Project> managedProjects;
+    private List<Project> managedProjects = new ArrayList<>();
     @ManyToMany(mappedBy = "projectPersonnel")
     @JsonIgnore
-    private List<Project> assignedProjects;
+    private List<Project> assignedProjects = new ArrayList<>();
 
     @Override
     @JsonIgnore

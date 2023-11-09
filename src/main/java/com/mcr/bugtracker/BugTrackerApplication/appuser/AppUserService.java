@@ -1,6 +1,7 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiEmailTakenException;
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiNotFoundException;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiPasswordDoesntMatchException;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiRequestException;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
@@ -33,48 +34,41 @@ public class AppUserService implements UserDetailsService {
     private final AppUserDtoMapper appUserDtoMapper;
     private static final Random RANDOM = new Random();
     @Override
-    public AppUser loadUserByUsername(String email)
-            throws UsernameNotFoundException {
+    public AppUser loadUserByUsername(String email) throws UsernameNotFoundException {
         return appUserRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException(
-                                String.format(USER_NOT_FOUND_MSG, email)));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
     }
 
     public List<AppUser> findAll() {
         return appUserRepository.findAll();
     }
     public void checkIfEmailTakenOrNotConfirmed(AppUser appUser) {
-        AppUser user = appUserRepository.findByEmail(appUser.getEmail()).orElseThrow();
-        if(!user.getEnabled()) {
-            throw new ApiRequestException("Confirm email");
+        if(appUserRepository.findByEmail(appUser.getEmail()).isPresent()) {
+            AppUser user = appUserRepository.findByEmail(appUser.getEmail()).get();
+            if(!user.getEnabled()) {
+                throw new ApiRequestException("Confirm email");
+            }
+            throw new ApiRequestException("Email already taken");
         }
-        throw new ApiRequestException("Email already taken");
     }
     public String generateAndSaveConfirmationTokenForGivenUser(AppUser appUser) {
         String token = UUID.randomUUID().toString();
-        ConfirmationToken confirmationToken = new ConfirmationToken(
-                token,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15),
-                appUser
-        );
-        confirmationTokenService.saveConfirmationToken(
-                confirmationToken);
+        confirmationTokenService.saveConfirmationToken(new ConfirmationToken(
+                                                        token,
+                                                        LocalDateTime.now(),
+                                                        LocalDateTime.now().plusMinutes(15),
+                                                        appUser));
         return token;
     }
     public void signUpUser(AppUser appUser) {
         checkIfEmailTakenOrNotConfirmed(appUser);
-
-        String encodedPassword = bCryptPasswordEncoder
-                .encode(appUser.getPassword());
-
-        appUser.setPassword(encodedPassword);
-
+        appUser.setPassword(bCryptPasswordEncoder
+                .encode(appUser.getPassword()));
         appUserRepository.save(appUser);
     }
-    public void enableAppUser(String email) {
-        appUserRepository.enableAppUser(email);
+    public void enableAppUser(AppUser appUser) {
+        appUser.setEnabled(true);
+        appUserRepository.save(appUser);
     }
     public Optional<AppUser> getUserFromContext() {
         AppUser user = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -95,6 +89,9 @@ public class AppUserService implements UserDetailsService {
             if(role.getName().equals(roleName)) {
                 assignedRole = role;
             }
+        }
+        if(assignedRole == null) {
+            throw new NoSuchElementException();
         }
         return assignedRole;
     }
@@ -125,16 +122,16 @@ public class AppUserService implements UserDetailsService {
         }
         changeEmail(newEmail);
     }
-    private void changeEmail(String newEmail) {
+    protected void changeEmail(String newEmail) {
         AppUser user = getUserFromContext().orElseThrow();
         user.setEmail(newEmail);
         appUserRepository.save(user);
     }
-    private boolean isPasswordCorrect(String password) {
+    protected boolean isPasswordCorrect(String password) {
         AppUser user = getUserFromContext().orElseThrow();
         return bCryptPasswordEncoder.matches(password.subSequence(0, password.length()), user.getPassword());
     }
-    private boolean isEmailTaken(String newEmail) {
+    protected boolean isEmailTaken(String newEmail) {
         return appUserRepository.existsByEmail(newEmail);
     }
     public DashboardViewDto getDataForDashboardView() {
@@ -149,15 +146,15 @@ public class AppUserService implements UserDetailsService {
             case "None":
                 return getDataForNoRoleDashboardView(currentUser);
         }
-        return null;
+        throw new ApiNotFoundException("Resource not found");
     }
-    private DashboardViewDto getDataForNoRoleDashboardView(AppUser currentUser) {
+    protected DashboardViewDto getDataForNoRoleDashboardView(AppUser currentUser) {
         DashboardViewDto dashboardViewDto = new DashboardViewDto();
         List<Project> belongingProjects = currentUser.getAssignedProjects();
         setValuesFromRandomProject(dashboardViewDto, belongingProjects);
         return dashboardViewDto;
     }
-    private DashboardViewDto getDataForSubmitterDashboardView(AppUser currentUser) {
+    protected DashboardViewDto getDataForSubmitterDashboardView(AppUser currentUser) {
         DashboardViewDto dashboardViewDto = new DashboardViewDto();
         List<Project> belongingProjects = currentUser.getAssignedProjects();
         setValuesFromRandomProject(dashboardViewDto, belongingProjects);
@@ -165,7 +162,7 @@ public class AppUserService implements UserDetailsService {
         setValuesFromRandomTicket(dashboardViewDto, submittedTickets);
         return dashboardViewDto;
     }
-    private DashboardViewDto getDataForDeveloperDashboardView(AppUser currentUser) {
+    protected DashboardViewDto getDataForDeveloperDashboardView(AppUser currentUser) {
         DashboardViewDto dashboardViewDto = new DashboardViewDto();
         List<Project> belongingProjects = currentUser.getAssignedProjects();
         setValuesFromRandomProject(dashboardViewDto, belongingProjects);
@@ -173,7 +170,7 @@ public class AppUserService implements UserDetailsService {
         setValuesFromRandomTicket(dashboardViewDto, assignedTickets);
         return dashboardViewDto;
     }
-    private DashboardViewDto getDataForProjectManagerDashboardView(AppUser currentUser) {
+    protected DashboardViewDto getDataForProjectManagerDashboardView(AppUser currentUser) {
         DashboardViewDto dashboardViewDto = new DashboardViewDto();
         List<Project> allProjects = Stream.concat(currentUser.getManagedProjects().stream(),
                 currentUser.getAssignedProjects().stream()).collect(Collectors.toList());
@@ -192,20 +189,21 @@ public class AppUserService implements UserDetailsService {
         }
         return dashboardViewDto;
     }
-    private void setValuesFromRandomTicket(DashboardViewDto dashboardViewDto, List<Ticket> tickets) {
+    protected void setValuesFromRandomTicket(DashboardViewDto dashboardViewDto, List<Ticket> tickets) {
         if(tickets.size() > 0) {
             Ticket ticket = tickets.get(RANDOM.nextInt(tickets.size()));
             dashboardViewDto.setTicketId(ticket.getId());
-            dashboardViewDto.setTicketTitle(ticket.getTitle());
-            dashboardViewDto.setTicketDescription(ticket.getDescription());
+            dashboardViewDto.setTicketTitle(ticket.getOptionalTitle().orElse("Title not specified"));
+            dashboardViewDto.setTicketDescription(ticket.getOptionalDescription().orElse("Description not specified"));
         }
     }
-    private void setValuesFromRandomProject(DashboardViewDto dashboardViewDto, List<Project> projects) {
+    protected void setValuesFromRandomProject(DashboardViewDto dashboardViewDto, List<Project> projects) {
         if(projects.size() > 0) {
             Project project = projects.get(RANDOM.nextInt(projects.size()));
             dashboardViewDto.setProjectId(project.getId());
-            dashboardViewDto.setProjectTitle(project.getName());
-            dashboardViewDto.setProjectDescription(project.getDescription());
+            dashboardViewDto.setProjectName(project.getOptionalName().orElse("Name not specified"));
+            dashboardViewDto.setProjectDescription(project.getOptionalDescription()
+                    .orElse("Description not specified"));
         }
     }
     public AppUserRole[] getNonAdminAndNonDemoRoles() {
@@ -213,36 +211,24 @@ public class AppUserService implements UserDetailsService {
                 AppUserRole.PROJECT_MANAGER, AppUserRole.DEVELOPER, AppUserRole.SUBMITTER, AppUserRole.NONE};
     }
     public RoleManagementDto getDataForRoleManagement() {
-        AppUser user = getUserFromContext().orElseThrow();
+        AppUser appUser = getUserFromContext().orElseThrow();
         List<AppUser> allUsers = appUserRepository.findAll();
-        if(user.isDemo()) {
-            return getDemoDataForRoleManagement(allUsers);
+        if(appUser.isDemo()) {
+            return getDataForRoleManagement(allUsers.stream()
+                    .filter(user -> user.isDemo() != null & user.isDemo())
+                    .collect(Collectors.toList()));
         }
         else {
-            return getRegularDataForRoleManagement(allUsers);
+            return getDataForRoleManagement(allUsers);
         }
     }
-    private RoleManagementDto getRegularDataForRoleManagement(List<AppUser> allUsers) {
+    protected RoleManagementDto getDataForRoleManagement(List<AppUser> allUsers) {
         return new RoleManagementDto(
                 allUsers.stream()
                         .map(appUserDtoMapper)
                         .collect(Collectors.toList()),
                 allUsers.stream()
-                        .filter(user -> user.getSRole() != null && !user.getSRole().equals("Admin"))
-                        .map(AppUser::getEmail)
-                        .collect(Collectors.toList()),
-                getNonAdminAndNonDemoRoles()
-        );
-    }
-    private RoleManagementDto getDemoDataForRoleManagement(List<AppUser> allUsers) {
-        return new RoleManagementDto(
-                allUsers.stream()
-                        .filter(user -> user.isDemo() != null && user.isDemo())
-                        .map(appUserDtoMapper)
-                        .collect(Collectors.toList()),
-                allUsers.stream()
-                        .filter(user -> user.isDemo() != null && user.isDemo())
-                        .filter(user -> user.getSRole() != null && !user.getSRole().equals("Admin"))
+                        .filter(user -> !("Admin").equals(user.getSRole()))
                         .map(AppUser::getEmail)
                         .collect(Collectors.toList()),
                 getNonAdminAndNonDemoRoles()
@@ -250,20 +236,19 @@ public class AppUserService implements UserDetailsService {
     }
 
     public List<AppUserDto> getAllUsersNotInProject(Project project) {
+        List<AppUser> appUsers = appUserRepository.findAll().stream()
+                .filter(user -> !project.getProjectPersonnel().contains(user))
+                .filter(user -> !user.equals(project.getProjectManager()))
+                .filter(user -> !"Admin".equals(user.getSRole()))
+                .collect(Collectors.toList());
         if(project.getProjectManager().isDemo()) {
-            return findAll().stream()
-                    .filter(AppUser::isDemo)
-                    .filter(user -> !project.getProjectPersonnel().contains(user))
-                    .filter(user -> !user.equals(project.getProjectManager()))
-                    .filter(user -> !user.getSRole().equals("Admin"))
+            return appUsers.stream()
+                    .filter(user -> user.isDemo())
                     .map(appUserDtoMapper)
                     .collect(Collectors.toList());
         }
         else {
-            return findAll().stream()
-                    .filter(user -> !project.getProjectPersonnel().contains(user))
-                    .filter(user -> !user.equals(project.getProjectManager()))
-                    .filter(user -> !user.getSRole().equals("Admin"))
+            return appUsers.stream()
                     .map(appUserDtoMapper)
                     .collect(Collectors.toList());
         }

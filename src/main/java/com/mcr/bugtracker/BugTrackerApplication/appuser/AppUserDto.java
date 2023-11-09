@@ -1,8 +1,10 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public final class AppUserDto {
     private Long id;
     private String email;

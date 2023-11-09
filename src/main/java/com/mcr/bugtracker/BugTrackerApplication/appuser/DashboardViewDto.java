@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class DashboardViewDto {
     private Long projectId;
-    private String projectTitle;
+    private String projectName;
     private String projectDescription;
     private Long ticketId;
     private String ticketTitle;
