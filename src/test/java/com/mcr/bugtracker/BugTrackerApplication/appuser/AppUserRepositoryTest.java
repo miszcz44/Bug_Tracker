@@ -18,37 +18,23 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+//@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 class AppUserRepositoryTest {
 
     @Autowired
-    private AppUserRepository underTest;
-
-    @Mock
-    private JdbcTemplate jdbcTemplate;
-    // testing functions provided with jpa repository is useless, this will be deleted
+    private AppUserRepository appUserRepository;
     @Test
-    void checkIfUserFoundByEmail() {
-        AppUser user = new AppUser("Mikołaj", "Bultrowicz", "bultron@gmail.com", "12345", AppUserRole.ADMIN);
-        underTest.save(user);
-        Optional<AppUser> expectedUser = underTest.findByEmail("bultron@gmail.com");
-        assertTrue(expectedUser.isPresent());
-        assertEquals(user.getId(), expectedUser.get().getId());
-    }
-    @Test
-    void checkIfNonExistingUserNotFoundByEmail() {
-        Optional<AppUser> nonExistingUser = underTest.findByEmail("nonexistinguser@gmail.com");
-        assertFalse(nonExistingUser.isPresent());
-    }
-    @Test
-    void testEnableAppUserSuccess() {
-        AppUser user = new AppUser();
-        String email = "test@example.com";
-        user.setEmail(email);
-        underTest.save(user);
-        underTest.enableAppUser(email);
-        Optional<AppUser> enabledUser = underTest.findByEmail(email);
-        assertTrue(enabledUser.get().getEnabled());
+    public void enableAppUserTest() {
+        //given
+        AppUser appUser = new AppUser();
+        appUser.setId(523L);
+        appUser.setEmail("randomEmail");
+        appUserRepository.save(appUser);
+        //when
+        appUserRepository.enableAppUser("randomEmail");
+        AppUser userFromrepo = appUserRepository.findByEmail("randomEmail").orElseThrow();
+        //then
+        assertTrue(userFromrepo.getEnabled());
     }
 }

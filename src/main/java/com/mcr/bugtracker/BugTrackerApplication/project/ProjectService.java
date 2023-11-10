@@ -27,16 +27,15 @@ public class ProjectService {
     }
     public List<AllProjectsViewDto> findAllProjectsAssignedToUser() {
         AppUser user = appUserService.getUserFromContext().orElseThrow();
-        if(user.getSRole().equals("Admin") && user.isDemo()) {
-            return projectRepository.findAll()
-                    .stream()
+        List<Project> allProjectsViewDtos = projectRepository.findAll();
+        if("Admin".equals(user.getSRole()) && user.isDemo()) {
+            return allProjectsViewDtos.stream()
                     .filter(project -> project.getProjectManager().isDemo())
                     .map(allProjectsViewMapper)
                     .collect(Collectors.toList());
         }
-        else if(user.getSRole().equals("Admin")) {
-            return projectRepository.findAll()
-                    .stream()
+        else if("Admin".equals(user.getSRole())) {
+            return allProjectsViewDtos.stream()
                     .map(allProjectsViewMapper)
                     .collect(Collectors.toList());
         }
@@ -69,7 +68,7 @@ public class ProjectService {
         return new ProjectEditViewDto(projectDtoMapper.apply(project),
                 appUserDtoMapper.apply(project.getProjectManager()),
                 project.getProjectPersonnel().stream()
-                        .filter(user -> user.getSRole().equals("Project manager"))
+                        .filter(user -> "Project manager".equals(user.getSRole()))
                         .map(appUserDtoMapper)
                         .collect(Collectors.toList()),
                 project.getProjectPersonnel().stream()
@@ -77,25 +76,25 @@ public class ProjectService {
                         .collect(Collectors.toList()),
                 appUserService.getAllUsersNotInProject(project));
     }
-    private void validateUserPermissionForProjectEdit(Long managerId) {
+    protected void validateUserPermissionForProjectEdit(Long managerId) {
         AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         if (!currentUser.getId().equals(managerId) && !currentUser.getSRole().equals("Admin")) {
             throw new ApiForbiddenException("You do not have permission for this request");
         }
     }
-    private void validateProjectExistence(Long projectId) {
+    protected void validateProjectExistence(Long projectId) {
         if(projectRepository.findById(projectId).isEmpty()) {
             throw new ApiNotFoundException("There is no such resource");
         }
     }
-    private void validateUserPermissionForProjectDetails(Project project) {
+    protected void validateUserPermissionForProjectDetails(Project project) {
         AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         if(!project.getProjectPersonnel().contains(currentUser) && !currentUser.equals(project.getProjectManager()) &&
             !currentUser.getSRole().equals("Admin")) {
             throw new ApiForbiddenException("You do not have permission for this request");
         }
     }
-    private void validateUserPermissionForProjectDelete(Project project) {
+    protected void validateUserPermissionForProjectDelete(Project project) {
         AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         if(!currentUser.equals(project.getProjectManager()) && !currentUser.getSRole().equals("Admin")) {
             throw new ApiForbiddenException("You do not have permission for this request");
