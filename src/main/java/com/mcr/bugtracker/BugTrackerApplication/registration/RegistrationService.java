@@ -8,7 +8,6 @@ import com.mcr.bugtracker.BugTrackerApplication.email.EmailSender;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 public class RegistrationService {
 
     private final AppUserService appUserService;
@@ -24,18 +22,15 @@ public class RegistrationService {
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
     public void register(RegistrationRequest request) {
-        validateEmail(request);
+        validateEmail(request.getEmail());
         AppUser user = createUserWithRequest(request);
         appUserService.signUpUser(user);
         String token = appUserService.generateAndSaveConfirmationTokenForGivenUser(user);
-
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
-        emailSender.send(
-                request.getEmail(),
-                buildEmail(request.getFirstName(), link));
+        emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
     }
-    public void validateEmail(RegistrationRequest request) {
-        if (!emailValidator.test(request.getEmail())) {
+    public void validateEmail(String email) {
+        if (!emailValidator.test(email)) {
             throw new ApiRequestException("email not valid");
         }
     }
@@ -58,24 +53,21 @@ public class RegistrationService {
     public String confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getToken(token)
-                .orElseThrow(() -> new IllegalStateException("token not found"));
-
+                .orElseThrow(() -> new IllegalStateException("Token not found"));
         if (confirmationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("email already confirmed");
+            throw new IllegalStateException("Email already confirmed");
         }
-
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("token expired");
+            throw new IllegalStateException("Token expired");
         }
-
         confirmationTokenService.setConfirmedAt(token);
         appUserService.enableAppUser(
-                confirmationToken.getAppUser().getEmail());
-        return "confirmed";
+                confirmationToken.getAppUser());
+        return "Confirmed";
     }
-    private String buildEmail(String name, String link) {
+    protected String buildEmail(String name, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
