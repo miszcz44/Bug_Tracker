@@ -64,7 +64,7 @@ public class ProjectService {
     public ProjectEditViewDto getDataForProjectEditView(Long projectId) {
         validateProjectExistence(projectId);
         Project project = projectRepository.findById(projectId).orElseThrow();
-        validateUserPermissionForProjectEdit(project.getProjectManager().getId());
+        validateUserPermissionForProjectEditAndDelete(project.getProjectManager().getId());
         return new ProjectEditViewDto(projectDtoMapper.apply(project),
                 appUserDtoMapper.apply(project.getProjectManager()),
                 project.getProjectPersonnel().stream()
@@ -76,9 +76,9 @@ public class ProjectService {
                         .collect(Collectors.toList()),
                 appUserService.getAllUsersNotInProject(project));
     }
-    protected void validateUserPermissionForProjectEdit(Long managerId) {
+    protected void validateUserPermissionForProjectEditAndDelete(Long managerId) {
         AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
-        if (!currentUser.getId().equals(managerId) && !currentUser.getSRole().equals("Admin")) {
+        if (!managerId.equals(currentUser.getId()) && !"Admin".equals(currentUser.getSRole())) {
             throw new ApiForbiddenException("You do not have permission for this request");
         }
     }
@@ -89,21 +89,16 @@ public class ProjectService {
     }
     protected void validateUserPermissionForProjectDetails(Project project) {
         AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
-        if(!project.getProjectPersonnel().contains(currentUser) && !currentUser.equals(project.getProjectManager()) &&
-            !currentUser.getSRole().equals("Admin")) {
-            throw new ApiForbiddenException("You do not have permission for this request");
-        }
-    }
-    protected void validateUserPermissionForProjectDelete(Project project) {
-        AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
-        if(!currentUser.equals(project.getProjectManager()) && !currentUser.getSRole().equals("Admin")) {
+        if(!project.getProjectPersonnel().contains(currentUser) &&
+            !currentUser.equals(project.getProjectManager()) &&
+            !"Admin".equals(currentUser.getSRole())) {
             throw new ApiForbiddenException("You do not have permission for this request");
         }
     }
     public void saveResponseElements(ProjectEditViewResponse projectResponse) {
         Project project = projectResponse.getProject();
         validateProjectExistence(project.getId());
-        validateUserPermissionForProjectEdit(projectResponse.getCurrentManager().getId());
+        validateUserPermissionForProjectEditAndDelete(projectResponse.getCurrentManager().getId());
         project.setProjectPersonnel(projectResponse.getProjectPersonnel());
         project.setProjectManager(projectResponse.getCurrentManager());
         projectRepository.save(project);
@@ -111,7 +106,7 @@ public class ProjectService {
     public void deleteProjectById(Long projectId) {
         validateProjectExistence(projectId);
         Project project = projectRepository.findById(projectId).orElseThrow();
-        validateUserPermissionForProjectDelete(project);
+        validateUserPermissionForProjectEditAndDelete(project.getId());
         projectRepository.deleteById(projectId);
     }
 }

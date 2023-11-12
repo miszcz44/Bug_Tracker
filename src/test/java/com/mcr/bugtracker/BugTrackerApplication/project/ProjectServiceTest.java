@@ -1,5 +1,7 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiForbiddenException;
+import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiNotFoundException;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserDtoMapper;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
@@ -15,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ProjectServiceTest {
@@ -134,7 +136,7 @@ class ProjectServiceTest {
         //given
         ProjectService projectService1 = spy(projectService);
         doNothing().when(projectService1).validateProjectExistence(any());
-        doNothing().when(projectService1).validateUserPermissionForProjectEdit(any());
+        doNothing().when(projectService1).validateUserPermissionForProjectEditAndDelete(any());
         doReturn(null).when(appUserService).getAllUsersNotInProject(any());
         AppUser projectManagerInCharge = new AppUser();
         projectManagerInCharge.setId(132L);
@@ -150,7 +152,7 @@ class ProjectServiceTest {
         ProjectEditViewDto projectEditViewDto = projectService1.getDataForProjectEditView(any());
         //then
         verify(projectService1).validateProjectExistence(any());
-        verify(projectService1).validateUserPermissionForProjectEdit(any());
+        verify(projectService1).validateUserPermissionForProjectEditAndDelete(any());
         verify(appUserService).getAllUsersNotInProject(any());
         verify(projectDtoMapper).apply(project);
         verify(appUserDtoMapper).apply(projectManagerInCharge);
@@ -158,12 +160,125 @@ class ProjectServiceTest {
         assertEquals(2, projectEditViewDto.getProjectPersonnel().size());
         verify(appUserDtoMapper, times(2)).apply(projectManagerInPersonnel);
     }
-
     @Test
-    void saveResponseElements() {
+    void validateUserPermissionForProjectEditAndDeleteTest_ProjectManagerId() {
+        //given
+        AppUser appUser = new AppUser();
+        appUser.setId(555L);
+        when(appUserService.getUserFromContext()).thenReturn(Optional.of(appUser));
+        //when
+        projectService.validateUserPermissionForProjectEditAndDelete(555L);
+        //then
+        assertDoesNotThrow(() -> projectService.validateUserPermissionForProjectEditAndDelete(555L));
+    }
+    @Test
+    void validateUserPermissionForProjectEditAndDeleteTest_Admin() {
+        //given
+        AppUser appUser = new AppUser();
+        appUser.setSRole("Admin");
+        when(appUserService.getUserFromContext()).thenReturn(Optional.of(appUser));
+        //when
+        projectService.validateUserPermissionForProjectEditAndDelete(555L);
+        //then
+        assertDoesNotThrow(() -> projectService.validateUserPermissionForProjectEditAndDelete(555L));
+    }
+    @Test
+    void validateUserPermissionForProjectEditAndDeleteTest_ShouldThrow() {
+        //given
+        when(appUserService.getUserFromContext()).thenReturn(Optional.of(new AppUser()));
+        //when
+        //then
+        assertThrows(ApiForbiddenException.class,
+                () -> projectService.validateUserPermissionForProjectEditAndDelete(555L));
+    }
+    @Test
+    void validateProjectExistenceTest() {
+        //given
+        when(projectRepository.findById(any())).thenReturn(Optional.of(new Project()));
+        //when
+        projectService.validateProjectExistence(any());
+        //then
+        assertDoesNotThrow(() -> projectService.validateProjectExistence(any()));
+    }
+    @Test
+    void validateProjectExistenceTest_ShouldThrow() {
+        //given
+        when(projectRepository.findById(any())).thenReturn(Optional.empty());
+        //when
+        //then
+        assertThrows(ApiNotFoundException.class,
+                () -> projectService.validateProjectExistence(any()));
+    }
+    @Test
+    void validateUserPermissionForProjectDetailsTest_ProjectManager() {
+        //given
+        Project project = new Project();
+        AppUser appUser = new AppUser();
+        project.setProjectManager(appUser);
+        when(appUserService.getUserFromContext()).thenReturn(Optional.of(appUser));
+        //when
+        projectService.validateUserPermissionForProjectDetails(project);
+        //then
+        assertDoesNotThrow(() -> projectService.validateUserPermissionForProjectDetails(project));
+    }
+    @Test
+    void validateUserPermissionForProjectDetailsTest_Admin() {
+        //given
+        Project project = new Project();
+        AppUser appUser = new AppUser();
+        appUser.setSRole("Admin");
+        when(appUserService.getUserFromContext()).thenReturn(Optional.of(appUser));
+        //when
+        projectService.validateUserPermissionForProjectDetails(project);
+        //then
+        assertDoesNotThrow(() -> projectService.validateUserPermissionForProjectDetails(project));
+    }
+    @Test
+    void validateUserPermissionForProjectDetailsTest_ShouldThrow() {
+        //given
+        Project project = new Project();
+        when(appUserService.getUserFromContext()).thenReturn(Optional.of(new AppUser()));
+        //when
+        //then
+        assertThrows(ApiForbiddenException.class,
+                () -> projectService.validateUserPermissionForProjectDetails(project));
+    }
+    @Test
+    void saveResponseElementsTest() {
+        //given
+        ProjectService projectService1 = spy(projectService);
+        Project project = new Project();
+        AppUser appUser = new AppUser();
+        ProjectEditViewResponse projectEditViewResponse = new ProjectEditViewResponse();
+        projectEditViewResponse.setProject(project);
+        projectEditViewResponse.setProjectPersonnel(List.of(appUser));
+        projectEditViewResponse.setCurrentManager(appUser);
+        doNothing().when(projectService1).validateProjectExistence(any());
+        doNothing().when(projectService1).validateUserPermissionForProjectEditAndDelete(any());
+        //when
+        projectService1.saveResponseElements(projectEditViewResponse);
+        //then
+        verify(projectService1).validateProjectExistence(any());
+        verify(projectService1).validateUserPermissionForProjectEditAndDelete(any());
+        assertEquals(project.getProjectPersonnel(), List.of(appUser));
+        assertEquals(project.getProjectManager(), appUser);
+        verify(projectRepository).save(project);
     }
 
     @Test
     void deleteProjectById() {
+        //given
+        ProjectService projectService1 = spy(projectService);
+        Project project = new Project();
+        when(projectRepository.findById(any())).thenReturn(Optional.of(project));
+        doNothing().when(projectService1).validateProjectExistence(any());
+        doNothing().when(projectService1).validateUserPermissionForProjectEditAndDelete(any());
+        //when
+        projectService1.deleteProjectById(any());
+        //then
+        verify(projectService1).validateProjectExistence(any());
+        verify(projectService1).validateUserPermissionForProjectEditAndDelete(any());
+        verify(projectRepository).findById(any());
+        verify(projectRepository).deleteById(any());
     }
 }
