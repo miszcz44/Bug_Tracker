@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,27 +17,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class ConfirmationTokenRepositoryTest {
 
     @Autowired
-    private ConfirmationTokenRepository underTest;
+    ConfirmationTokenRepository confirmationTokenRepository;
     @Autowired
-    private AppUserRepository userRepository;
-
+    AppUserRepository appUserRepository;
     @Test
-    void updateConfirmedAt() {
-        ConfirmationToken confirmationToken = new ConfirmationToken();
-        String token = "123";
-        // must set all of those fields cause they are not nullable
-        confirmationToken.setToken(token);
-        confirmationToken.setCreatedAt(LocalDateTime.now());
-        confirmationToken.setExpiresAt(LocalDateTime.now());
+    public void updateConfirmedAtTest() {
+        //given
         AppUser appUser = new AppUser();
-        userRepository.save(appUser);
-        confirmationToken.setAppUser(appUser);
-
-        underTest.save(confirmationToken);
-        LocalDateTime now = LocalDateTime.now();
-        underTest.updateConfirmedAt(token, now);
-        Optional<ConfirmationToken> dbTokenOpt = underTest.findByToken(token);
-        ConfirmationToken dbToken = dbTokenOpt.get();
-        assertEquals(dbToken.getConfirmedAt().truncatedTo(ChronoUnit.MILLIS), now.truncatedTo(ChronoUnit.MILLIS));
+        appUserRepository.save(appUser);
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                "123", LocalDateTime.now(), LocalDateTime.now(), appUser);
+        confirmationTokenRepository.save(confirmationToken);
+        //when
+        confirmationTokenRepository.updateConfirmedAt("123", LocalDateTime.of(2010, 5, 3, 2, 2));
+        ConfirmationToken tokenFromRepo = confirmationTokenRepository.findById(confirmationToken.getId()).orElseThrow();
+        //then
+        assertEquals(LocalDateTime.of(2010, 5, 3, 2, 2), tokenFromRepo.getConfirmedAt());
     }
 }

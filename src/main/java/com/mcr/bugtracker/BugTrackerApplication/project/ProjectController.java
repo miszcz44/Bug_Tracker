@@ -2,7 +2,6 @@ package com.mcr.bugtracker.BugTrackerApplication.project;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "api/v1/project")
 @AllArgsConstructor
-@Slf4j
 public class ProjectController {
     private final ProjectService projectService;
     private final AppUserService appUserService;

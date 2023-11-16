@@ -13,6 +13,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,15 +48,15 @@ public class Ticket {
     private Project project;
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Commentary> comments;
+    private List<Commentary> comments = new ArrayList<>();
     @OneToMany(mappedBy = "ticket",
                 cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Attachment> attachments;
+    private List<Attachment> attachments = new ArrayList<>();
     @OneToMany(mappedBy = "ticket",
                 cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<TicketHistoryField> ticketHistoryFields;
+    private List<TicketHistoryField> ticketHistoryFields = new ArrayList<>();
     private String priority;
     private String status;
     private String type;
@@ -68,7 +69,12 @@ public class Ticket {
         this.status = status;
         this.type = type;
     }
-
+    public Optional<String> getOptionalTitle() {
+        return Optional.ofNullable(title);
+    }
+    public Optional<String> getOptionalDescription() {
+        return Optional.ofNullable(description);
+    }
     public Optional<AppUser> getOptionalSubmitter() {
         return Optional.ofNullable(submitter);
     }

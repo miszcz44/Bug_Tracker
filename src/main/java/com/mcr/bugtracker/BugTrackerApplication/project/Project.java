@@ -6,7 +6,9 @@ import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -37,11 +39,17 @@ public class Project {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<AppUser> projectPersonnel;
+    private List<AppUser> projectPersonnel = new ArrayList<>();
     @OneToMany(mappedBy = "project",
                 cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Ticket> tickets;
+    private List<Ticket> tickets = new ArrayList<>();
+    public Optional<String> getOptionalName() {
+        return Optional.ofNullable(name);
+    }
+    public Optional<String> getOptionalDescription() {
+        return Optional.ofNullable(description);
+    }
 
     public Project(AppUser projectManager) {
         this.projectManager = projectManager;

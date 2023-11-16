@@ -29,21 +29,22 @@ public class TicketService {
     private final TicketForTicketDetailsViewDtoMapper ticketForTicketDetailsViewDtoMapper;
     private final TicketForTicketEditViewMapper ticketForTicketEditViewMapper;
     private final AppUserDtoMapper appUserDtoMapper;
+
     public void deleteTicket(Long ticketId) {
         validateTicketExistence(ticketId);
-        validateUserPermissionForTicketDelete(ticketRepository.findById(ticketId).orElseThrow());
+        validateUserPermissionForTicketEditAndDelete(ticketRepository.findById(ticketId).orElseThrow());
         ticketRepository.deleteById(ticketId);
     }
     public List<AllTicketsViewDto> getAllTicketsConnectedToUser() {
         AppUser user = appUserService.getUserFromContext().orElseThrow();
-        if(user.getSRole().equals("Admin") && user.isDemo()) {
+        if("Admin".equals(user.getSRole()) && user.isDemo()) {
             return ticketRepository.findAll()
                     .stream()
                     .filter(ticket -> ticket.getOptionalSubmitter().map(AppUser::isDemo).orElse(false))
                     .map(allTicketsViewMapper)
                     .collect(Collectors.toList());
         }
-        else if(user.getSRole().equals("Admin")) {
+        else if("Admin".equals(user.getSRole())) {
             return ticketRepository.findAll().stream()
                     .map(allTicketsViewMapper)
                     .collect(Collectors.toList());
@@ -68,18 +69,18 @@ public class TicketService {
                         .sorted(Comparator.comparing(TicketHistoryField::getDateChanged).reversed())
                         .collect(Collectors.toList()));
     }
-    private void validateUserPermissionForTicketDetails(Ticket ticket) {
+    protected void validateUserPermissionForTicketDetails(Ticket ticket) {
         AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
         List<AppUser> otherProjectManagers = ticket.getProject().getProjectPersonnel().stream()
-                .filter(obj -> obj.getSRole().equals("Project manager"))
+                .filter(obj -> "Project manager".equals(obj.getSRole()))
                 .collect(Collectors.toList());
         if(!currentUser.equals(ticket.getSubmitter()) && !currentUser.equals(ticket.getProject().getProjectManager()) &&
             !otherProjectManagers.contains(currentUser) && !currentUser.equals(ticket.getAssignedDeveloper()) &&
-            !currentUser.getSRole().equals("Admin")) {
+            !"Admin".equals(currentUser.getSRole())) {
             throw new ApiForbiddenException("You do not have permission for this resource");
         }
     }
-    private void validateTicketExistence(Long ticketId) {
+    protected void validateTicketExistence(Long ticketId) {
         if(ticketRepository.findById(ticketId).isEmpty()) {
             throw new ApiNotFoundException("There is no such resource");
         }
@@ -87,28 +88,19 @@ public class TicketService {
     public TicketEditViewDto getDataForTicketEditView(Long ticketId) {
         validateTicketExistence(ticketId);
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow();
-        validateUserPermissionForTicketEdit(ticket);
-        AppUserDto developer = null;
-        if(ticket.getOptionalDeveloper().isPresent()) {
-            developer = appUserDtoMapper.apply(ticket.getOptionalDeveloper().get());
-        }
+        validateUserPermissionForTicketEditAndDelete(ticket);
+        AppUserDto developer = ticket.getOptionalDeveloper().map(appUserDtoMapper).orElse(null);
         return new TicketEditViewDto(ticketForTicketEditViewMapper.apply(ticket),
                 developer,
                 ticket.getProject().getProjectPersonnel().stream()
-                        .filter(user -> user.getSRole().equals("Developer"))
+                        .filter(user -> "Developer".equals(user.getSRole()))
                         .map(appUserDtoMapper)
                         .collect(Collectors.toList()));
     }
-    private void validateUserPermissionForTicketEdit(Ticket ticket) {
+
+    protected void validateUserPermissionForTicketEditAndDelete(Ticket ticket) {
         AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
-        if(!currentUser.equals(ticket.getProject().getProjectManager()) && !currentUser.equals(ticket.getSubmitter()) &&
-            !currentUser.getSRole().equals("Admin")) {
-            throw new ApiForbiddenException("You do not have permission for this resource");
-        }
-    }
-    private void validateUserPermissionForTicketDelete(Ticket ticket) {
-        AppUser currentUser = appUserService.getUserFromContext().orElseThrow();
-        if(!currentUser.equals(ticket.getProject().getProjectManager()) && !currentUser.getSRole().equals("Admin") &&
+        if(!currentUser.equals(ticket.getProject().getProjectManager()) && !"Admin".equals(currentUser.getSRole()) &&
             !currentUser.equals(ticket.getSubmitter())) {
             throw new ApiForbiddenException("You do not have permission for this resource");
         }
@@ -117,13 +109,13 @@ public class TicketService {
         TicketForTicketEditViewDto ticketWithUpdatedData = ticketEditViewDto.getTicket();
         validateTicketExistence(ticketWithUpdatedData.getId());
         Ticket ticket = ticketRepository.findById(ticketWithUpdatedData.getId()).orElseThrow();
-        validateUserPermissionForTicketEdit(ticket);
-        ticketHistoryFieldService.saveChangeOfTitle(ticket, ticketWithUpdatedData);
-        ticketHistoryFieldService.saveChangeOfDescription(ticket, ticketWithUpdatedData);
-        ticketHistoryFieldService.saveChangeOfDeveloper(ticket, ticketEditViewDto);
-        ticketHistoryFieldService.saveChangeOfPriority(ticket, ticketWithUpdatedData);
-        ticketHistoryFieldService.saveChangeOfType(ticket, ticketWithUpdatedData);
-        ticketHistoryFieldService.saveChangeOfStatus(ticket, ticketWithUpdatedData);
+        validateUserPermissionForTicketEditAndDelete(ticket);
+        ticketHistoryFieldService.saveChangeOfTitle(ticket, ticketWithUpdatedData.getTitle());
+        ticketHistoryFieldService.saveChangeOfDescription(ticket, ticketWithUpdatedData.getDescription());
+        ticketHistoryFieldService.saveChangeOfDeveloper(ticket, ticketEditViewDto.getDeveloper());
+        ticketHistoryFieldService.saveChangeOfPriority(ticket, ticketWithUpdatedData.getPriority());
+        ticketHistoryFieldService.saveChangeOfType(ticket, ticketWithUpdatedData.getType());
+        ticketHistoryFieldService.saveChangeOfStatus(ticket, ticketWithUpdatedData.getStatus());
         ticketRepository.save(ticket);
     }
     public Ticket createNewTicket(Project project) {
@@ -131,6 +123,7 @@ public class TicketService {
         ticket.setProject(project);
         ticket.setCreatedAt(LocalDateTime.now());
         ticket.setSubmitter(appUserRepository.findById(appUserService.getUserFromContext().orElseThrow().getId()).orElseThrow());
-        return ticketRepository.save(ticket);
+        ticketRepository.save(ticket);
+        return ticket;
     }
 }

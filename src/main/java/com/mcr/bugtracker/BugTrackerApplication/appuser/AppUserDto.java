@@ -2,9 +2,11 @@ package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
+@Setter
 public final class AppUserDto {
     private Long id;
     private String email;
@@ -22,11 +24,5 @@ public final class AppUserDto {
     }
     public String email() {
         return email;
-    }
-    public String wholeName() {
-        return wholeName;
-    }
-    public String sRole() {
-        return sRole;
     }
 }
