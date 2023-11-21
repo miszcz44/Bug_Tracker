@@ -5,6 +5,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +24,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Service
+@ConfigurationProperties("security.jwt.token")
+@Data
+//@ConfigurationProperties("security.jwt.token")
 public class JwtUtil implements Serializable {
 
-    //@Value("${application.security.jwt.token.secret-key}")
-    private String secretKeyString = "aaaaa"; // TODO czemu to value nie dziala?
-    private byte[] secretKeyBytes = secretKeyString.getBytes(StandardCharsets.UTF_8);
-    private SecretKey secretKey = new SecretKeySpec(secretKeyBytes, "AES");
-    //@Value("${application.security.jwt.token.expire-length}")
-    private long jwtExpiration = 100000000;
+//    @Value("${security.jwt.token.secret_key}")
+    private String secret_key;
+//    private byte[] secretKeyBytes = secret_key.getBytes(StandardCharsets.UTF_8);
+//    private SecretKey secretKey = new SecretKeySpec(secretKeyBytes, "AES");
+//    @Value("${security.jwt.token.expire_length}")
+    private long expire_length;
+//    private SecurityJWTTokenProperties jwtTokenProperties;
 
     public JwtUtil() throws NoSuchAlgorithmException {
     }
@@ -47,7 +55,7 @@ public class JwtUtil implements Serializable {
     ) {
         System.out.println(userDetails.getAuthorities());
         extraClaims.put("role", userDetails.getAuthorities().stream().findFirst().orElseThrow());
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+        return buildToken(extraClaims, userDetails, expire_length);
     }
     private String buildToken(
             Map<String, Object> extraClaims,
@@ -60,7 +68,7 @@ public class JwtUtil implements Serializable {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS512, secretKeyString)
+                .signWith(SignatureAlgorithm.HS512, secret_key)
                 .compact();
     }
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -76,11 +84,13 @@ public class JwtUtil implements Serializable {
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
-                .setSigningKey(secretKeyString)
+                .setSigningKey(secret_key)
                 .parseClaimsJws(token)
                 .getBody();
     }
     private Key getSignInKey() {
+        byte[] secretKeyBytes = secret_key.getBytes(StandardCharsets.UTF_8);
+        SecretKey secretKey = new SecretKeySpec(secretKeyBytes, "AES");
         byte[] keyBytes = Decoders.BASE64.decode(secretKey.toString().replaceAll("[^a-zA-Z0-9]", "0"));
         return Keys.hmacShaKeyFor(keyBytes);
     }

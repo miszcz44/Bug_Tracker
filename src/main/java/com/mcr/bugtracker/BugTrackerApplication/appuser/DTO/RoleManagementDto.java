@@ -1,5 +1,6 @@
-package com.mcr.bugtracker.BugTrackerApplication.appuser;
+package com.mcr.bugtracker.BugTrackerApplication.appuser.DTO;
 
+import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRole;
 import lombok.NoArgsConstructor;
 
 import java.util.List;

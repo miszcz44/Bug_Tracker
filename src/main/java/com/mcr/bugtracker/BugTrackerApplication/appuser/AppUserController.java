@@ -1,5 +1,11 @@
 package com.mcr.bugtracker.BugTrackerApplication.appuser;
 
+import com.mcr.bugtracker.BugTrackerApplication.appuser.DTO.DashboardViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.DTO.RoleManagementDto;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.DTO.UserProfileDto;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.Request.AppUserRoleAssignmentRequest;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.Request.EmailChangeRequest;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.Request.PasswordChangeRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 @RestController

@@ -1,9 +1,14 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket;
 
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserDtoMapper;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.Mapper.AppUserDtoMapper;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.AllTicketsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketDetailsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper.AllTicketsViewMapper;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper.TicketForTicketDetailsViewDtoMapper;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper.TicketForTicketEditViewMapper;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentaryService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldService;

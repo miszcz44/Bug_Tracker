@@ -1,4 +1,4 @@
-package com.mcr.bugtracker.BugTrackerApplication.ticket;
+package com.mcr.bugtracker.BugTrackerApplication.ticket.DTO;
 
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTicketDetailsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;

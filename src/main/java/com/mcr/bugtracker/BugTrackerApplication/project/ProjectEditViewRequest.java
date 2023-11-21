@@ -8,7 +8,7 @@ import java.util.List;
 
 @NoArgsConstructor
 @Setter
-public class ProjectEditViewResponse {
+public class ProjectEditViewRequest {
     private Project project;
     private AppUser currentManager;
     private List<AppUser> projectPersonnel;

@@ -4,6 +4,12 @@ import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiEmailTakenExceptio
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiNotFoundException;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiPasswordDoesntMatchException;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiRequestException;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.DTO.AppUserDto;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.DTO.DashboardViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.DTO.RoleManagementDto;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.Mapper.AppUserDtoMapper;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.Mapper.UserProfileDtoMapper;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.Request.AppUserRoleAssignmentRequest;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;

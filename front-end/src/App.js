@@ -165,6 +165,11 @@ function App() {
                 return <div>home</div>
             }
             }/>
+            <Route path="*" element={
+            <PrivateRoute>
+                <Response404Template/>
+            </PrivateRoute>}
+            />
         </Routes>
 
     );

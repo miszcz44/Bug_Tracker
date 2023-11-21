@@ -1,6 +1,9 @@
 package com.mcr.bugtracker.BugTrackerApplication.project;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
+import com.mcr.bugtracker.BugTrackerApplication.project.DTO.AllProjectsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.project.DTO.ProjectDetailsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.project.DTO.ProjectEditViewDto;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +31,7 @@ public class ProjectController {
         return projectService.getDataForProjectEditView(projectId);
     }
     @PutMapping("/edit/{projectId}")
-    public void updateProjectData(@RequestBody ProjectEditViewResponse projectResponse) {
+    public void updateProjectData(@RequestBody ProjectEditViewRequest projectResponse) {
         projectService.saveResponseElements(projectResponse);
     }
     @DeleteMapping

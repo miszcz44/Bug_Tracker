@@ -1,4 +1,4 @@
-package com.mcr.bugtracker.BugTrackerApplication.project;
+package com.mcr.bugtracker.BugTrackerApplication.project.DTO;
 
 public class ProjectDto {
     private Long id;

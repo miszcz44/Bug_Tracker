@@ -1,5 +1,7 @@
-package com.mcr.bugtracker.BugTrackerApplication.appuser;
+package com.mcr.bugtracker.BugTrackerApplication.appuser.Mapper;
 
+import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.DTO.AppUserDto;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

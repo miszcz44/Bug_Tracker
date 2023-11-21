@@ -1,7 +1,7 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
-import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserDto;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.DTO.AppUserDto;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import org.junit.jupiter.api.AfterEach;

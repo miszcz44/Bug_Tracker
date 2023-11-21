@@ -1,6 +1,8 @@
-package com.mcr.bugtracker.BugTrackerApplication.ticket;
+package com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketForTicketDetailsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;

@@ -5,7 +5,13 @@ import java.util.List;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiForbiddenException;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiNotFoundException;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.*;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.TicketForProjectViewDtoMapper;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.Mapper.AppUserDtoMapper;
+import com.mcr.bugtracker.BugTrackerApplication.project.DTO.AllProjectsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.project.DTO.ProjectDetailsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.project.DTO.ProjectEditViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.project.Mapper.AllProjectsViewMapper;
+import com.mcr.bugtracker.BugTrackerApplication.project.Mapper.ProjectDtoMapper;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper.TicketForProjectViewDtoMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +67,7 @@ public class ProjectService {
                         .map(ticketForProjectViewDtoMapper)
                         .collect(Collectors.toList()));
     }
-    public ProjectEditViewDto getDataForProjectEditView(Long projectId) {
+    public ProjectEditViewDto getDataForProjectEditView (Long projectId) {
         validateProjectExistence(projectId);
         Project project = projectRepository.findById(projectId).orElseThrow();
         validateUserPermissionForProjectEditAndDelete(project.getProjectManager().getId());
@@ -95,12 +101,12 @@ public class ProjectService {
             throw new ApiForbiddenException("You do not have permission for this request");
         }
     }
-    public void saveResponseElements(ProjectEditViewResponse projectResponse) {
-        Project project = projectResponse.getProject();
+    public void saveResponseElements(ProjectEditViewRequest projectRequest) {
+        Project project = projectRequest.getProject();
         validateProjectExistence(project.getId());
-        validateUserPermissionForProjectEditAndDelete(projectResponse.getCurrentManager().getId());
-        project.setProjectPersonnel(projectResponse.getProjectPersonnel());
-        project.setProjectManager(projectResponse.getCurrentManager());
+        validateUserPermissionForProjectEditAndDelete(projectRequest.getCurrentManager().getId());
+        project.setProjectPersonnel(projectRequest.getProjectPersonnel());
+        project.setProjectManager(projectRequest.getCurrentManager());
         projectRepository.save(project);
     }
     public void deleteProjectById(Long projectId) {

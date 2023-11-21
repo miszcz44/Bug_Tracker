@@ -26,7 +26,7 @@ const Dashboard = () => {
         grabAndAuthorizeRequestFromTheServer("api/v1/user/dashboard", "GET", user.jwt)
         .then(response => {
             setProjectId(response.projectId);
-            setProjectTitle(response.projectTitle);
+            setProjectTitle(response.projectName);
             setProjectDescription(response.projectDescription);
             setTicketId(response.ticketId);
             setTicketTitle(response.ticketTitle);

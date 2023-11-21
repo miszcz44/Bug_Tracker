@@ -1,4 +1,4 @@
-package com.mcr.bugtracker.BugTrackerApplication.appuser;
+package com.mcr.bugtracker.BugTrackerApplication.appuser.DTO;
 
 import lombok.Getter;
 

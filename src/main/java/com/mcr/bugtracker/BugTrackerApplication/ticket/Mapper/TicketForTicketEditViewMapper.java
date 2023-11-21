@@ -1,5 +1,7 @@
-package com.mcr.bugtracker.BugTrackerApplication.ticket;
+package com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper;
 
+import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketForTicketEditViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

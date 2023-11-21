@@ -111,7 +111,7 @@ const TicketDetails = () => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/comments/${ticketId}`, "POST", user.jwt, comment)
         const commentsCopy = [...comments];
         newComment["created"] = "Just Now";
-        commentsCopy.push(newComment);
+        commentsCopy.unshift(newComment);
         setComments(commentsCopy);
         setComment(emptyComment);
     }
