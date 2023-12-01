@@ -30,15 +30,15 @@ const Login = () => {
         })
            .then((response) => {
                if(response.status === 200)
-                   return Promise.all([response.json(), response.headers]);
+                   return response.text();
                else return Promise.reject("Invalid login attempt");
            })
-           .then(([body, headers]) => {
-               console.log(headers);
-               user.setJwt(headers.get("authorization"));
-               console.log(user.jwt);
-               window.location.href = "dashboard";
-           })
+            .then((data) => {
+                if (data) {
+                    user.setJwt(data);
+                    navigate("/dashboard");
+                }
+            })
             .catch((message) => {
                 //window.location.reload()
                 setErrorInfo(message)

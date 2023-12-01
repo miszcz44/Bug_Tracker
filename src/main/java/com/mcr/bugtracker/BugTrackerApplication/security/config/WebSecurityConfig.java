@@ -72,10 +72,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             "ADMIN", "PROJECT_MANAGER", "DEVELOPER", "SUBMITTER", "NONE")
                     .antMatchers("/api/v1/user/password-change").hasAnyAuthority(
                             "ADMIN", "PROJECT_MANAGER", "DEVELOPER", "SUBMITTER", "NONE")
+                    .antMatchers("/api/v1/registration/logout").permitAll()
                     .antMatchers("/api/v1/registration/login").permitAll()
                     .antMatchers("/api/v1/registration").permitAll()
                     .antMatchers("/api/v1/registration/confirm").permitAll()
                     .antMatchers("/api/v1/registration/validate").permitAll()
+                    .antMatchers("/api/v1/user/roles").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

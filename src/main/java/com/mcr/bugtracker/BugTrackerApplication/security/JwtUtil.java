@@ -7,6 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -26,14 +27,13 @@ import java.util.function.Function;
 
 @ConfigurationProperties("security.jwt.token")
 @Data
-//@ConfigurationProperties("security.jwt.token")
 public class JwtUtil implements Serializable {
 
-//    @Value("${security.jwt.token.secret_key}")
+    @Value("${security.jwt.token.secret_key}")
     private String secret_key;
 //    private byte[] secretKeyBytes = secret_key.getBytes(StandardCharsets.UTF_8);
 //    private SecretKey secretKey = new SecretKeySpec(secretKeyBytes, "AES");
-//    @Value("${security.jwt.token.expire_length}")
+    @Value("${security.jwt.token.expire_length}")
     private long expire_length;
 //    private SecurityJWTTokenProperties jwtTokenProperties;
 
@@ -53,7 +53,6 @@ public class JwtUtil implements Serializable {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
-        System.out.println(userDetails.getAuthorities());
         extraClaims.put("role", userDetails.getAuthorities().stream().findFirst().orElseThrow());
         return buildToken(extraClaims, userDetails, expire_length);
     }

@@ -29,11 +29,11 @@ public class AppUserController {
     public void changeUsersRole(@RequestBody AppUserRoleAssignmentRequest request) {
         userService.changeUsersRole(request);
     }
-    @PutMapping("password-change")
+    @PutMapping("/password-change")
     public void changePassword(@RequestBody PasswordChangeRequest request) {
         userService.validatePasswordMatchAndSetNewPassword(request.getOldPassword(), request.getNewPassword());
     }
-    @PutMapping("email-change")
+    @PutMapping("/email-change")
     public void changeEmail(@RequestBody EmailChangeRequest request) {
         userService.validateEmailChangeAndSetNewEmail(request.getNewEmail(), request.getPassword());
     }

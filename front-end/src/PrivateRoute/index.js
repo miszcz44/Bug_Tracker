@@ -11,7 +11,7 @@ const PrivateRoute = (props) => {
     const [isValid, setIsValid] = useState(null);
     const { children } = props;
 
-    if (user) {
+    if (user && user.jwt) {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/registration/validate?token=${user.jwt}`, "GET", user.jwt)
             .then(isValid => {
                 setIsValid(isValid);

@@ -144,6 +144,8 @@ public class AppUserService implements UserDetailsService {
     public DashboardViewDto getDataForDashboardView() {
         AppUser currentUser = getUserFromContext().orElseThrow();
         switch (currentUser.getSRole()) {
+            case "Admin":
+                return null;
             case "Project manager":
                 return getDataForProjectManagerDashboardView(currentUser);
             case "Developer":
