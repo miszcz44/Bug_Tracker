@@ -4,7 +4,6 @@ import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiRequestException;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRole;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
-import com.mcr.bugtracker.BugTrackerApplication.email.EmailSender;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
@@ -20,14 +19,14 @@ public class RegistrationService {
     private final AppUserService appUserService;
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
-    private final EmailSender emailSender;
+//    private final EmailSender emailSender;
     public void register(RegistrationRequest request) {
         validateEmail(request.getEmail());
         AppUser user = createUserWithRequest(request);
         appUserService.signUpUser(user);
         String token = appUserService.generateAndSaveConfirmationTokenForGivenUser(user);
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
-        emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
+//        emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
     }
     public void validateEmail(String email) {
         if (!emailValidator.test(email)) {

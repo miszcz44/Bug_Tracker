@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { SidebarData } from './SidebarData';
 import './Sidebar.css';
 import { IconContext } from 'react-icons';
 import {useUser} from "../UserProvider";
 import jwt_decode from "jwt-decode";
 import {AdminSidebarData} from "./AdminSidebarData";
+import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 
 function Sidebar() {
 
     const user = useUser();
+    const navigate = useNavigate();
 
     function getRoleFromJWT() {
         if (user.jwt) {
@@ -36,7 +38,14 @@ function Sidebar() {
                     </> :
                     <></>}
                 </p>
-                <Link className='navbar-link' to={'/login'} onClick={() => user.jwt = ""}>Log out</Link>
+                <Link className='navbar-link' onClick={() => {
+                    grabAndAuthorizeRequestFromTheServer("/api/v1/registration/logout", "GET", user.jwt).then((response) => {
+                        if (!response.status) {
+                            user.setJwt(null);
+                            navigate("/login");
+                        }
+                    });
+                }}>Log out</Link>
             </div>
                 <nav className='nav-menu active' >
                     <ul className='nav-menu-items'>
