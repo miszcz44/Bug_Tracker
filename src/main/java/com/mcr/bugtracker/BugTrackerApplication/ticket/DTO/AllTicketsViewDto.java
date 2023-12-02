@@ -13,9 +13,9 @@ public class AllTicketsViewDto {
     private String priority;
     private String status;
     private String type;
-    private LocalDateTime created;
+    private String created;
 
-    public AllTicketsViewDto(Long id, String title, String projectName, String projectManagerEmail, String submitterEmail, String developerName, String priority, String status, String type, LocalDateTime created) {
+    public AllTicketsViewDto(Long id, String title, String projectName, String projectManagerEmail, String submitterEmail, String developerName, String priority, String status, String type, String created) {
         this.id = id;
         this.title = title;
         this.projectName = projectName;
@@ -100,11 +100,11 @@ public class AllTicketsViewDto {
         this.type = type;
     }
 
-    public LocalDateTime getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 }

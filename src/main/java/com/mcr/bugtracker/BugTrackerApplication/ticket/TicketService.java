@@ -8,6 +8,7 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.Mapper.AppUserDtoMapper;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.AllTicketsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketDetailsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketEditViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketForTicketEditViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper.AllTicketsViewMapper;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper.TicketForTicketDetailsViewDtoMapper;
@@ -15,7 +16,9 @@ import com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper.TicketForTicketEdi
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentaryService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTicketDetailsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldForTicketDetailsMapper;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldService;
+import com.mcr.bugtracker.BugTrackerApplication.util.DateAndTimeFormatter;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +40,7 @@ public class TicketService {
     private final TicketForTicketDetailsViewDtoMapper ticketForTicketDetailsViewDtoMapper;
     private final TicketForTicketEditViewMapper ticketForTicketEditViewMapper;
     private final AppUserDtoMapper appUserDtoMapper;
+    private final TicketHistoryFieldForTicketDetailsMapper ticketHistoryFieldForTicketDetailsMapper;
 
     public void deleteTicket(Long ticketId) {
         validateTicketExistence(ticketId);
@@ -75,6 +79,7 @@ public class TicketService {
                 ticket.getTicketHistoryFields()
                         .stream()
                         .sorted(Comparator.comparing(TicketHistoryField::getDateChanged).reversed())
+                        .map(ticketHistoryFieldForTicketDetailsMapper)
                         .collect(Collectors.toList()));
     }
     protected void validateUserPermissionForTicketDetails(Ticket ticket) {

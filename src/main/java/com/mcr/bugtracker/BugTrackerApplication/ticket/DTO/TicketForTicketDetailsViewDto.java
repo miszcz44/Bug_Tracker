@@ -8,7 +8,7 @@ public class TicketForTicketDetailsViewDto {
     private String priority;
     private String status;
     private String type;
-    private LocalDateTime createdAt;
+    private String createdAt;
     private String developerName;
     private String submitterName;
     private String submitterEmail;
@@ -16,7 +16,7 @@ public class TicketForTicketDetailsViewDto {
     private String projectName;
     private String projectManagerEmail;
 
-    public TicketForTicketDetailsViewDto(String title, String description, String priority, String status, String type, LocalDateTime createdAt, String developerName, String submitterName, String submitterEmail, Long projectId, String projectName, String projectManagerEmail) {
+    public TicketForTicketDetailsViewDto(String title, String description, String priority, String status, String type, String createdAt, String developerName, String submitterName, String submitterEmail, Long projectId, String projectName, String projectManagerEmail) {
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -51,7 +51,7 @@ public class TicketForTicketDetailsViewDto {
         return type;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 

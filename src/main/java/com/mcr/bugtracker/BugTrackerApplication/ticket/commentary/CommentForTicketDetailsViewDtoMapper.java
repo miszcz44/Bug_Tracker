@@ -1,5 +1,7 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.commentary;
 
+import com.mcr.bugtracker.BugTrackerApplication.util.DateAndTimeFormatter;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
@@ -12,6 +14,6 @@ public class CommentForTicketDetailsViewDtoMapper implements Function<Commentary
         return new CommentsForTicketDetailsViewDto(commentary.getId(),
                 commentary.getCommentator().getEmail(),
                 commentary.getMessage(),
-                commentary.getCreatedAt().truncatedTo(ChronoUnit.SECONDS));
+                DateAndTimeFormatter.convertDateAndTimeToCurrentUserZone(commentary.getCreatedAt()));
     }
 }

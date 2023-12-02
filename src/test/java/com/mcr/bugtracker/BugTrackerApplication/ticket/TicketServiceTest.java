@@ -6,11 +6,13 @@ import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.AllTicketsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketDetailsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketEditViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper.AllTicketsViewMapper;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper.TicketForTicketDetailsViewDtoMapper;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper.TicketForTicketEditViewMapper;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentaryService;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldForTicketDetailsMapper;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +52,10 @@ class TicketServiceTest {
     TicketForTicketEditViewMapper ticketForTicketEditViewMapper;
     @Mock
     AppUserDtoMapper appUserDtoMapper;
-    @Mock CommentaryService commentaryService;
+    @Mock
+    CommentaryService commentaryService;
+    @Mock
+    TicketHistoryFieldForTicketDetailsMapper ticketHistoryFieldForTicketDetailsMapper;
     TicketService ticketService;
     AutoCloseable autoCloseable;
     @BeforeEach
@@ -58,7 +63,7 @@ class TicketServiceTest {
         autoCloseable = MockitoAnnotations.openMocks(this);
         ticketService = new TicketService(ticketRepository, appUserRepository, commentaryService, appUserService,
                 ticketHistoryFieldService, allTicketsViewMapper, ticketForTicketDetailsViewDtoMapper,
-                ticketForTicketEditViewMapper, appUserDtoMapper);
+                ticketForTicketEditViewMapper, appUserDtoMapper, ticketHistoryFieldForTicketDetailsMapper);
     }
 
     @AfterEach

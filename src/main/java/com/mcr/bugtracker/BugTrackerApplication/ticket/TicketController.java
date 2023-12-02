@@ -3,6 +3,7 @@ package com.mcr.bugtracker.BugTrackerApplication.ticket;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.AllTicketsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketDetailsViewDto;
+import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketEditViewDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

@@ -3,6 +3,7 @@ package com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.AllTicketsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
+import com.mcr.bugtracker.BugTrackerApplication.util.DateAndTimeFormatter;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
@@ -21,6 +22,6 @@ public class AllTicketsViewMapper implements Function<Ticket, AllTicketsViewDto>
                 ticket.getPriority(),
                 ticket.getStatus(),
                 ticket.getType(),
-                ticket.getCreatedAt());
+                DateAndTimeFormatter.convertDateAndTimeToCurrentUserZone(ticket.getCreatedAt()));
     }
 }

@@ -7,9 +7,9 @@ public class CommentsForTicketDetailsViewDto {
     private Long id;
     private String commentatorEmail;
     private String message;
-    private LocalDateTime created;
+    private String created;
 
-    public CommentsForTicketDetailsViewDto(Long id, String commentatorEmail, String message, LocalDateTime created) {
+    public CommentsForTicketDetailsViewDto(Long id, String commentatorEmail, String message, String created) {
         this.id = id;
         this.commentatorEmail = commentatorEmail;
         this.message = message;
@@ -40,11 +40,11 @@ public class CommentsForTicketDetailsViewDto {
         this.message = message;
     }
 
-    public LocalDateTime getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 }

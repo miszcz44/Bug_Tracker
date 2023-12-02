@@ -3,6 +3,7 @@ package com.mcr.bugtracker.BugTrackerApplication.ticket.Mapper;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketForTicketDetailsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
+import com.mcr.bugtracker.BugTrackerApplication.util.DateAndTimeFormatter;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
@@ -17,7 +18,7 @@ public class TicketForTicketDetailsViewDtoMapper implements Function<Ticket, Tic
                 ticket.getPriority(),
                 ticket.getStatus(),
                 ticket.getType(),
-                ticket.getCreatedAt().truncatedTo(ChronoUnit.SECONDS),
+                DateAndTimeFormatter.convertDateAndTimeToCurrentUserZone(ticket.getCreatedAt()),
                 ticket.getOptionalDeveloper().map(AppUser::getWholeName).orElse("Not specified"),
                 ticket.getOptionalSubmitter().map(AppUser::getWholeName).orElse("Not specified"),
                 ticket.getOptionalSubmitter().map(AppUser::getEmail).orElse("Not specified"),
