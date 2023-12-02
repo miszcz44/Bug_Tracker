@@ -26,7 +26,7 @@ function Sidebar() {
     return (
         <>
             <div className='navbar'>
-                <p className='sidebar-p'>Logged in as: {getRoleFromJWT().toLowerCase().concat(" ")}
+                <p className='sidebar-p'>Logged in as: {getRoleFromJWT().replaceAll('_', ' ').toLowerCase().concat(" ")}
                     {
                         getRoleFromJWT().startsWith("DEMO") ?
                     <>

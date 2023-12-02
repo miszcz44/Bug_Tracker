@@ -2,10 +2,13 @@ import React from 'react';
 import "./demo.css";
 import { adminData, projectManagerData, developerData, submitterData } from "./demoUserData";
 import {useUser} from "../UserProvider";
+import {useNavigate} from "react-router-dom";
+
 
 const DemoUser = () => {
 
     const user = useUser();
+    const navigate = useNavigate();
     function login(id) {
         let data;
         {
@@ -20,7 +23,7 @@ const DemoUser = () => {
                         :
                         data = submitterData
         }
-        fetch("api/v1/registration/login", {
+        fetch("/api/v1/registration/login", {
             headers: {
                 "Content-type": "application/json"
             },
@@ -29,12 +32,14 @@ const DemoUser = () => {
         })
             .then((response) => {
                 if(response.status === 200)
-                    return Promise.all([response.json(), response.headers]);
+                    return response.text();
                 else return Promise.reject("Invalid login attempt");
             })
-            .then(([body, headers]) => {
-                user.setJwt(headers.get("authorization"));
-                window.location.href = "dashboard";
+            .then((data) => {
+                if (data) {
+                    user.setJwt(data);
+                    navigate("/dashboard");
+                }
             })
     }
 

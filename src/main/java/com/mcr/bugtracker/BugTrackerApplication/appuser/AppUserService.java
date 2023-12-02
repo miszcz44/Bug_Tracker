@@ -68,6 +68,7 @@ public class AppUserService implements UserDetailsService {
         checkIfEmailTakenOrNotConfirmed(appUser);
         appUser.setPassword(bCryptPasswordEncoder
                 .encode(appUser.getPassword()));
+        appUser.setEnabled(true);
         appUserRepository.save(appUser);
     }
     public void enableAppUser(AppUser appUser) {

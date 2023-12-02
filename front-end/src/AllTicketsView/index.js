@@ -12,21 +12,11 @@ import {Link} from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
 const AllTicketsView = () => {
-
     const user = useUser();
     const [tickets, setTickets] = useState([]);
     const [filters, setFilters] = useState({
         global: {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
-
-    // function deleteProject(id) {
-    //     for(let i = 0; i < projects.length; i++) {
-    //         if(projects[i].id === id) {
-    //             projects.splice(i, 1);
-    //         }
-    //     }
-    //     grabAndAuthorizeRequestFromTheServer(`/api/v1/project`, "DELETE", user.jwt, id);
-    // }
 
     function getEmailFromJWT() {
         if (user.jwt) {
@@ -93,7 +83,8 @@ const AllTicketsView = () => {
                     <Column field="status" style={{ width: '15%', padding: '5px' }} header="Status" sortable />
                     <Column field="type" style={{ width: '15%', padding: '5px' }} header="Type" sortable />
                     <Column field="created" style={{ width: '15%', padding: '5px' }} header="Created" sortable />
-                    <Column field="id" style={{ width: '15%', padding: '5px' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />                </DataTable>
+                    <Column field="id" style={{ width: '15%', padding: '5px' }} bodyStyle={{ textAlign: 'center', overflow: 'visible' }} body={actionBodyTemplate} />
+                </DataTable>
             </div>
         </div>
     );

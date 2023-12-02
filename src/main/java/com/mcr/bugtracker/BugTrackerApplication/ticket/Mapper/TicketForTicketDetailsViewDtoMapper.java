@@ -23,6 +23,6 @@ public class TicketForTicketDetailsViewDtoMapper implements Function<Ticket, Tic
                 ticket.getOptionalSubmitter().map(AppUser::getEmail).orElse("Not specified"),
                 ticket.getProject().getId(),
                 ticket.getProject().getName(),
-                ticket.getProject().getProjectManager().getWholeName());
+                ticket.getProject().getProjectManager().getEmail());
     }
 }
