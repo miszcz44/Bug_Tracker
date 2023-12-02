@@ -1,4 +1,3 @@
-
 function grabAndAuthorizeRequestFromTheServer(url, requestMethod, jwt, requestBody) {
     const fetchData = {
         headers: {

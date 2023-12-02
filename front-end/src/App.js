@@ -1,19 +1,12 @@
 import './App.css';
-import {useEffect, useState} from "react";
-import {useLocalState} from "./util/useLocalStorage";
 import {Route, Routes} from "react-router-dom";
-import Dashboard from "./ProjectManagerViewDashboard";
+import Dashboard from "./DashboardView";
 import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
-import TicketView from "./TicketView";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProjectView from "./ProjectView/index";
 import Registration from "./Registration";
-import {UserProvider, useUser} from "./UserProvider";
 import RoleManagement from "./RoleManagement";
-import jwt_decode from "jwt-decode";
-import grabAndAuthorizeRequestFromTheServer from "./Services/fetchService";
-import DeveloperTicketView from "./DeveloperTicketView";
 import UserProfile from "./UserProfile";
 import PasswordChange from "./PasswordChange";
 import AllProjectsView from "./AllProjectsView";
@@ -23,28 +16,12 @@ import TicketDetails from "./TicketDetails";
 import TicketEditView from "./TicketEditView";
 import EmailChange from "./EmailChange";
 import TicketCreateView from "./TicketCreateView";
-import ProjectManagerViewDashboard from "./ProjectManagerViewDashboard";
-import DeveloperViewDashboard from "./DeveloperViewDashboard";
-import NoRoleViewDashboard from "./NoRoleViewDashboard";
 import Response403Template from "./Response403Template";
 import OtherErrorTemplate from "./OtherErrorTemplate";
 import Response404Template from "./Response404Template";
 import DemoUser from "./DemoUser";
 
 function App() {
-
-    const user = useUser();
-    const [role, setRole] = useState(getRoleFromJWT())
-
-
-    function getRoleFromJWT() {
-        if (user.jwt) {
-            const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
-            return decodedJwt.role;
-        }
-        return "null";
-    }
     return (
         <Routes>
             <Route path="dashboard" element={
@@ -52,21 +29,6 @@ function App() {
                     <Dashboard/>
                 </PrivateRoute>
             }/>
-            {/*<Route*/}
-            {/*    path="/tickets/:id"*/}
-            {/*    element={*/}
-            {/*    role.authority === "DEVELOPER" ? (*/}
-            {/*    <PrivateRoute>*/}
-            {/*        <DeveloperTicketView/>*/}
-            {/*    </PrivateRoute>*/}
-            {/*    ) : (*/}
-            {/*    <PrivateRoute>*/}
-            {/*        <TicketView/>*/}
-            {/*    </PrivateRoute>*/}
-            {/*    )*/}
-            {/*    }*/}
-            {/*/>*/}
-            {/* BEHAVIOR BASED ON ROLES!!!!!!!*/}
             <Route
                 path="/projects/:id"
                 element={
@@ -171,7 +133,6 @@ function App() {
             </PrivateRoute>}
             />
         </Routes>
-
     );
 }
 

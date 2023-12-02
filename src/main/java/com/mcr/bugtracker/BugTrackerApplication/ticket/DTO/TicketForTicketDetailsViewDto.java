@@ -1,7 +1,5 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.DTO;
 
-import java.time.LocalDateTime;
-
 public class TicketForTicketDetailsViewDto {
     private String title;
     private String description;

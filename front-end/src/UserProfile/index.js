@@ -2,18 +2,10 @@ import React, {useEffect, useState} from 'react';
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
 import jwt_decode from "jwt-decode";
-import FormInput from "../Registration/components/FormInput";
-import {Col, Form, Row} from "react-bootstrap";
-import {Link} from "react-router-dom";
 import SideBar from "../SideBar";
-import {InputText} from "primereact/inputtext";
-import {FilterMatchMode} from "primereact/api";
-import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column";
 import './UserProfile.css'
 
 const UserProfile = () => {
-
     const user = useUser();
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -27,12 +19,10 @@ const UserProfile = () => {
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
     }
-
     useEffect(() => {
         grabAndAuthorizeRequestFromTheServer("/api/v1/user/user-profile", "GET", user.jwt)
             .then((response) => {
@@ -149,7 +139,6 @@ const UserProfile = () => {
                                             </div> :
                                             <></>
                         }
-
                     </div>
                 </div>
             </div>

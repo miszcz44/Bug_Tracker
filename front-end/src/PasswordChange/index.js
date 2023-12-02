@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Col, Form, Row} from "react-bootstrap";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
-import {focus} from "@testing-library/user-event/dist/focus";
 import Sidebar from "../SideBar";
 import "./PasswordChange.css";
 import jwt_decode from "jwt-decode";
@@ -35,14 +34,13 @@ const PasswordChange = () => {
                     throw Error(response.status);
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 errorCode === 403 ? updateError("oldPassword", "Password doesn't match") : <></>
             });
     }
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
@@ -64,7 +62,6 @@ const PasswordChange = () => {
 
     const validateInput = e => {
         let {name, value} = e.target;
-        console.log(error);
         setError((prev) => {
             const stateObj = {...prev, [name]: ""};
 
@@ -102,19 +99,6 @@ const PasswordChange = () => {
             return stateObj;
         });
     }
-
-    // function submit() {
-    //     grabAndAuthorizeRequestFromTheServer(`/api/v1/user/password-change`, "PUT", user.jwt, response)
-    //         .then((response) => {
-    //             if (response === 0) {
-    //                 updateError("oldPassword", "old password is incorrect");
-    //             }
-    //             else {
-    //                 alert("Password changed succesfully!")
-    //             }
-    //         });
-    // }
-
     return (
         <>
         <Sidebar/>
@@ -186,12 +170,9 @@ const PasswordChange = () => {
                     :
                         <button className='password-change-button-1'>Submit</button>
                 }
-
             </form>
         </div>
         </>
-
     );
 };
-
 export default PasswordChange;

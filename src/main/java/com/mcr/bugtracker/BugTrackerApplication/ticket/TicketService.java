@@ -2,7 +2,9 @@ package com.mcr.bugtracker.BugTrackerApplication.ticket;
 
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiForbiddenException;
 import com.mcr.bugtracker.BugTrackerApplication.Exceptions.ApiNotFoundException;
-import com.mcr.bugtracker.BugTrackerApplication.appuser.*;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserRepository;
+import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.DTO.AppUserDto;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.Mapper.AppUserDtoMapper;
 import com.mcr.bugtracker.BugTrackerApplication.project.Project;
@@ -18,7 +20,6 @@ import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTic
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldForTicketDetailsMapper;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldService;
-import com.mcr.bugtracker.BugTrackerApplication.util.DateAndTimeFormatter;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

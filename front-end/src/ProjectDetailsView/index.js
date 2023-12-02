@@ -37,14 +37,13 @@ const ProjectDetailsView = () => {
                     setProjectManagerName(response.projectManagerName);
                     setProjectPersonnel(response.projectPersonnel);
                     setProjectTickets(response.tickets);
-                    console.log(response);
                 }
                 else if(!response.ok) {
                     errorCode = response.status;
                     throw Error(response.status);
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 errorCode === 403 ? window.location.href = "/403" :
                     errorCode === 404 ? window.location.href = "/404" :
                         window.location.href = "/otherError";
@@ -54,7 +53,6 @@ const ProjectDetailsView = () => {
     function getEmailFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.sub;
         }
         return "null";
@@ -70,7 +68,6 @@ const ProjectDetailsView = () => {
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
@@ -86,7 +83,7 @@ const ProjectDetailsView = () => {
     }
     function deleteProject() {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/project`, "DELETE", user.jwt, projectId)
-            .then(response => {
+            .then(() => {
                 window.location.href = '/projects';
             })
     }
@@ -172,9 +169,9 @@ const ProjectDetailsView = () => {
                     </div>
                 </div>
                 <div className='card project-details-card-2'>
-                    <div class="container">
-                        <div class="row">
-                            <div class="card project-details-card-2 col-5">
+                    <div className="container">
+                        <div className="row">
+                            <div className="card project-details-card-2 col-5">
                                     <h3 className="pt-2 px-2" style={{marginBottom: '4px'}}>
                                     Assigned Personnel
                                 </h3>
@@ -200,7 +197,7 @@ const ProjectDetailsView = () => {
                                     <Column field="srole" header="Role" sortable style={{fontSize: '12px', width: '20%', padding: '2px' }} />
                                 </DataTable>
                             </div>
-                            <div class="card project-details-card-2 col-7">
+                            <div className="card project-details-card-2 col-7">
                                 <h3 className="pt-2 px-2" style={{marginBottom: '4px'}}>
                                     Tickets for this project
                                 </h3>

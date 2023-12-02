@@ -1,10 +1,8 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.commentary;
 
 import com.mcr.bugtracker.BugTrackerApplication.util.DateAndTimeFormatter;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 
 @Service

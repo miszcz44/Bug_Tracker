@@ -31,7 +31,6 @@ const AllTicketsView = () => {
     function getEmailFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.sub;
         }
         return "null";
@@ -55,7 +54,6 @@ const AllTicketsView = () => {
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
@@ -67,14 +65,6 @@ const AllTicketsView = () => {
                 setTickets(response);
             });
     }, []);
-
-    function createNewProject() {
-        grabAndAuthorizeRequestFromTheServer("api/v1/project", "POST", user.jwt)
-            .then((project) => {
-                window.location.href = `/projects/${project.id}`;
-            });
-    }
-
     return (
         <div className='all-projects-div-1'>
             <SideBar/>

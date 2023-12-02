@@ -1,7 +1,5 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField;
 
-import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.Commentary;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTicketDetailsViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.util.DateAndTimeFormatter;
 import org.springframework.stereotype.Service;
 

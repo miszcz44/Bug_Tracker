@@ -1,26 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {useLocalState} from "../util/useLocalStorage";
+import React, {useState} from 'react';
 import {useUser} from "../UserProvider";
 import {useNavigate} from "react-router-dom";
 import './LoginForm.css'
-
 const Login = () => {
     const user = useUser();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorInfo, setErrorInfo] = useState("");
-
-    // useEffect(() => {
-    //     if (user.jwt) navigate("/dashboard");
-    // }, [user]);
     function sendLoginRequest() {
-
        const reqBody = {
            email: email,
            password: password,
        };
-
         fetch("api/v1/registration/login", {
                headers: {
                    "Content-type": "application/json"
@@ -40,12 +32,10 @@ const Login = () => {
                 }
             })
             .catch((message) => {
-                //window.location.reload()
                 setErrorInfo(message)
             });
 
     }
-
     return (
         <>
             <div className='wrapper bg-dark d-flex align-items-center justify-content-center w-100'>
@@ -84,10 +74,6 @@ const Login = () => {
                     </form>
                 </div>
             </div>
-
-
-
-
         </>
     );
 };

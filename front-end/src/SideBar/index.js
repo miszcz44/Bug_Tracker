@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
-import * as FaIcons from 'react-icons/fa';
-import * as AiIcons from 'react-icons/ai';
+import React from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import { SidebarData } from './SidebarData';
 import './Sidebar.css';
-import { IconContext } from 'react-icons';
 import {useUser} from "../UserProvider";
 import jwt_decode from "jwt-decode";
 import {AdminSidebarData} from "./AdminSidebarData";
@@ -18,13 +15,12 @@ function Sidebar() {
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
     }
 
     const roleCorrectSidebar =
-        getRoleFromJWT() === "ADMIN" || getRoleFromJWT() == "DEMO_ADMIN" ? AdminSidebarData : SidebarData;
+        getRoleFromJWT() === "ADMIN" || getRoleFromJWT() === "DEMO_ADMIN" ? AdminSidebarData : SidebarData;
 
 
     return (

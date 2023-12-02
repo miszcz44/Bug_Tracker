@@ -23,23 +23,13 @@ const AllProjectsView = () => {
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
     }
-    function deleteProject(id) {
-        for(let i = 0; i < projects.length; i++) {
-            if(projects[i].id === id) {
-                projects.splice(i, 1);
-            }
-        }
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/project`, "DELETE", user.jwt, id);
-    }
     function getEmailFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.sub;
         }
         return "null";
@@ -53,7 +43,7 @@ const AllProjectsView = () => {
             {
                 getEmailFromJWT() === rowData.projectManagerEmail || getRoleFromJWT() === "ADMIN"
                     || getRoleFromJWT() === "DEMO_ADMIN" ?
-                <Link className='d-block all-projects-span-1'to={editUrl.concat(rowData.id)}>Edit</Link>
+                <Link className='d-block all-projects-span-1' to={editUrl.concat(rowData.id)}>Edit</Link>
                 :
                 <></>
             }

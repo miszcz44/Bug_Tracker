@@ -1,15 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {useLocalState} from "../util/useLocalStorage";
-import {Link} from "react-router-dom";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
-import SideBar from "../SideBar";
 import DefaultSidebar from "../SideBar";
 import {Container} from "react-bootstrap";
 import './dashboard.css'
 import jwt_decode from "jwt-decode";
-
-
 const Dashboard = () => {
     const user = useUser();
     const [projectId, setProjectId] = useState();
@@ -18,7 +13,6 @@ const Dashboard = () => {
     const [ticketId, setTicketId] = useState();
     const [ticketTitle, setTicketTitle] = useState("");
     const [ticketDescription, setTicketDescription] = useState("");
-    console.log(user.jwt);
     let projectDetailsUrl = "/projects/details/";
     let ticketDetailsUrl = "/tickets/details/";
 
@@ -33,22 +27,13 @@ const Dashboard = () => {
             setTicketDescription(response.ticketDescription);
         });
     }, []);
-    function createTicket() {
-        grabAndAuthorizeRequestFromTheServer("api/v1/ticket", "POST", user.jwt)
-            .then((ticket) => {
-        window.location.href = `/tickets/${ticket.id}`;
-        });
-    }
-
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
     }
-
     function createNewProject() {
         grabAndAuthorizeRequestFromTheServer("api/v1/project", "POST", user.jwt)
             .then((project) => {
@@ -220,35 +205,6 @@ const Dashboard = () => {
                             :
                             <></>
                 }
-
-        {/*<div style={{ margin: "2em" }}>*/}
-        {/*    {tickets ? (*/}
-        {/*        tickets.map((ticket) => (*/}
-        {/*            <div key={ticket.id}>*/}
-        {/*                <Link to={`/tickets/${ticket.id}`}>*/}
-        {/*                    Ticket id: {ticket.id}*/}
-        {/*                </Link>*/}
-        {/*            </div>*/}
-        {/*            ))*/}
-        {/*        ) : (*/}
-        {/*            <></>*/}
-        {/*        )}*/}
-        {/*    {projects ? (*/}
-        {/*        projects.map((project) => (*/}
-        {/*            <div key={project.id}>*/}
-        {/*                <Link to={`/projects/${project.id}`}>*/}
-        {/*                    Project id: {project.id}*/}
-        {/*                </Link>*/}
-        {/*            </div>*/}
-        {/*        ))*/}
-        {/*    ) : (*/}
-        {/*        <></>*/}
-        {/*    )}*/}
-        {/*    <Link to={"/user-management"}>Manage user roles</Link>*/}
-        {/*    {<button onClick={() => createTicket()}>Create new ticket</button>}*/}
-        {/*    {<button onClick={() => createProject()}>Create new project</button>}*/}
-
-        {/*</div>*/}
             </Container>
         </>
     );

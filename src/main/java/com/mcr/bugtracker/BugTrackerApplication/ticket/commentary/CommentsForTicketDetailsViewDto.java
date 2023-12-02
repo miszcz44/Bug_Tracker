@@ -1,7 +1,5 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.commentary;
 
-import java.time.LocalDateTime;
-
 public class CommentsForTicketDetailsViewDto {
 
     private Long id;

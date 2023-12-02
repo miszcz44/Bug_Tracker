@@ -24,9 +24,7 @@ public class RegistrationService {
         validateEmail(request.getEmail());
         AppUser user = createUserWithRequest(request);
         appUserService.signUpUser(user);
-        String token = appUserService.generateAndSaveConfirmationTokenForGivenUser(user);
-        String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
-//        emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
+
     }
     public void validateEmail(String email) {
         if (!emailValidator.test(email)) {

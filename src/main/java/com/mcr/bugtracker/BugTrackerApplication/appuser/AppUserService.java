@@ -46,9 +46,6 @@ public class AppUserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
     }
 
-    public List<AppUser> findAll() {
-        return appUserRepository.findAll();
-    }
     public void checkIfEmailTakenOrNotConfirmed(AppUser appUser) {
         if(appUserRepository.findByEmail(appUser.getEmail()).isPresent()) {
             AppUser user = appUserRepository.findByEmail(appUser.getEmail()).get();
@@ -252,7 +249,7 @@ public class AppUserService implements UserDetailsService {
                 .collect(Collectors.toList());
         if(project.getProjectManager().isDemo()) {
             return appUsers.stream()
-                    .filter(user -> user.isDemo())
+                    .filter(AppUser::isDemo)
                     .map(appUserDtoMapper)
                     .collect(Collectors.toList());
         }

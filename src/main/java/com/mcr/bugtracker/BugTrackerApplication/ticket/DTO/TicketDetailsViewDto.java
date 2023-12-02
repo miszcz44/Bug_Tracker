@@ -1,7 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.DTO;
 
 import com.mcr.bugtracker.BugTrackerApplication.ticket.commentary.CommentsForTicketDetailsViewDto;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryField;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField.TicketHistoryFieldForTicketDetailsDto;
 
 import java.util.List;

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
+import {ButtonGroup, Col, Container, Dropdown, DropdownButton, Form} from "react-bootstrap";
 import Select from "react-select";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
@@ -37,27 +37,12 @@ const RoleManagement = () => {
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
     }
-
-    function getRolesFromJWT() {
-        if (user.jwt) {
-            const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
-            return decodedJwt.authorities;
-        }
-        return [];
-    }
-
     function updateSelectedElement(element) {
         setSelectedRole(element);
-        console.log(selectedRole);
-        console.log(selectedEmails);
-        console.log(userRoles);
-        console.log(allUsers);
     }
 
     useEffect(() => {
@@ -74,20 +59,12 @@ const RoleManagement = () => {
                 }
 
             })
-            .catch(err => {
+            .catch(() => {
                 errorCode === 403 ? window.location.href = "/403" :
                     errorCode === 404 ? window.location.href = "/404" :
                         window.location.href = "/otherError";
             });
     }, []);
-    function getDifference() {
-        nonAdminUsersEmailsLabel = nonAdminUsersEmailsLabel.filter(object1 => {
-            return !selectedEmails.some(object2 => {
-                return object1.value === object2.value;
-            });
-        });
-    }
-
     function assignRoleToUsers() {
         setSelectedEmails([]);
         changeRoleResponse.usersEmails = selectedEmails.map(email => email.value);
@@ -105,7 +82,7 @@ const RoleManagement = () => {
         if(changeRoleResponse.role === 'Admin') {
             setNonAdminUsersEmails(nonSelectedUsers);
         }
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/role-management/change-role`, "PUT", user.jwt, changeRoleResponse)
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/user/role-management/change-role`, "PUT", user.jwt, changeRoleResponse).then({})
     }
 
     return (

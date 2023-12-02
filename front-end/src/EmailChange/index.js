@@ -1,11 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Col, Form, Row} from "react-bootstrap";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 import {useUser} from "../UserProvider";
-import {focus} from "@testing-library/user-event/dist/focus";
 import Sidebar from "../SideBar";
 import jwt_decode from "jwt-decode";
-import axios from "axios";
 
 const EmailChange = () => {
     const user = useUser();
@@ -22,32 +20,9 @@ const EmailChange = () => {
         password: ""
     })
     let regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     grabAndAuthorizeRequestFromTheServer(`/api/v1/user/email-change`, "PUT", user.jwt, response)
-    //         .then((response) => {
-    //             if (response === 0) {
-    //                 updateError("oldPassword", "old password is incorrect");
-    //             }
-    //             else {
-    //                 alert("Password changed successfully!")
-    //             }
-    //         });
-    // }
-
-    // function handleSubmit() {
-    //     grabAndAuthorizeRequestFromTheServer("api/v1/user/email-change", "PUT", user.jwt, response)
-    //         .then(answer => {
-    //             console.log(answer);
-    //         })
-    //         .catch(error => {
-    //             console.log(error);
-    //         })
-    // }
     function getEmailFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.sub;
         }
         return "null";
@@ -67,7 +42,6 @@ const EmailChange = () => {
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
@@ -75,12 +49,10 @@ const EmailChange = () => {
 
     const validateInput = e => {
         let {name, value} = e.target;
-        console.log(error);
         setError((prev) => {
             const stateObj = {...prev, [name]: ""};
             switch (name) {
                 case "oldEmail":
-                    console.log(value);
                     if(value !== getEmailFromJWT()) {
                         stateObj[name] = "That is not your current email";
                     }
@@ -121,23 +93,11 @@ const EmailChange = () => {
                     throw Error(response.status);
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 errorCode === 409 ? updateError("newEmail", "Email already taken") :
                     errorCode === 403 ? updateError("password", "Password doesn't match") : <></>
             });
     }
-    // function submit() {
-    //     grabAndAuthorizeRequestFromTheServer(`/api/v1/user/password-change`, "PUT", user.jwt, response)
-    //         .then((response) => {
-    //             if (response === 0) {
-    //                 updateError("oldPassword", "old password is incorrect");
-    //             }
-    //             else {
-    //                 alert("Password changed succesfully!")
-    //             }
-    //         });
-    // }
-
     return (
         <>
             <Sidebar/>
@@ -219,5 +179,4 @@ const EmailChange = () => {
 
     );
 };
-
 export default EmailChange;

@@ -1,26 +1,6 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
-import {
-    createBrowserRouter,
-    RouterProvider,
-    Route,
-    Link,
-    Outlet,
-    createRoutesFromElements,
-} from "react-router-dom";
-
-import Sidebar from "./index.js";
 import * as AiIcons from 'react-icons/ai';
 import * as BsIcons from 'react-icons/bs'
-// import "./App.css";
-import UserProfile from "../UserProfile";
-import RoleManagement from "../RoleManagement";
-import Dashboard from "../ProjectManagerViewDashboard";
-import jwt_decode from "jwt-decode";
-import {useUser} from "../UserProvider";
-
-
-
 export const SidebarData = [
     {
         title: 'Dashboard home',

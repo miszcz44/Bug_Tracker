@@ -6,7 +6,6 @@ import com.mcr.bugtracker.BugTrackerApplication.ticket.Ticket;
 import com.mcr.bugtracker.BugTrackerApplication.util.DateAndTimeFormatter;
 import org.springframework.stereotype.Service;
 
-import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 
 @Service

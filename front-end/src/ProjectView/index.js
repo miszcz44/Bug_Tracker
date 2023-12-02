@@ -1,14 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {useLocalState} from "../util/useLocalStorage";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService"
 import {
-    ButtonGroup,
-    DropdownButton,
-    Dropdown,
     Col,
     Form,
     Row,
-    Container,
 } from "react-bootstrap";
 import Select from "react-select";
 import SideBar from "../SideBar";
@@ -22,7 +17,6 @@ import jwt_decode from "jwt-decode";
 import {useUser} from "../UserProvider";
 const ProjectView = () => {
     const user = useUser();
-    const [jwt, setJwt] = useLocalState("", "jwt");
     const projectId = window.location.href.split("/projects/")[1];
     let errorCode = 0;
     const [project, setProject] = useState({});
@@ -38,14 +32,9 @@ const ProjectView = () => {
     const [personnelFilters, setPersonnelFilters] = useState({
         global: {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
-    //const usersEmails = allUsers.map(user => ({value:user.email, label:user.email}));
-    let selectedUserCount = 0;
-
-
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
@@ -60,10 +49,6 @@ const ProjectView = () => {
         const newProject = { ...project }
         newProject[prop] = value;
         setProject(newProject);
-        console.log(project);
-        console.log(projectPersonnel);
-        console.log(selectedProjectManager);
-        selectedProjectManager ? console.log(selectedProjectManager.value) : console.log(currentManager);
     }
 
     // function handleOptionChange(selectedOption) {
@@ -71,7 +56,7 @@ const ProjectView = () => {
     //     setSelectedOption(selectedOption);
     // }
     function save() {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/edit/${projectId}`, "PUT", jwt, {
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/edit/${projectId}`, "PUT", user.jwt, {
             "project": project,
             "currentManager": selectedProjectManager ? selectedProjectManager.value : currentManager,
             "projectPersonnel": projectPersonnel
@@ -85,7 +70,6 @@ const ProjectView = () => {
         for(let i=0; i<selectedUsers.length; i++) {
             projectPersonnel.push(selectedUsers[i].value);
             allNotParticipatingUsers.splice(allNotParticipatingUsers.indexOf(selectedUsers[i].value), 1);
-            console.log(projectPersonnel);
         }
         setSelectedUsers([]);
         // grabAndAuthorizeRequestFromTheServer(`/api/v1/project/${projectId}/add-user-to-project`, "PUT", jwt, selectedUsers.map(email => email.value))
@@ -129,9 +113,8 @@ const ProjectView = () => {
     }
 
     useEffect(() => {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/edit/${projectId}`, "GET", jwt)
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/project/edit/${projectId}`, "GET", user.jwt)
             .then(response => {
-                console.log(response);
                 if(!response.status) {
                     setProject(response.project);
                     setCurrentManager(response.currentManager);
@@ -145,7 +128,7 @@ const ProjectView = () => {
                 }
 
             })
-            .catch(err => {
+            .catch(() => {
                 errorCode === 403 ? window.location.href = "/403" :
                     errorCode === 404 ? window.location.href = "/404" :
                         window.location.href = "/otherError";
@@ -226,7 +209,6 @@ const ProjectView = () => {
                                                         onChange={(e) =>
                                                             updateProject("description", e.target.value)
                                                         }
-                                                        type="text"
                                                         value={project.description}
                                                         placeholder="description"
                                                         style={{width:'300px', height:'130px', resize:'none'}}

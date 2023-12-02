@@ -2,8 +2,6 @@ package com.mcr.bugtracker.BugTrackerApplication.appuser.DTO;
 
 import lombok.Getter;
 
-import java.util.Objects;
-
 @Getter
 public final class UserProfileDto {
     private final String firstName;

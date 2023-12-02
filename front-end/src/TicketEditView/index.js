@@ -2,21 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {useLocalState} from "../util/useLocalStorage";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService"
 import {
-    ButtonGroup,
-    DropdownButton,
-    Dropdown,
     Col,
     Form,
-    Row,
-    Container,
+    Row
 } from "react-bootstrap";
 import Select from "react-select";
 import SideBar from "../SideBar";
-import {InputText} from "primereact/inputtext";
-import {FilterMatchMode} from "primereact/api";
-import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column";
-import {Link} from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import {useUser} from "../UserProvider";
 const TicketEditView = () => {
@@ -43,10 +34,6 @@ const TicketEditView = () => {
     const statusLabel = ticket.status ? {value: ticket.status, label: ticket.status} : "";
     const statusesLabel = status.map(progressStatus => ({value: progressStatus.name, label: progressStatus.name}))
     const [selectedStatus, setSelectedStatus] = useState();
-    const [personnelFilters, setPersonnelFilters] = useState({
-        global: {value: null, matchMode: FilterMatchMode.CONTAINS}
-    });
-    //const usersEmails = allUsers.map(user => ({value:user.email, label:user.email}));
     function updateTicket(prop, value) {
         const newTicket = { ...ticket }
         newTicket[prop] = value;
@@ -88,7 +75,6 @@ const TicketEditView = () => {
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
@@ -106,14 +92,13 @@ const TicketEditView = () => {
                     setTypes(response.types);
                     setPriorities(response.priorities);
                     setStatuses(response.progressStatuses);
-                    console.log(response);
                 }
                 else if(!response.ok) {
                     errorCode = response.status;
                     throw Error(response.status);
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 errorCode === 403 ? window.location.href = "/403" :
                     errorCode === 404 ? window.location.href = "/404" :
                         window.location.href = "/otherError";
@@ -195,7 +180,6 @@ const TicketEditView = () => {
                                                 onChange={(e) =>
                                                     updateTicket("description", e.target.value)
                                                 }
-                                                type="text"
                                                 value={ticket.description}
                                                 placeholder="description"
                                                 style={{width:'300px', height:'130px', resize:'none'}}

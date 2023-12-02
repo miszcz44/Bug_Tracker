@@ -1,15 +1,11 @@
 import React from 'react';
 import jwt_decode from "jwt-decode";
-import {useLocalState} from "../util/useLocalStorage";
 import {useUser} from "../UserProvider";
 
 const Comment = (props) => {
-    const {id, createdAt, commentator, message, emitDeleteComment, emitEditComment} = props
+    const {id, commentator, message, emitDeleteComment, emitEditComment} = props
     const user = useUser();
     const decodedJwt = jwt_decode(user.jwt);
-    console.log(user.jwt);
-    //const decodedJwt = jwt_decode(user.jwt);
-    //console.log(decodedJwt);
     return (
         <div className="comment-bubble">
             <div className="d-flex gap-5" style={{ fontWeight: "bold" }}>

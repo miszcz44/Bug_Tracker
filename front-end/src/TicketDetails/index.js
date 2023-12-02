@@ -8,7 +8,6 @@ import {InputText} from "primereact/inputtext";
 import {FilterMatchMode} from "primereact/api";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
-import CommentContainer from "../CommentContainer";
 import jwt_decode from "jwt-decode";
 const TicketDetails = () => {
 
@@ -38,17 +37,12 @@ const TicketDetails = () => {
     const [historyFilters, setHistoryFilters] = useState({
         global: {value: null, matchMode: FilterMatchMode.CONTAINS}
     });
-    const [attachmentsFilters, setAttachmentsFilters] = useState({
-        global: {value: null, matchMode: FilterMatchMode.CONTAINS}
-    });
-
     let editUrl = '/tickets/';
     let projectsEditUrl = '/projects/details/';
 
     function getEmailFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.sub;
         }
         return "null";
@@ -57,7 +51,6 @@ const TicketDetails = () => {
     function getRoleFromJWT() {
         if (user.jwt) {
             const decodedJwt = jwt_decode(user.jwt);
-            console.log(decodedJwt);
             return decodedJwt.role.authority;
         }
         return "null";
@@ -67,7 +60,6 @@ const TicketDetails = () => {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/details/${ticketId}`, "GET", user.jwt)
             .then((response) => {
                 if(!response.status) {
-                    console.log(response)
                     setTicket(response.ticket);
                     setDeveloperName(response.ticket.developerName);
                     setSubmitterName(response.ticket.submitterName);
@@ -83,23 +75,15 @@ const TicketDetails = () => {
                     throw Error(response.status);
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 errorCode === 403 ? window.location.href = "/403" :
                     errorCode === 404 ? window.location.href = "/404" :
                         window.location.href = "/otherError";
             });
     }, []);
-
-    const actionBodyTemplate = (rowData) => {
-        let url = "/projects/details/"
-        return <div>
-            <Link to={url.concat(rowData.id)}>Details</Link>
-        </div>
-    };
-
     function deleteTicket() {
         grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket`, "DELETE", user.jwt, ticketId)
-            .then(response => {
+            .then(() => {
                 window.location.href = "/tickets";
             })
     }
@@ -108,7 +92,7 @@ const TicketDetails = () => {
         const newComment = { ...comment};
         newComment["created"] = null;
         setComment(newComment);
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/comments/${ticketId}`, "POST", user.jwt, comment)
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/comments/${ticketId}`, "POST", user.jwt, comment).then({})
         const commentsCopy = [...comments];
         newComment["created"] = "Just Now";
         commentsCopy.unshift(newComment);
@@ -120,7 +104,6 @@ const TicketDetails = () => {
         const newComment = { ...comment};
         newComment["message"] = value;
         setComment(newComment);
-        console.log(comment);
     }
 
     return (

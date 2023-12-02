@@ -1,7 +1,5 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.ticketHistoryField;
 
-import java.time.LocalDateTime;
-
 public class TicketHistoryFieldForTicketDetailsDto {
     private String property;
     private String oldValue;

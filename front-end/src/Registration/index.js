@@ -2,10 +2,8 @@ import React, {useEffect, useState} from "react";
 import "./registration.css";
 import FormInput from "./components/FormInput";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
-
-import {useLocalState} from "../util/useLocalStorage";
 import axios from 'axios';
-import {ButtonGroup, Col, Dropdown, DropdownButton, Form, FormControl, Row} from "react-bootstrap";
+import {ButtonGroup, Col, Dropdown, DropdownButton, Form, Row} from "react-bootstrap";
 import {useUser} from "../UserProvider";
 const Registration = () => {
     const user = useUser();
@@ -77,7 +75,7 @@ const Registration = () => {
 
     const registerUser = async (userData) => {
         try {
-            const response = await axios.post('/api/v1/registration', userData);
+            await axios.post('/api/v1/registration', userData);
             window.location.href = "/login";
             // handle the successful response
         } catch (error) {
@@ -105,7 +103,6 @@ const Registration = () => {
 
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
-        console.log(values);
     };
 
     useEffect(() => {

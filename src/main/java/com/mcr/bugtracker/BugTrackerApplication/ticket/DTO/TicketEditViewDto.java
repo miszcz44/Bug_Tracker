@@ -1,7 +1,6 @@
 package com.mcr.bugtracker.BugTrackerApplication.ticket.DTO;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.DTO.AppUserDto;
-import com.mcr.bugtracker.BugTrackerApplication.ticket.DTO.TicketForTicketEditViewDto;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Priority;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.ProgressStatus;
 import com.mcr.bugtracker.BugTrackerApplication.ticket.ticketFieldsEnums.Type;

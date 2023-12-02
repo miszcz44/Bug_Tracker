@@ -1,12 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import "./demo.css";
 import { adminData, projectManagerData, developerData, submitterData } from "./demoUserData";
-import * as FaIcons from 'react-icons/fa';
-import * as BsIcons from 'react-icons/bs'
-import {useLocalState} from "../util/useLocalStorage";
 import {useUser} from "../UserProvider";
-import {useNavigate} from "react-router-dom";
-import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService";
 
 const DemoUser = () => {
 
@@ -38,9 +33,7 @@ const DemoUser = () => {
                 else return Promise.reject("Invalid login attempt");
             })
             .then(([body, headers]) => {
-                console.log(headers);
                 user.setJwt(headers.get("authorization"));
-                console.log(user.jwt);
                 window.location.href = "dashboard";
             })
     }

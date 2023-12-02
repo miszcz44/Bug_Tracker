@@ -1,24 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {useLocalState} from "../util/useLocalStorage";
 import grabAndAuthorizeRequestFromTheServer from "../Services/fetchService"
 import {
-    ButtonGroup,
-    DropdownButton,
-    Dropdown,
     Col,
     Form,
-    Row,
-    Container,
+    Row
 } from "react-bootstrap";
 import Select from "react-select";
 import SideBar from "../SideBar";
-import {InputText} from "primereact/inputtext";
-import {FilterMatchMode} from "primereact/api";
-import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column";
-import {Link} from "react-router-dom";
+import {useUser} from "../UserProvider";
 const TicketCreateView = () => {
-    const [jwt, setJwt] = useLocalState("", "jwt");
+    const user = useUser()
     const ticketId = window.location.href.split("tickets/")[1];
     let errorCode = 0;
     const projectId = window.location.href.split("/")[4];
@@ -41,10 +32,7 @@ const TicketCreateView = () => {
     const statusLabel = ticket.status ? {value: ticket.status, label: ticket.status} : "";
     const statusesLabel = status.map(progressStatus => ({value: progressStatus.name, label: progressStatus.name}))
     const [selectedStatus, setSelectedStatus] = useState();
-    const [personnelFilters, setPersonnelFilters] = useState({
-        global: {value: null, matchMode: FilterMatchMode.CONTAINS}
-    });
-    //const usersEmails = allUsers.map(user => ({value:user.email, label:user.email}));
+
     function updateTicket(prop, value) {
         const newTicket = { ...ticket }
         newTicket[prop] = value;
@@ -57,10 +45,10 @@ const TicketCreateView = () => {
     // }
 
     function save() {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/edit/${ticketId}`, "PUT", jwt, {
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/edit/${ticketId}`, "PUT", user.jwt, {
             "ticket": ticket,
             "developer": selectedDeveloper ? selectedDeveloper.value : currentDeveloper
-        })
+        }).then({})
         window.location.reload();
     }
 
@@ -85,7 +73,7 @@ const TicketCreateView = () => {
 
 
     useEffect(() => {
-        grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/edit/${ticketId}`, "GET", jwt)
+        grabAndAuthorizeRequestFromTheServer(`/api/v1/ticket/edit/${ticketId}`, "GET", user.jwt)
             .then((response) => {
                 if(!response.status) {
                     setTicket(response.ticket);
@@ -95,14 +83,13 @@ const TicketCreateView = () => {
                     setTypes(response.types);
                     setPriorities(response.priorities);
                     setStatuses(response.progressStatuses);
-                    console.log(response);
                 }
                 else if(!response.ok) {
                     errorCode = response.status;
                     throw Error(response.status);
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 errorCode === 403 ? window.location.href = "/403" :
                     errorCode === 404 ? window.location.href = "/404" :
                         window.location.href = "/otherError";
@@ -176,7 +163,6 @@ const TicketCreateView = () => {
                                                     onChange={(e) =>
                                                         updateTicket("description", e.target.value)
                                                     }
-                                                    type="text"
                                                     value={ticket.description}
                                                     placeholder="description"
                                                     style={{width:'300px', height:'130px', resize:'none'}}
