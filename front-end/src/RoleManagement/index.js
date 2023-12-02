@@ -7,10 +7,10 @@ import jwt_decode from "jwt-decode";
 import Sidebar from "../SideBar";
 import "./RoleManagement.css";
 import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column"
+import {Column} from "primereact/column";
 import {FilterMatchMode} from "primereact/api";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
-import "primereact/resources/primereact.min.css"
+import "primereact/resources/primereact.min.css";
 import {InputText} from "primereact/inputtext";
 
 const RoleManagement = () => {

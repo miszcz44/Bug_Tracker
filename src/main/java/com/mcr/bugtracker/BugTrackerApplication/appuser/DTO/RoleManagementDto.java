@@ -23,4 +23,7 @@ public class RoleManagementDto {
     public List<String> getNonAdminUsersEmails() {
         return nonAdminUsersEmails;
     }
+    public AppUserRole[] getUserRoles() {
+        return userRoles;
+    }
 }

@@ -96,10 +96,10 @@ const AllTicketsView = () => {
                 </div>
                 <DataTable value={tickets} stripedRows sortMode="multiple" filters={filters} tableStyle={{ minWidth: '50rem' }}
                            paginator rows={6} style={{backgroundColor: '#111111'}} className='all-projects-table-1'>
-                    <Column field="title" header="Title" sortable style={{ width: '15%', padding: '5px' }}/>
-                    <Column field="projectName" header="Project Name" sortable style={{ width: '15%', padding: '5px' }}/>
+                    <Column field="title" header="Title" sortable style={{ width: '22%', padding: '5px' }}/>
+                    <Column field="projectName" header="Project Name" sortable style={{ width: '18%', padding: '5px' }}/>
                     <Column field="developerName" style={{ width: '15%', padding: '5px' }} header="Developer Name" sortable />
-                    <Column field="priority" style={{ width: '15%', padding: '5px' }} header="Priority" sortable />
+                    <Column field="priority" style={{ width: '5%', padding: '5px' }} header="Priority" sortable />
                     <Column field="status" style={{ width: '15%', padding: '5px' }} header="Status" sortable />
                     <Column field="type" style={{ width: '15%', padding: '5px' }} header="Type" sortable />
                     <Column field="created" style={{ width: '15%', padding: '5px' }} header="Created" sortable />

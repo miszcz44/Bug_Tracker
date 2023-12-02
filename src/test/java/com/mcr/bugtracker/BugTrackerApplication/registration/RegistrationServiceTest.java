@@ -2,7 +2,6 @@ package com.mcr.bugtracker.BugTrackerApplication.registration;
 
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUser;
 import com.mcr.bugtracker.BugTrackerApplication.appuser.AppUserService;
-import com.mcr.bugtracker.BugTrackerApplication.email.EmailSender;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationToken;
 import com.mcr.bugtracker.BugTrackerApplication.registration.token.ConfirmationTokenService;
 import org.junit.jupiter.api.AfterEach;
@@ -29,14 +28,13 @@ public class RegistrationServiceTest {
     EmailValidator emailValidator;
     @Mock
     ConfirmationTokenService confirmationTokenService;
-    @Mock
-    EmailSender emailSender;
+
     RegistrationService registrationService;
     AutoCloseable autoCloseable;
     @BeforeEach
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
-        registrationService = new RegistrationService(appUserService, emailValidator, confirmationTokenService, emailSender);
+        registrationService = new RegistrationService(appUserService, emailValidator, confirmationTokenService);
     }
     @AfterEach
     void tearUp() throws Exception {
@@ -53,7 +51,6 @@ public class RegistrationServiceTest {
         when(registrationService1.createUserWithRequest(registrationRequest)).thenReturn(appUser);
         doNothing().when(appUserService).signUpUser(appUser);
         when(appUserService.generateAndSaveConfirmationTokenForGivenUser(appUser)).thenReturn("foo");
-        doNothing().when(emailSender).send(any(), any());
         doReturn("foo").when(registrationService1).buildEmail(any(), any());
         //when
         registrationService1.register(registrationRequest);
@@ -61,7 +58,6 @@ public class RegistrationServiceTest {
         verify(registrationService1).createUserWithRequest(registrationRequest);
         verify(appUserService).signUpUser(appUser);
         verify(appUserService).generateAndSaveConfirmationTokenForGivenUser(appUser);
-        verify(emailSender).send(any(), any());
         verify(registrationService1).buildEmail(any(), any());
     }
     @Test
