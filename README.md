@@ -1,5 +1,5 @@
 # Bug Tracker
-## A website built with Spring Boot and React to keep track of bugs in programming projects -----> https://bug-tracker.live <---
+## A website built with Spring Boot and React to keep track of bugs in programming projects -----> https://bug-tracker.live <-----
 
 The project is made for my own educational purposes and is inspired by this video: https://www.youtube.com/watch?v=vG824vBdYY8.  
 For hosting I used https://www.digitalocean.com and the domain was purchased in https://www.name.com.  
